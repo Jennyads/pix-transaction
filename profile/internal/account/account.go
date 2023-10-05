@@ -1,8 +1,8 @@
 package internal
 
 import (
+	user "profile/internal/user"
 	"time"
-	user "user/internal/user"
 )
 
 type nullableTime struct {

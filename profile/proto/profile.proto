@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+package profile.proto.v2;
+
+message User{
+    string name = 1;
+    string email = 2;
+    string address = 3;
+    string cpf = 4;
+    string phone = 5;
+    google.protobuf.Timestamp birthday = 6;
+}
+
+message ListUser{
+    repeated User users = 1;
+}
+
+message UserRequest{
+    int64 id = 1;
+}
+
+message ListUserRequest{
+    repeated int64 id = 1;
+}
+
+service UserService {
+    rpc CreateUser(User) returns (google.protobuf.Empty) {
+    }
+
+    rpc FindUser(UserRequest) returns (User) {
+    }
+
+    rpc UpdateUser(User) returns (google.protobuf.Empty) {
+    }
+
+    rpc ListUsers(ListUserRequest) returns (ListUser) {
+    }
+
+    rpc DeleteUser(UserRequest) returns (google.protobuf.Empty) {
+    }
+}
+
+message Account{
+    int64 user_id = 1;
+    double balance = 2;
+    string agency = 3;
+    string bank = 4;
+    string key = 5;
+}
+
+message ListAccount{
+    repeated Account account = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+
+}
+
+message AccountRequest{
+    int64 account_id = 1;
+}
+
+message ListAccountRequest{
+    repeated int64 account_id = 1;
+}
+
+service AccountService {
+    rpc CreateAccount(Account) returns (google.protobuf.Empty) {
+    }
+
+    rpc FindAccount(Account) returns (Account) {
+    }
+
+    rpc UpdateAccount(Account) returns (google.protobuf.Empty) {
+    }
+
+    rpc ListAccount(ListAccountRequest) returns (ListAccount) {
+    }
+
+    rpc DeleteAccount(AccountRequest) returns (google.protobuf.Empty){
+    }
+}
+enum Type {
+    cpf = 0;
+    phone = 1;
+    email = 2;
+    random = 3;
+
+}
+message Keys {
+    string name = 1;
+    Type type = 2;
+
+}
+
+message ListKeys{
+    repeated Keys keys = 1;
+}
+service KeysService {
+    rpc CreateKey(Keys) returns (google.protobuf.Empty) {
+    }
+
+    rpc UpdateKey(Keys) returns (google.protobuf.Empty) {
+    }
+
+    rpc ListKey(Keys) returns (ListKeys) {
+    }
+
+    rpc deleteKey(Keys) returns (google.protobuf.Empty){
+    }
+
+}
