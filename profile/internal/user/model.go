@@ -1,4 +1,4 @@
-package internal
+package user
 
 import "time"
 

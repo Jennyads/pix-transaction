@@ -5,6 +5,8 @@ import "google/protobuf/empty.proto";
 
 package profile.proto.v2;
 
+option go_package = "profile/proto/v2;profile";
+
 message User{
     string name = 1;
     string email = 2;
@@ -55,7 +57,6 @@ message ListAccount{
     repeated Account account = 1;
     google.protobuf.Timestamp CreatedAt = 2;
     google.protobuf.Timestamp UpdatedAt = 3;
-
 }
 
 message AccountRequest{
@@ -76,7 +77,7 @@ service AccountService {
     rpc UpdateAccount(Account) returns (google.protobuf.Empty) {
     }
 
-    rpc ListAccount(ListAccountRequest) returns (ListAccount) {
+    rpc ListAccounts(ListAccountRequest) returns (ListAccount) {
     }
 
     rpc DeleteAccount(AccountRequest) returns (google.protobuf.Empty){

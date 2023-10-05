@@ -1,9 +1,6 @@
-package internal
+package keys
 
-import (
-	account "profile/internal/account"
-	"time"
-)
+import "time"
 
 type Type string
 
@@ -14,9 +11,9 @@ const (
 	Random Type = "random"
 )
 
-type User struct {
+type Key struct {
 	PK        int
-	SK        account.Account
+	AccountID int `dynamodbav:"PK"`
 	Name      string
 	Type      Type
 	CreatedAt time.Time
