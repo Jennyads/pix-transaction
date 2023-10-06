@@ -55,8 +55,8 @@ message Account{
 
 message ListAccount{
     repeated Account account = 1;
-    google.protobuf.Timestamp CreatedAt = 2;
-    google.protobuf.Timestamp UpdatedAt = 3;
+    google.protobuf.Timestamp createdAt = 2;
+    google.protobuf.Timestamp updatedAt = 3;
 }
 
 message AccountRequest{
