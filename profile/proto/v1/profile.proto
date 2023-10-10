@@ -93,7 +93,6 @@ enum Type {
 message Keys {
     string name = 1;
     Type type = 2;
-
 }
 
 message ListKeys{
@@ -106,7 +105,7 @@ service KeysService {
     rpc UpdateKey(Keys) returns (google.protobuf.Empty) {
     }
 
-    rpc ListKey(Keys) returns (ListKeys) {
+    rpc ListKey(AccountRequest) returns (ListKeys) {
     }
 
     rpc deleteKey(Keys) returns (google.protobuf.Empty){
