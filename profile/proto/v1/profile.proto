@@ -90,25 +90,32 @@ enum Type {
     random = 3;
 
 }
-message Keys {
-    string name = 1;
-    Type type = 2;
+message Key {
+    int64 account_id = 1;
+    string name = 2;
+    Type type = 3;
+}
+message ListKeyRequest{
+    repeated int64 key_id = 1;
+}
+message KeyRequest{
+    int64 key_id = 1;
 }
 
 message ListKeys{
-    repeated Keys keys = 1;
+    repeated Key keys = 1;
 }
 service KeysService {
-    rpc CreateKey(Keys) returns (google.protobuf.Empty) {
+    rpc CreateKey(Key) returns (google.protobuf.Empty) {
     }
 
-    rpc UpdateKey(Keys) returns (google.protobuf.Empty) {
+    rpc UpdateKey(Key) returns (google.protobuf.Empty) {
     }
 
-    rpc ListKey(AccountRequest) returns (ListKeys) {
+    rpc ListKey(ListKeyRequest) returns (ListKeys) {
     }
 
-    rpc deleteKey(Keys) returns (google.protobuf.Empty){
+    rpc DeleteKey(KeyRequest) returns (google.protobuf.Empty){
     }
 
 }

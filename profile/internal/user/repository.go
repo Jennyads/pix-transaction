@@ -6,7 +6,7 @@ type Repository interface {
 	CreateUser(account *User) (*User, error)
 	FindUserById(id int) (*User, error)
 	UpdateUser(account *User) (*User, error)
-	ListUser(userIDs []int) ([]*User, error)
+	ListUsers(userIDs []int) ([]*User, error)
 	DeleteUser(id int) error
 }
 
@@ -29,7 +29,7 @@ func (r repository) UpdateUser(account *User) (*User, error) {
 	panic("implement me")
 }
 
-func (r repository) ListUser(ints []int) ([]*User, error) {
+func (r repository) ListUsers(ints []int) ([]*User, error) {
 	//TODO implement me
 	panic("implement me")
 }

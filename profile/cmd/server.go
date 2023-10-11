@@ -30,70 +30,146 @@ func (p ProfileServer) CreateAccount(ctx context.Context, ac *v1.Account) (*empt
 	}
 	return nil, nil
 }
-
-func (p ProfileServer) FindAccount(ctx context.Context, account *v1.Account) (*v1.Account, error) {
-	//TODO implement me
-	panic("implement me")
+func (p ProfileServer) FindAccountById(ctx context.Context, ac *v1.Account) (*empty.Empty, error) {
+	_, err := p.account.CreateAccount(account.ProtoToAccount(ac))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
-
 func (p ProfileServer) UpdateAccount(ctx context.Context, account *v1.Account) (*empty.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	_, err := p.account.UpdateAccount(account.ProtoToAccount(account))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
 func (p ProfileServer) ListAccounts(ctx context.Context, request *v1.ListAccountRequest) (*v1.ListAccount, error) {
-	//TODO implement me
-	panic("implement me")
+	_, err := p.account.ListAccounts(account.ProtoToAccountRequest(request))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
 func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountRequest) (*empty.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	err := p.account.DeleteAccount(account.ProtoToAccountRequest(request))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
 func (p ProfileServer) CreateUser(ctx context.Context, user *v1.User) (*empty.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	_, err := p.user.CreateUser(user.ProtoToUser(user))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
-func (p ProfileServer) FindUser(ctx context.Context, request *v1.UserRequest) (*v1.User, error) {
-	//TODO implement me
-	panic("implement me")
+func (p ProfileServer) FindUserById(ctx context.Context, request *v1.UserRequest) (*v1.User, error) {
+	_, err := p.user.FindUserById(user.ProtoToUserRequest(request))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
 func (p ProfileServer) UpdateUser(ctx context.Context, user *v1.User) (*empty.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	_, err := p.user.UpdateUser(user.ProtoToUser(user))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
 func (p ProfileServer) ListUsers(ctx context.Context, request *v1.ListUserRequest) (*v1.ListUser, error) {
-	//TODO implement me
-	panic("implement me")
+	_, err := p.user.ListUsers(user.ProtoToUserListRequest(request))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
 func (p ProfileServer) DeleteUser(ctx context.Context, request *v1.UserRequest) (*empty.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	err := p.user.DeleteUser(user.ProtoToUserRequest(request))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
-func (p ProfileServer) CreateKey(ctx context.Context, keys *v1.Keys) (*empty.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+func (p ProfileServer) CreateKey(ctx context.Context, req *v1.Key) (*empty.Empty, error) {
+	_, err := p.keys.CreateKey(keys.ProtoToKey(req))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
-func (p ProfileServer) UpdateKey(ctx context.Context, keys *v1.Keys) (*empty.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+func (p ProfileServer) UpdateKey(ctx context.Context, req *v1.Key) (*empty.Empty, error) {
+	_, err := p.keys.UpdateKey(keys.ProtoToKey(req))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
-func (p ProfileServer) ListKey(ctx context.Context, keys *v1.Keys) (*v1.ListKeys, error) {
-	//TODO implement me
-	panic("implement me")
+func (p ProfileServer) ListKey(ctx context.Context, req *v1.ListKeyRequest) (*v1.ListKeys, error) {
+	_, err := p.keys.ListKey(keys.ProtoToKey(req))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
-func (p ProfileServer) DeleteKey(ctx context.Context, keys *v1.Keys) (*empty.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+func (p ProfileServer) DeleteKey(ctx context.Context, req *v1.KeyRequest) (*empty.Empty, error) {
+	err := p.keys.DeleteKey(keys.ProtoToKey(req))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return nil, nil
 }
 
 func NewProfileService(userService user.Service, accountService account.Service, keyService keys.Service) *ProfileServer {

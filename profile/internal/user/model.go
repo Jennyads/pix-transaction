@@ -14,3 +14,11 @@ type User struct {
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 }
+
+type UserRequest struct {
+	UserID int
+}
+
+type ListUserRequest struct {
+	UserIDs []int
+}

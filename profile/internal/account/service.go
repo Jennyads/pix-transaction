@@ -9,7 +9,7 @@ type Service interface {
 	CreateAccount(account *Account) (*Account, error)
 	FindAccountById(req *AccountRequest) (*Account, error)
 	UpdateAccount(account *Account) (*Account, error)
-	ListAccount(req *ListAccountRequest) ([]*Account, error)
+	ListAccounts(req *ListAccountRequest) ([]*Account, error)
 	DeleteAccount(req *AccountRequest) error
 }
 
@@ -38,7 +38,7 @@ func (s service) UpdateAccount(account *Account) (*Account, error) {
 	return s.repo.UpdateAccount(account)
 }
 
-func (s service) ListAccount(listAccount *ListAccountRequest) ([]*Account, error) {
+func (s service) ListAccounts(listAccount *ListAccountRequest) ([]*Account, error) {
 	if len(listAccount.AccountIDs) == 0 {
 		return nil, errors.New("account_ids is required")
 	}

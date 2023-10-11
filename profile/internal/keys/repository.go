@@ -5,7 +5,7 @@ import "profile/platform/dynamo"
 type Repository interface {
 	CreateKey(key *Key) (*Key, error)
 	UpdateKey(key *Key) (*Key, error)
-	ListKey(accountID int) ([]*Key, error)
+	ListKey(keyIDs []int) ([]*Key, error)
 	DeleteKey(id int) error
 }
 
@@ -23,7 +23,7 @@ func (r repository) UpdateKey(key *Key) (*Key, error) {
 	panic("implement me")
 }
 
-func (r repository) ListKey(accountID int) ([]*Key, error) {
+func (r repository) ListKey(keyIDs []int) ([]*Key, error) {
 	//TODO implement me
 	panic("implement me")
 }
