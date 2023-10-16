@@ -24,7 +24,7 @@ func (s service) CreateUser(user *User) (*User, error) {
 }
 
 func (s service) FindUserById(userRequest *UserRequest) (*User, error) {
-	return s.repo.FindUserById(userRequest.UserID)
+	return s.repo.FindUserById(int(userRequest.UserID))
 }
 
 func (s service) UpdateUser(user *User) (*User, error) {
@@ -46,7 +46,7 @@ func (s service) DeleteUser(request *UserRequest) error {
 	if request.UserID == 0 {
 		return errors.New("account_id is required")
 	}
-	return s.repo.DeleteUser(request.UserID)
+	return s.repo.DeleteUser(int(request.UserID))
 }
 func NewService(repo Repository) Service {
 	return &service{

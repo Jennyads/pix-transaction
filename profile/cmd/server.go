@@ -73,7 +73,7 @@ func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountReq
 	return nil, nil
 }
 
-func (p ProfileServer) CreateUser(ctx context.Context, request *v1.User) (*v1.User, error) {
+func (p ProfileServer) CreateUser(ctx context.Context, request *v1.User) (*empty.Empty, error) {
 	_, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err {

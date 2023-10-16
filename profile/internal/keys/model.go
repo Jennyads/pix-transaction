@@ -15,8 +15,8 @@ const (
 )
 
 type Key struct {
-	PK        int
-	AccountID int `dynamodbav:"SK"`
+	PK        int64
+	AccountID int64 `dynamodbav:"SK"`
 	Name      string
 	Type      Type
 	CreatedAt time.Time
@@ -34,7 +34,7 @@ type ListKeyRequest struct {
 
 func ProtoToKey(key *pb.Key) *Key {
 	return &Key{
-		AccountID: int(key.AccountId),
+		AccountID: key.AccountId,
 		Name:      key.Name,
 		Type:      Type(key.Type),
 	}

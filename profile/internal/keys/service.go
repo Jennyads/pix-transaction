@@ -40,7 +40,7 @@ func (s service) DeleteKey(request *KeyRequest) error {
 	if request.keyID == 0 {
 		return errors.New("account_id is required")
 	}
-	return s.repo.DeleteKey(request.keyID)
+	return s.repo.DeleteKey(int(request.keyID))
 }
 
 func NewService(repo Repository) Service {

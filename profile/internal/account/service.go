@@ -27,7 +27,7 @@ func (s service) CreateAccount(account *Account) (*Account, error) {
 }
 
 func (s service) FindAccountById(request *AccountRequest) (*Account, error) {
-	return s.repo.FindAccountById(request.AccountID)
+	return s.repo.FindAccountById(int(request.AccountID))
 }
 
 func (s service) UpdateAccount(account *Account) (*Account, error) {
@@ -49,7 +49,7 @@ func (s service) DeleteAccount(request *AccountRequest) error {
 	if request.AccountID == 0 {
 		return errors.New("account_id is required")
 	}
-	return s.repo.DeleteAccount(request.AccountID)
+	return s.repo.DeleteAccount(int(request.AccountID))
 }
 
 func NewService(repo Repository) Service {
