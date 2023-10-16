@@ -40,8 +40,8 @@ func (p ProfileServer) FindAccountById(ctx context.Context, ac *v1.Account) (*em
 	}
 	return nil, nil
 }
-func (p ProfileServer) UpdateAccount(ctx context.Context, account *v1.Account) (*empty.Empty, error) {
-	_, err := p.account.UpdateAccount(account.ProtoToAccount(account))
+func (p ProfileServer) UpdateAccount(ctx context.Context, request *v1.Account) (*empty.Empty, error) {
+	_, err := p.account.UpdateAccount(account.ProtoToAccount(request))
 	if err != nil {
 		switch err {
 		default:
@@ -52,7 +52,7 @@ func (p ProfileServer) UpdateAccount(ctx context.Context, account *v1.Account) (
 }
 
 func (p ProfileServer) ListAccounts(ctx context.Context, request *v1.ListAccountRequest) (*v1.ListAccount, error) {
-	_, err := p.account.ListAccounts(account.ProtoToAccountRequest(request))
+	_, err := p.account.ListAccounts(account.ProtoToAccountListRequest(request))
 	if err != nil {
 		switch err {
 		default:
@@ -73,8 +73,8 @@ func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountReq
 	return nil, nil
 }
 
-func (p ProfileServer) CreateUser(ctx context.Context, user *v1.User) (*empty.Empty, error) {
-	_, err := p.user.CreateUser(user.ProtoToUser(user))
+func (p ProfileServer) CreateUser(ctx context.Context, request *v1.User) (*v1.User, error) {
+	_, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err {
 		default:
@@ -95,8 +95,8 @@ func (p ProfileServer) FindUserById(ctx context.Context, request *v1.UserRequest
 	return nil, nil
 }
 
-func (p ProfileServer) UpdateUser(ctx context.Context, user *v1.User) (*empty.Empty, error) {
-	_, err := p.user.UpdateUser(user.ProtoToUser(user))
+func (p ProfileServer) UpdateUser(ctx context.Context, request *v1.User) (*empty.Empty, error) {
+	_, err := p.user.UpdateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err {
 		default:
@@ -151,7 +151,7 @@ func (p ProfileServer) UpdateKey(ctx context.Context, req *v1.Key) (*empty.Empty
 }
 
 func (p ProfileServer) ListKey(ctx context.Context, req *v1.ListKeyRequest) (*v1.ListKeys, error) {
-	_, err := p.keys.ListKey(keys.ProtoToKey(req))
+	_, err := p.keys.ListKey(keys.ProtoToKeyListRequest(req))
 	if err != nil {
 		switch err {
 		default:
@@ -162,7 +162,7 @@ func (p ProfileServer) ListKey(ctx context.Context, req *v1.ListKeyRequest) (*v1
 }
 
 func (p ProfileServer) DeleteKey(ctx context.Context, req *v1.KeyRequest) (*empty.Empty, error) {
-	err := p.keys.DeleteKey(keys.ProtoToKey(req))
+	err := p.keys.DeleteKey(keys.ProtoToKeyRequest(req))
 	if err != nil {
 		switch err {
 		default:
