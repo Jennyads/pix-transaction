@@ -22,7 +22,7 @@ type ProfileServer struct {
 	v1.UnimplementedKeysServiceServer
 }
 
-func (p ProfileServer) CreateAccount(ctx context.Context, ac *v1.Account) (*empty.Empty, error) {
+func (p ProfileServer) CreateAccount(ctx context.Context, ac *v1.Account) (*v1.Account, error) {
 	if ac.UserId == 0 {
 		return nil, errors.New("user_id is required")
 	}
@@ -43,7 +43,7 @@ func (p ProfileServer) FindAccount(ctx context.Context, ac *v1.Account) (*v1.Acc
 		return nil, errors.New("id is required")
 	}
 
-	_, err := p.account.CreateAccount(account.ProtoToAccount(ac))
+	_, err := p.account.CreateAccount(ctx, account.ProtoToAccount(ac))
 	if err != nil {
 		switch err {
 		default:
@@ -56,7 +56,7 @@ func (p ProfileServer) UpdateAccount(ctx context.Context, request *v1.Account) (
 	if request.UserId == 0 {
 		return nil, errors.New("id is required")
 	}
-	_, err := p.account.UpdateAccount(account.ProtoToAccount(request))
+	_, err := p.account.UpdateAccount(ctx, account.ProtoToAccount(request))
 	if err != nil {
 		switch err {
 		default:
@@ -70,7 +70,7 @@ func (p ProfileServer) ListAccounts(ctx context.Context, request *v1.ListAccount
 	if len(request.AccountId) == 0 {
 		return nil, errors.New("account_ids is required")
 	}
-	_, err := p.account.ListAccounts(account.ProtoToAccountListRequest(request))
+	_, err := p.account.ListAccounts(ctx, account.ProtoToAccountListRequest(request))
 	if err != nil {
 		switch err {
 		default:
@@ -84,7 +84,7 @@ func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountReq
 	if request.AccountId == 0 {
 		return nil, errors.New("account_id is required")
 	}
-	err := p.account.DeleteAccount(account.ProtoToAccountRequest(request))
+	err := p.account.DeleteAccount(ctx, account.ProtoToAccountRequest(request))
 	if err != nil {
 		switch err {
 		default:
@@ -98,8 +98,6 @@ func (p ProfileServer) CreateUser(ctx context.Context, request *v1.User) (*empty
 	_, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err.(type) {
-		case *user.ErrDuplicated:
-			return nil, status.Error(codes.AlreadyExists, err.Error())
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}

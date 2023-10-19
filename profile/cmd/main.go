@@ -1,10 +1,12 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 	"profile/internal/account"
+	"profile/internal/cfg"
 	"profile/internal/keys"
 	"profile/internal/user"
 	"profile/platform/dynamo"
@@ -12,6 +14,16 @@ import (
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	config, err := cfg.Get()
+	if err != nil {
+		return
+	}
+
 	list, err := net.Listen("tcp", ":9080")
 	if err != nil {
 		log.Fatalf("Failed to listen port 9080 %v", err)
@@ -22,7 +34,7 @@ func main() {
 	// repositories
 	userRepository := user.NewRepository(db)
 	keyRepository := keys.NewRepository(db)
-	accountRepository := account.NewRepository(db)
+	accountRepository := account.NewRepository(db, config)
 
 	// services
 	userService := user.NewService(userRepository)

@@ -1,7 +1,6 @@
 package user
 
 import (
-	"errors"
 	"time"
 )
 
@@ -18,16 +17,6 @@ type service struct {
 }
 
 func (s service) CreateUser(user *User) (*User, error) {
-
-	// TODO validar cpf duplicado
-	return nil, &errors.ErrDuplicated{Msg: "cpf already exists"}
-
-	// TODO validar email duplicado
-	return nil, &ErrDuplicated{Msg: "email already exists"}
-
-	// TODO validar phone duplicado
-	return nil, &ErrDuplicated{Msg: "phone already exists"}
-
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 	return s.repo.CreateUser(user)

@@ -23,7 +23,7 @@ func (s service) CreateKey(key *Key) (*Key, error) {
 }
 
 func (s service) UpdateKey(key *Key) (*Key, error) {
-	if key.PK == 0 {
+	if key.Id == 0 {
 		return nil, errors.New("id is required")
 	}
 	key.UpdatedAt = time.Now()
