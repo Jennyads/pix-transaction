@@ -6,7 +6,7 @@ type Repository interface {
 	CreateAccount(account *Account) (*Account, error)
 	FindAccountById(id int) (*Account, error)
 	UpdateAccount(account *Account) (*Account, error)
-	ListAccount(accountIDs []int) ([]*Account, error)
+	ListAccount(accountIDs []int64) ([]*Account, error)
 	DeleteAccount(id int) error
 }
 
@@ -29,7 +29,7 @@ func (r repository) UpdateAccount(account *Account) (*Account, error) {
 	panic("implement me")
 }
 
-func (r repository) ListAccount(ints []int) ([]*Account, error) {
+func (r repository) ListAccount(ints []int64) ([]*Account, error) {
 	//TODO implement me
 	panic("implement me")
 }
