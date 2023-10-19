@@ -6,7 +6,7 @@ import (
 )
 
 type User struct {
-	PK        int
+	Id        int64 `dynamodbav:"PK"`
 	Name      string
 	Email     string
 	Address   string

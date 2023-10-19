@@ -19,6 +19,11 @@ func (r repository) CreateUser(account *User) (*User, error) {
 	panic("implement me")
 }
 
+func (r repository) ExistWithCpf(cpf string) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (r repository) FindUserById(id int) (*User, error) {
 	//TODO implement me
 	panic("implement me")

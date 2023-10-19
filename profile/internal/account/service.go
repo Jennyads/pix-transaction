@@ -1,54 +1,42 @@
 package account
 
 import (
-	"errors"
+	"context"
 	"time"
 )
 
 type Service interface {
-	CreateAccount(account *Account) (*Account, error)
-	FindAccountById(req *AccountRequest) (*Account, error)
-	UpdateAccount(account *Account) (*Account, error)
-	ListAccounts(req *ListAccountRequest) ([]*Account, error)
-	DeleteAccount(req *AccountRequest) error
+	CreateAccount(ctx context.Context, account *Account) (*Account, error)
+	FindAccountById(ctx context.Context, req *AccountRequest) (*Account, error)
+	UpdateAccount(ctx context.Context, account *Account) (*Account, error)
+	ListAccounts(ctx context.Context, req *ListAccountRequest) ([]*Account, error)
+	DeleteAccount(ctx context.Context, req *AccountRequest) error
 }
 
 type service struct {
 	repo Repository
 }
 
-func (s service) CreateAccount(account *Account) (*Account, error) {
-	if account.UserID == 0 {
-		return nil, errors.New("user_id is required")
-	}
+func (s service) CreateAccount(ctx context.Context, account *Account) (*Account, error) {
 	account.CreatedAt = time.Now()
 	account.UpdatedAt = time.Now()
 	return s.repo.CreateAccount(account)
 }
 
-func (s service) FindAccountById(request *AccountRequest) (*Account, error) {
+func (s service) FindAccountById(ctx context.Context, request *AccountRequest) (*Account, error) {
 	return s.repo.FindAccountById(int(request.AccountID))
 }
 
-func (s service) UpdateAccount(account *Account) (*Account, error) {
-	if account.Id == 0 {
-		return nil, errors.New("id is required")
-	}
+func (s service) UpdateAccount(ctx context.Context, account *Account) (*Account, error) {
 	account.UpdatedAt = time.Now()
 	return s.repo.UpdateAccount(account)
 }
 
-func (s service) ListAccounts(listAccount *ListAccountRequest) ([]*Account, error) {
-	if len(listAccount.AccountIDs) == 0 {
-		return nil, errors.New("account_ids is required")
-	}
+func (s service) ListAccounts(ctx context.Context, listAccount *ListAccountRequest) ([]*Account, error) {
 	return s.repo.ListAccount(listAccount.AccountIDs)
 }
 
-func (s service) DeleteAccount(request *AccountRequest) error {
-	if request.AccountID == 0 {
-		return errors.New("account_id is required")
-	}
+func (s service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
 	return s.repo.DeleteAccount(int(request.AccountID))
 }
 

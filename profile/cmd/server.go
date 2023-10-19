@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"errors"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"profile/internal/account"
 	"profile/internal/keys"
 	"profile/internal/user"
+	"profile/internal/utils"
 	v1 "profile/proto/v1"
 )
 
@@ -21,16 +23,26 @@ type ProfileServer struct {
 }
 
 func (p ProfileServer) CreateAccount(ctx context.Context, ac *v1.Account) (*empty.Empty, error) {
-	_, err := p.account.CreateAccount(account.ProtoToAccount(ac))
+	if ac.UserId == 0 {
+		return nil, errors.New("user_id is required")
+	}
+
+	_, err := p.account.CreateAccount(ctx, account.ProtoToAccount(ac))
 	if err != nil {
 		switch err {
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 	}
+
 	return nil, nil
 }
-func (p ProfileServer) FindAccountById(ctx context.Context, ac *v1.Account) (*empty.Empty, error) {
+
+func (p ProfileServer) FindAccount(ctx context.Context, ac *v1.Account) (*v1.Account, error) {
+	if ac.UserId == 0 {
+		return nil, errors.New("id is required")
+	}
+
 	_, err := p.account.CreateAccount(account.ProtoToAccount(ac))
 	if err != nil {
 		switch err {
@@ -41,6 +53,9 @@ func (p ProfileServer) FindAccountById(ctx context.Context, ac *v1.Account) (*em
 	return nil, nil
 }
 func (p ProfileServer) UpdateAccount(ctx context.Context, request *v1.Account) (*empty.Empty, error) {
+	if request.UserId == 0 {
+		return nil, errors.New("id is required")
+	}
 	_, err := p.account.UpdateAccount(account.ProtoToAccount(request))
 	if err != nil {
 		switch err {
@@ -52,6 +67,9 @@ func (p ProfileServer) UpdateAccount(ctx context.Context, request *v1.Account) (
 }
 
 func (p ProfileServer) ListAccounts(ctx context.Context, request *v1.ListAccountRequest) (*v1.ListAccount, error) {
+	if len(request.AccountId) == 0 {
+		return nil, errors.New("account_ids is required")
+	}
 	_, err := p.account.ListAccounts(account.ProtoToAccountListRequest(request))
 	if err != nil {
 		switch err {
@@ -63,6 +81,9 @@ func (p ProfileServer) ListAccounts(ctx context.Context, request *v1.ListAccount
 }
 
 func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountRequest) (*empty.Empty, error) {
+	if request.AccountId == 0 {
+		return nil, errors.New("account_id is required")
+	}
 	err := p.account.DeleteAccount(account.ProtoToAccountRequest(request))
 	if err != nil {
 		switch err {
@@ -76,7 +97,9 @@ func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountReq
 func (p ProfileServer) CreateUser(ctx context.Context, request *v1.User) (*empty.Empty, error) {
 	_, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {
-		switch err {
+		switch err.(type) {
+		case *user.ErrDuplicated:
+			return nil, status.Error(codes.AlreadyExists, err.Error())
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}
@@ -84,7 +107,7 @@ func (p ProfileServer) CreateUser(ctx context.Context, request *v1.User) (*empty
 	return nil, nil
 }
 
-func (p ProfileServer) FindUserById(ctx context.Context, request *v1.UserRequest) (*v1.User, error) {
+func (p ProfileServer) FindUser(ctx context.Context, request *v1.UserRequest) (*v1.User, error) {
 	_, err := p.user.FindUserById(user.ProtoToUserRequest(request))
 	if err != nil {
 		switch err {
@@ -96,6 +119,11 @@ func (p ProfileServer) FindUserById(ctx context.Context, request *v1.UserRequest
 }
 
 func (p ProfileServer) UpdateUser(ctx context.Context, request *v1.User) (*empty.Empty, error) {
+	id := utils.ReadMetadata(ctx, "id")
+	if id == "" {
+		return nil, errors.New("id is required")
+	}
+
 	_, err := p.user.UpdateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err {
@@ -107,6 +135,9 @@ func (p ProfileServer) UpdateUser(ctx context.Context, request *v1.User) (*empty
 }
 
 func (p ProfileServer) ListUsers(ctx context.Context, request *v1.ListUserRequest) (*v1.ListUser, error) {
+	if len(request.Id) == 0 {
+		return nil, errors.New("user_ids is required")
+	}
 	_, err := p.user.ListUsers(user.ProtoToUserListRequest(request))
 	if err != nil {
 		switch err {
@@ -118,6 +149,9 @@ func (p ProfileServer) ListUsers(ctx context.Context, request *v1.ListUserReques
 }
 
 func (p ProfileServer) DeleteUser(ctx context.Context, request *v1.UserRequest) (*empty.Empty, error) {
+	if request.Id == 0 {
+		return nil, errors.New("account_id is required")
+	}
 	err := p.user.DeleteUser(user.ProtoToUserRequest(request))
 	if err != nil {
 		switch err {

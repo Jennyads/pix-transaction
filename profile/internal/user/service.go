@@ -18,6 +18,16 @@ type service struct {
 }
 
 func (s service) CreateUser(user *User) (*User, error) {
+
+	// TODO validar cpf duplicado
+	return nil, &errors.ErrDuplicated{Msg: "cpf already exists"}
+
+	// TODO validar email duplicado
+	return nil, &ErrDuplicated{Msg: "email already exists"}
+
+	// TODO validar phone duplicado
+	return nil, &ErrDuplicated{Msg: "phone already exists"}
+
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 	return s.repo.CreateUser(user)
@@ -28,24 +38,15 @@ func (s service) FindUserById(userRequest *UserRequest) (*User, error) {
 }
 
 func (s service) UpdateUser(user *User) (*User, error) {
-	if user.PK == 0 {
-		return nil, errors.New("id is required")
-	}
 	user.UpdatedAt = time.Now()
 	return s.repo.UpdateUser(user)
 }
 
 func (s service) ListUsers(listUsers *ListUserRequest) ([]*User, error) {
-	if len(listUsers.UserIDs) == 0 {
-		return nil, errors.New("user_ids is required")
-	}
 	return s.repo.ListUsers(listUsers.UserIDs)
 }
 
 func (s service) DeleteUser(request *UserRequest) error {
-	if request.UserID == 0 {
-		return errors.New("account_id is required")
-	}
 	return s.repo.DeleteUser(int(request.UserID))
 }
 func NewService(repo Repository) Service {

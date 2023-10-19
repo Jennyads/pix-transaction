@@ -15,7 +15,7 @@ const (
 )
 
 type Key struct {
-	PK        int64
+	Id        int64 `dynamodbav:"PK"`
 	AccountID int64 `dynamodbav:"SK"`
 	Name      string
 	Type      Type
