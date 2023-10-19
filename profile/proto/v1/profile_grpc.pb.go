@@ -269,7 +269,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountServiceClient interface {
-	CreateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*empty.Empty, error)
+	CreateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*Account, error)
 	FindAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*Account, error)
 	UpdateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*empty.Empty, error)
 	ListAccounts(ctx context.Context, in *ListAccountRequest, opts ...grpc.CallOption) (*ListAccount, error)
@@ -284,8 +284,8 @@ func NewAccountServiceClient(cc grpc.ClientConnInterface) AccountServiceClient {
 	return &accountServiceClient{cc}
 }
 
-func (c *accountServiceClient) CreateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *accountServiceClient) CreateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*Account, error) {
+	out := new(Account)
 	err := c.cc.Invoke(ctx, AccountService_CreateAccount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -333,7 +333,7 @@ func (c *accountServiceClient) DeleteAccount(ctx context.Context, in *AccountReq
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility
 type AccountServiceServer interface {
-	CreateAccount(context.Context, *Account) (*empty.Empty, error)
+	CreateAccount(context.Context, *Account) (*Account, error)
 	FindAccount(context.Context, *Account) (*Account, error)
 	UpdateAccount(context.Context, *Account) (*empty.Empty, error)
 	ListAccounts(context.Context, *ListAccountRequest) (*ListAccount, error)
@@ -345,7 +345,7 @@ type AccountServiceServer interface {
 type UnimplementedAccountServiceServer struct {
 }
 
-func (UnimplementedAccountServiceServer) CreateAccount(context.Context, *Account) (*empty.Empty, error) {
+func (UnimplementedAccountServiceServer) CreateAccount(context.Context, *Account) (*Account, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
 }
 func (UnimplementedAccountServiceServer) FindAccount(context.Context, *Account) (*Account, error) {
