@@ -1,6 +1,17 @@
 package keys
 
-import "profile/platform/dynamo"
+import (
+	"context"
+	"errors"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"profile/internal/cfg"
+	"profile/platform/dynamo"
+	"strconv"
+)
 
 type Repository interface {
 	CreateKey(key *Key) (*Key, error)
@@ -10,27 +21,100 @@ type Repository interface {
 }
 
 type repository struct {
-	db dynamo.Client
+	db  dynamo.Client
+	cfg *cfg.Config
 }
 
 func (r repository) CreateKey(key *Key) (*Key, error) {
-	//TODO implement me
-	panic("implement me")
+	value, err := attributevalue.MarshalMap(key)
+	if err != nil {
+		return nil, err
+	}
+
+	item, err := r.db.DB().PutItem(context.Background(), &dynamodb.PutItemInput{
+		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
+		Item:      value,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = attributevalue.UnmarshalMap(item.Attributes, key)
+	if err != nil {
+		return nil, err
+	}
+
+	return key, nil
 }
 
 func (r repository) UpdateKey(key *Key) (*Key, error) {
-	//TODO implement me
-	panic("implement me")
+	upd := expression.
+		Set(expression.Name("Name"), expression.Value(key.Name)).
+		Set(expression.Name("Type"), expression.Value(key.Type))
+
+	exp, err := expression.NewBuilder().WithUpdate(upd).Build()
+	if err != nil {
+		return nil, errors.New("failed to build expression")
+	}
+	item, err := r.db.DB().UpdateItem(context.Background(), &dynamodb.UpdateItemInput{
+		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberN{Value: strconv.FormatInt(key.Id, 10)},
+		},
+		ExpressionAttributeNames:  exp.Names(),
+		ExpressionAttributeValues: exp.Values(),
+		UpdateExpression:          exp.Update(),
+		ReturnValues:              types.ReturnValueAllNew,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = attributevalue.UnmarshalMap(item.Attributes, key)
+	if err != nil {
+		return nil, err
+	}
+
+	return key, nil
 }
 
 func (r repository) ListKey(keyIDs []int64) ([]*Key, error) {
-	//TODO implement me
-	panic("implement me")
+	keys := make([]map[string]types.AttributeValue, len(keyIDs))
+	for i, v := range keyIDs {
+		keys[i] = map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{Value: strconv.FormatInt(v, 10)},
+		}
+	}
+
+	value, err := r.db.DB().BatchGetItem(context.Background(), &dynamodb.BatchGetItemInput{
+		RequestItems: map[string]types.KeysAndAttributes{
+			r.cfg.DynamodbConfig.KeyTable: {
+				Keys: keys,
+			},
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	listKey := make([]*Key, len(value.Responses[r.cfg.DynamodbConfig.KeyTable]))
+	for i := range value.Responses[r.cfg.DynamodbConfig.KeyTable] {
+		err = attributevalue.UnmarshalMap(value.Responses[r.cfg.DynamodbConfig.KeyTable][i], &listKey[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return listKey, nil
 }
 
 func (r repository) DeleteKey(id int) error {
-	//TODO implement me
-	panic("implement me")
+	_, err := r.db.DB().DeleteItem(context.Background(), &dynamodb.DeleteItemInput{
+		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberN{Value: strconv.Itoa(id)},
+		},
+	})
+	return err
 }
 
 func NewRepository(db dynamo.Client) Repository {

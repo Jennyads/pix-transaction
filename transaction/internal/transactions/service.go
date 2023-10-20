@@ -8,7 +8,7 @@ import (
 type Service interface {
 	CreateTransaction(transaction *Transaction) error
 	FindTransaction(id *TransactionRequest) (*Transaction, error)
-	ListTransactions(transactionIDs *ListTransactionRequest) (*ListTransaction, error)
+	ListTransactions(transactionIDs *ListTransactionRequest) ([]*Transaction, error)
 }
 
 type service struct {
@@ -22,14 +22,14 @@ func (s service) CreateTransaction(transaction *Transaction) error {
 }
 
 func (s service) FindTransaction(id *TransactionRequest) (*Transaction, error) {
-	return s.repo.FindTransaction(id)
+	return s.repo.FindTransaction(id.transactionID)
 }
 
-func (s service) ListTransactions(transactionIDs *ListTransactionRequest) (*ListTransaction, error) {
-	if len(transactionIDs.transactionIDs) == 0 {
+func (s service) ListTransactions(req *ListTransactionRequest) ([]*Transaction, error) {
+	if len(req.transactionIDs) == 0 {
 		return nil, errors.New("transaction_ids is required")
 	}
-	return s.repo.ListTransactions(transactionIDs)
+	return s.repo.ListTransactions(req.transactionIDs)
 }
 
 func NewService(repo Repository) Service {
