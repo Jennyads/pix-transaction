@@ -205,5 +205,9 @@ func (p ProfileServer) DeleteKey(ctx context.Context, req *v1.KeyRequest) (*empt
 }
 
 func NewProfileService(userService user.Service, accountService account.Service, keyService keys.Service) *ProfileServer {
-	return &ProfileServer{}
+	return &ProfileServer{
+		user:    userService,
+		account: accountService,
+		keys:    keyService,
+	}
 }
