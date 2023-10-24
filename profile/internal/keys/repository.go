@@ -10,14 +10,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"profile/internal/cfg"
 	"profile/platform/dynamo"
-	"strconv"
 )
 
 type Repository interface {
 	CreateKey(key *Key) (*Key, error)
 	UpdateKey(key *Key) (*Key, error)
-	ListKey(keyIDs []int64) ([]*Key, error)
-	DeleteKey(id int) error
+	ListKey(keyIDs []string) ([]*Key, error)
+	DeleteKey(id string) error
 }
 
 type repository struct {
@@ -59,7 +58,7 @@ func (r repository) UpdateKey(key *Key) (*Key, error) {
 	item, err := r.db.DB().UpdateItem(context.Background(), &dynamodb.UpdateItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: strconv.FormatInt(key.Id, 10)},
+			"PK": &types.AttributeValueMemberN{Value: key.Id},
 		},
 		ExpressionAttributeNames:  exp.Names(),
 		ExpressionAttributeValues: exp.Values(),
@@ -78,11 +77,11 @@ func (r repository) UpdateKey(key *Key) (*Key, error) {
 	return key, nil
 }
 
-func (r repository) ListKey(keyIDs []int64) ([]*Key, error) {
+func (r repository) ListKey(keyIDs []string) ([]*Key, error) {
 	keys := make([]map[string]types.AttributeValue, len(keyIDs))
 	for i, v := range keyIDs {
 		keys[i] = map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberS{Value: strconv.FormatInt(v, 10)},
+			"PK": &types.AttributeValueMemberS{Value: v},
 		}
 	}
 
@@ -107,11 +106,11 @@ func (r repository) ListKey(keyIDs []int64) ([]*Key, error) {
 	return listKey, nil
 }
 
-func (r repository) DeleteKey(id int) error {
+func (r repository) DeleteKey(id string) error {
 	_, err := r.db.DB().DeleteItem(context.Background(), &dynamodb.DeleteItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: strconv.Itoa(id)},
+			"PK": &types.AttributeValueMemberN{Value: id},
 		},
 	})
 	return err

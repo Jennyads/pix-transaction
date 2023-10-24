@@ -15,8 +15,8 @@ const (
 )
 
 type Key struct {
-	Id        int64 `dynamodbav:"PK"`
-	AccountID int64 `dynamodbav:"SK"`
+	Id        string `dynamodbav:"PK"`
+	AccountID string `dynamodbav:"SK"`
 	Name      string
 	Type      Type
 	CreatedAt time.Time
@@ -25,11 +25,11 @@ type Key struct {
 }
 
 type KeyRequest struct {
-	keyID int64
+	keyID string
 }
 
 type ListKeyRequest struct {
-	keyIDs []int64
+	keyIDs []string
 }
 
 func ProtoToKey(key *pb.Key) *Key {

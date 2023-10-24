@@ -10,15 +10,14 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"profile/internal/cfg"
 	"profile/platform/dynamo"
-	"strconv"
 )
 
 type Repository interface {
 	CreateUser(user *User) (*User, error)
-	FindUserById(id int) (*User, error)
+	FindUserById(id string) (*User, error)
 	UpdateUser(user *User) (*User, error)
-	ListUsers(userIDs []int64) ([]*User, error)
-	DeleteUser(id int) error
+	ListUsers(userIDs []string) ([]*User, error)
+	DeleteUser(id string) error
 }
 
 type repository struct {
@@ -53,11 +52,11 @@ func (r repository) ExistWithCpf(cpf string) (bool, error) {
 	panic("implement me")
 }
 
-func (r repository) FindUserById(id int) (*User, error) {
+func (r repository) FindUserById(id string) (*User, error) {
 	value, err := r.db.DB().GetItem(context.Background(), &dynamodb.GetItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.UserTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: strconv.Itoa(id)},
+			"PK": &types.AttributeValueMemberS{Value: id},
 		},
 	})
 	if err != nil {
@@ -87,7 +86,7 @@ func (r repository) UpdateUser(user *User) (*User, error) {
 	item, err := r.db.DB().UpdateItem(context.Background(), &dynamodb.UpdateItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.UserTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: strconv.FormatInt(user.Id, 10)},
+			"PK": &types.AttributeValueMemberS{Value: user.Id},
 		},
 		ExpressionAttributeNames:  exp.Names(),
 		ExpressionAttributeValues: exp.Values(),
@@ -106,11 +105,11 @@ func (r repository) UpdateUser(user *User) (*User, error) {
 	return user, nil
 }
 
-func (r repository) ListUsers(userIds []int64) ([]*User, error) {
+func (r repository) ListUsers(userIds []string) ([]*User, error) {
 	keys := make([]map[string]types.AttributeValue, len(userIds))
 	for i, v := range userIds {
 		keys[i] = map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberS{Value: strconv.FormatInt(v, 10)},
+			"PK": &types.AttributeValueMemberS{Value: v},
 		}
 	}
 
@@ -135,11 +134,11 @@ func (r repository) ListUsers(userIds []int64) ([]*User, error) {
 	return listUser, nil
 }
 
-func (r repository) DeleteUser(id int) error {
+func (r repository) DeleteUser(id string) error {
 	_, err := r.db.DB().DeleteItem(context.Background(), &dynamodb.DeleteItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.UserTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: strconv.Itoa(id)},
+			"PK": &types.AttributeValueMemberN{Value: id},
 		},
 	})
 	return err

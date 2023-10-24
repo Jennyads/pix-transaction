@@ -23,7 +23,7 @@ func (s service) CreateKey(key *Key) (*Key, error) {
 }
 
 func (s service) UpdateKey(key *Key) (*Key, error) {
-	if key.Id == 0 {
+	if key.Id == "" {
 		return nil, errors.New("id is required")
 	}
 	key.UpdatedAt = time.Now()
@@ -37,10 +37,10 @@ func (s service) ListKey(req *ListKeyRequest) ([]*Key, error) {
 	return s.repo.ListKey(req.keyIDs)
 }
 func (s service) DeleteKey(request *KeyRequest) error {
-	if request.keyID == 0 {
+	if request.keyID == "" {
 		return errors.New("account_id is required")
 	}
-	return s.repo.DeleteKey(int(request.keyID))
+	return s.repo.DeleteKey(request.keyID)
 }
 
 func NewService(repo Repository) Service {

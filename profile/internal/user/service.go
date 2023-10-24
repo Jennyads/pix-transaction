@@ -23,7 +23,7 @@ func (s service) CreateUser(user *User) (*User, error) {
 }
 
 func (s service) FindUserById(userRequest *UserRequest) (*User, error) {
-	return s.repo.FindUserById(int(userRequest.UserID))
+	return s.repo.FindUserById(userRequest.UserID)
 }
 
 func (s service) UpdateUser(user *User) (*User, error) {
@@ -36,7 +36,7 @@ func (s service) ListUsers(listUsers *ListUserRequest) ([]*User, error) {
 }
 
 func (s service) DeleteUser(request *UserRequest) error {
-	return s.repo.DeleteUser(int(request.UserID))
+	return s.repo.DeleteUser(request.UserID)
 }
 func NewService(repo Repository) Service {
 	return &service{

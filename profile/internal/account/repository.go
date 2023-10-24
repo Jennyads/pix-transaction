@@ -8,15 +8,14 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"profile/internal/cfg"
 	"profile/platform/dynamo"
-	"strconv"
 )
 
 type Repository interface {
 	CreateAccount(account *Account) (*Account, error)
-	FindAccountById(id int) (*Account, error)
+	FindAccountById(id string) (*Account, error)
 	UpdateAccount(account *Account) (*Account, error)
-	ListAccount(accountIDs []int64) ([]*Account, error)
-	DeleteAccount(id int) error
+	ListAccount(accountIDs []string) ([]*Account, error)
+	DeleteAccount(id string) error
 }
 
 type repository struct {
@@ -46,11 +45,11 @@ func (r repository) CreateAccount(account *Account) (*Account, error) {
 	return account, nil
 }
 
-func (r repository) FindAccountById(id int) (*Account, error) {
+func (r repository) FindAccountById(id string) (*Account, error) {
 	value, err := r.db.DB().GetItem(context.Background(), &dynamodb.GetItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: strconv.Itoa(id)},
+			"PK": &types.AttributeValueMemberN{Value: id},
 		},
 	})
 	if err != nil {
@@ -100,11 +99,11 @@ func (r repository) UpdateAccount(account *Account) (*Account, error) {
 	return nil, nil
 }
 
-func (r repository) ListAccount(ids []int64) ([]*Account, error) {
+func (r repository) ListAccount(ids []string) ([]*Account, error) {
 	keys := make([]map[string]types.AttributeValue, len(ids))
 	for i, v := range ids {
 		keys[i] = map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberS{Value: strconv.FormatInt(v, 10)},
+			"PK": &types.AttributeValueMemberS{Value: v},
 		}
 	}
 
@@ -129,11 +128,11 @@ func (r repository) ListAccount(ids []int64) ([]*Account, error) {
 	return listAccount, nil
 }
 
-func (r repository) DeleteAccount(id int) error {
+func (r repository) DeleteAccount(id string) error {
 	_, err := r.db.DB().DeleteItem(context.Background(), &dynamodb.DeleteItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: strconv.Itoa(id)},
+			"PK": &types.AttributeValueMemberN{Value: id},
 		},
 	})
 	return err

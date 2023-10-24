@@ -23,7 +23,7 @@ type ProfileServer struct {
 }
 
 func (p ProfileServer) CreateAccount(ctx context.Context, ac *v1.Account) (*v1.Account, error) {
-	if ac.UserId == 0 {
+	if ac.UserId == "" {
 		return nil, errors.New("user_id is required")
 	}
 
@@ -39,7 +39,7 @@ func (p ProfileServer) CreateAccount(ctx context.Context, ac *v1.Account) (*v1.A
 }
 
 func (p ProfileServer) FindAccount(ctx context.Context, ac *v1.Account) (*v1.Account, error) {
-	if ac.UserId == 0 {
+	if ac.UserId == "" {
 		return nil, errors.New("id is required")
 	}
 
@@ -53,7 +53,7 @@ func (p ProfileServer) FindAccount(ctx context.Context, ac *v1.Account) (*v1.Acc
 	return nil, nil
 }
 func (p ProfileServer) UpdateAccount(ctx context.Context, request *v1.Account) (*empty.Empty, error) {
-	if request.UserId == 0 {
+	if request.UserId == "" {
 		return nil, errors.New("id is required")
 	}
 	_, err := p.account.UpdateAccount(ctx, account.ProtoToAccount(request))
@@ -81,7 +81,7 @@ func (p ProfileServer) ListAccounts(ctx context.Context, request *v1.ListAccount
 }
 
 func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountRequest) (*empty.Empty, error) {
-	if request.AccountId == 0 {
+	if request.AccountId == "" {
 		return nil, errors.New("account_id is required")
 	}
 	err := p.account.DeleteAccount(ctx, account.ProtoToAccountRequest(request))
@@ -147,7 +147,7 @@ func (p ProfileServer) ListUsers(ctx context.Context, request *v1.ListUserReques
 }
 
 func (p ProfileServer) DeleteUser(ctx context.Context, request *v1.UserRequest) (*empty.Empty, error) {
-	if request.Id == 0 {
+	if request.Id == "" {
 		return nil, errors.New("account_id is required")
 	}
 	err := p.user.DeleteUser(user.ProtoToUserRequest(request))

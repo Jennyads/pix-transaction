@@ -21,11 +21,11 @@ message ListUser{
 }
 
 message UserRequest{
-    int64 id = 1;
+    string id = 1;
 }
 
 message ListUserRequest{
-    repeated int64 id = 1;
+    repeated string id = 1;
 }
 
 service UserService {
@@ -46,7 +46,7 @@ service UserService {
 }
 
 message Account{
-    int64 user_id = 1;
+    string user_id = 1;
     double balance = 2;
     string agency = 3;
     string bank = 4;
@@ -60,11 +60,11 @@ message ListAccount{
 }
 
 message AccountRequest{
-    int64 account_id = 1;
+    string account_id = 1;
 }
 
 message ListAccountRequest{
-    repeated int64 account_id = 1;
+    repeated string account_id = 1;
 }
 
 service AccountService {
@@ -91,15 +91,15 @@ enum Type {
 
 }
 message Key {
-    int64 account_id = 1;
+    string account_id = 1;
     string name = 2;
     Type type = 3;
 }
 message ListKeyRequest{
-    repeated int64 key_id = 1;
+    repeated string key_id = 1;
 }
 message KeyRequest{
-    int64 key_id = 1;
+    string key_id = 1;
 }
 
 message ListKeys{

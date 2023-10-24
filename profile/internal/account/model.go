@@ -6,8 +6,8 @@ import (
 )
 
 type Account struct {
-	Id        int64 `dynamodbav:"PK"`
-	UserID    int64 `dynamodbav:"SK"`
+	Id        string `dynamodbav:"PK"`
+	UserID    string `dynamodbav:"SK"`
 	Balance   float64
 	Agency    string
 	Bank      string
@@ -18,11 +18,11 @@ type Account struct {
 }
 
 type AccountRequest struct {
-	AccountID int64
+	AccountID string
 }
 
 type ListAccountRequest struct {
-	AccountIDs []int64
+	AccountIDs []string
 }
 
 func ProtoToAccount(account *pb.Account) *Account {

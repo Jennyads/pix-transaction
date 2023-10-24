@@ -6,7 +6,7 @@ import (
 )
 
 type User struct {
-	Id        int64 `dynamodbav:"PK"`
+	Id        string
 	Name      string
 	Email     string
 	Address   string
@@ -19,11 +19,11 @@ type User struct {
 }
 
 type UserRequest struct {
-	UserID int64
+	UserID string
 }
 
 type ListUserRequest struct {
-	UserIDs []int64
+	UserIDs []string
 }
 
 func ProtoToUser(user *pb.User) *User {
