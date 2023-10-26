@@ -6,15 +6,14 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"strconv"
 	"transaction/internal/cfg"
 	"transaction/platform/dynamo"
 )
 
 type Repository interface {
 	CreateTransaction(transaction *Transaction) error
-	FindTransaction(id int) (*Transaction, error)
-	ListTransactions(ids []int64) ([]*Transaction, error)
+	FindTransaction(id string) (*Transaction, error)
+	ListTransactions(ids []string) ([]*Transaction, error)
 }
 
 type repository struct {
@@ -44,11 +43,11 @@ func (r repository) CreateTransaction(transaction *Transaction) error {
 	return nil
 }
 
-func (r repository) FindTransaction(id int) (*Transaction, error) {
+func (r repository) FindTransaction(id string) (*Transaction, error) {
 	value, err := r.db.DB().GetItem(context.Background(), &dynamodb.GetItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.TransactionTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: strconv.Itoa(id)},
+			"PK": &types.AttributeValueMemberN{Value: id},
 		},
 	})
 	if err != nil {
@@ -63,11 +62,11 @@ func (r repository) FindTransaction(id int) (*Transaction, error) {
 	return &transaction, nil
 }
 
-func (r repository) ListTransactions(ids []int64) ([]*Transaction, error) {
+func (r repository) ListTransactions(ids []string) ([]*Transaction, error) {
 	keys := make([]map[string]types.AttributeValue, len(ids))
 	for i, v := range ids {
 		keys[i] = map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberS{Value: strconv.FormatInt(v, 10)},
+			"PK": &types.AttributeValueMemberS{Value: v},
 		}
 	}
 

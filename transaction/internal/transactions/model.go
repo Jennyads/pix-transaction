@@ -6,9 +6,9 @@ import (
 )
 
 type Transaction struct {
-	PK          int
-	AccountID   int `dynamodbav:"SK"`
-	Receiver    int
+	ID          string
+	AccountID   string `dynamodbav:"SK"`
+	Receiver    int64
 	Value       float64
 	Status      string
 	CreatedAt   time.Time
@@ -16,11 +16,11 @@ type Transaction struct {
 }
 
 type TransactionRequest struct {
-	transactionID int
+	transactionID string
 }
 
 type ListTransactionRequest struct {
-	transactionIDs []int64
+	transactionIDs []string
 }
 
 type ListTransaction struct {
@@ -29,7 +29,7 @@ type ListTransaction struct {
 
 func ProtoToTransactionRequest(request *pb.TransactionRequest) *TransactionRequest {
 	return &TransactionRequest{
-		transactionID: int(request.TransactionId),
+		transactionID: request.TransactionId,
 	}
 }
 
@@ -41,8 +41,8 @@ func ProtoToListTransactionRequest(request *pb.ListTransactionRequest) *ListTran
 
 func ProtoToTransaction(transaction *pb.Transaction) *Transaction {
 	return &Transaction{
-		AccountID: int(transaction.AccountId),
-		Receiver:  int(transaction.Receiver),
+		AccountID: transaction.AccountId,
+		Receiver:  transaction.Receiver,
 		Value:     transaction.Value,
 		Status:    transaction.Status,
 	}
