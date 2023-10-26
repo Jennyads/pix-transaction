@@ -6,6 +6,8 @@ services:
     ports:
       - "8000:8000"
     command: -jar DynamoDBLocal.jar -sharedDb
+    volumes:
+      - dynamodb_data:/home/dynamodblocal/data
 
   dynamodb-admin:
     image: aaronshaf/dynamodb-admin

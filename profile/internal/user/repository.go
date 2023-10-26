@@ -71,7 +71,7 @@ func (r repository) UpdateUser(user *User) (*User, error) {
 	upd := expression.
 		Set(expression.Name("Name"), expression.Value(user.Name)).
 		Set(expression.Name("Email"), expression.Value(user.Email)).
-		Set(expression.Name("Adress"), expression.Value(user.Address)).
+		Set(expression.Name("Address"), expression.Value(user.Address)).
 		Set(expression.Name("Phone"), expression.Value(user.Phone)).
 		Set(expression.Name("Birthday"), expression.Value(user.Birthday))
 
