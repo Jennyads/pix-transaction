@@ -31,8 +31,9 @@ func (r repository) CreateKey(key *Key) (*Key, error) {
 	}
 
 	item, err := r.db.DB().PutItem(context.Background(), &dynamodb.PutItemInput{
-		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
-		Item:      value,
+		TableName:           aws.String(r.cfg.DynamodbConfig.KeyTable),
+		Item:                value,
+		ConditionExpression: aws.String("attribute_not_exists(PK) and attribute_not_exists(SK)"),
 	})
 	if err != nil {
 		return nil, err
@@ -116,8 +117,9 @@ func (r repository) DeleteKey(id string) error {
 	return err
 }
 
-func NewRepository(db dynamo.Client) Repository {
+func NewRepository(db dynamo.Client, config *cfg.Config) Repository {
 	return &repository{
-		db: db,
+		db:  db,
+		cfg: config,
 	}
 }

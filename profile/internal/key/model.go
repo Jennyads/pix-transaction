@@ -40,6 +40,14 @@ func ProtoToKey(key *pb.Key) *Key {
 	}
 }
 
+func KeyToProto(key *Key) *pb.Key {
+	return &pb.Key{
+		AccountId: key.AccountID,
+		Name:      key.Name,
+		Type:      pb.Type(pb.Type_value[string(key.Type)]),
+	}
+}
+
 func ProtoToKeyListRequest(request *pb.ListKeyRequest) *ListKeyRequest {
 	return &ListKeyRequest{
 		keyIDs: request.KeyId,

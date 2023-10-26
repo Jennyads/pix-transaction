@@ -2,6 +2,7 @@ package keys
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -19,6 +20,7 @@ type service struct {
 func (s service) CreateKey(key *Key) (*Key, error) {
 	key.CreatedAt = time.Now()
 	key.UpdatedAt = time.Now()
+	key.Id = uuid.New().String()
 	return s.repo.CreateKey(key)
 }
 
