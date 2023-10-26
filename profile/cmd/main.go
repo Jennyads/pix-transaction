@@ -7,7 +7,7 @@ import (
 	"net"
 	"profile/internal/account"
 	"profile/internal/cfg"
-	"profile/internal/keys"
+	"profile/internal/key"
 	"profile/internal/user"
 	"profile/platform/dynamo"
 	v1 "profile/proto/v1"
@@ -32,13 +32,13 @@ func main() {
 	db := dynamo.NewClient().Connect()
 
 	// repositories
-	userRepository := user.NewRepository(db)
-	keyRepository := keys.NewRepository(db)
+	userRepository := user.NewRepository(db, config)
+	keyRepository := key.NewRepository(db, config)
 	accountRepository := account.NewRepository(db, config)
 
 	// services
 	userService := user.NewService(userRepository)
-	keyService := keys.NewService(keyRepository)
+	keyService := key.NewService(keyRepository)
 	accountService := account.NewService(accountRepository)
 
 	//server

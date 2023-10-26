@@ -2,6 +2,7 @@ package account
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -20,6 +21,7 @@ type service struct {
 func (s service) CreateAccount(ctx context.Context, account *Account) (*Account, error) {
 	account.CreatedAt = time.Now()
 	account.UpdatedAt = time.Now()
+	account.Id = uuid.New().String()
 	return s.repo.CreateAccount(account)
 }
 

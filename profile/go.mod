@@ -10,6 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression v1.4.70
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.23.0
 	github.com/golang/protobuf v1.5.3
+	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.5.1
 	google.golang.org/grpc v1.58.2
 	google.golang.org/protobuf v1.31.0

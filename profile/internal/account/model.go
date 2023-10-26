@@ -35,6 +35,16 @@ func ProtoToAccount(account *pb.Account) *Account {
 	}
 }
 
+func ToProto(account *Account) *pb.Account {
+	return &pb.Account{
+		UserId:  account.UserID,
+		Balance: account.Balance,
+		Agency:  account.Agency,
+		Bank:    account.Bank,
+		Key:     account.Key,
+	}
+}
+
 func ProtoToAccountRequest(request *pb.AccountRequest) *AccountRequest {
 	return &AccountRequest{
 		AccountID: request.AccountId,

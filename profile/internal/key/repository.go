@@ -1,4 +1,4 @@
-package keys
+package key
 
 import (
 	"context"
@@ -59,7 +59,7 @@ func (r repository) UpdateKey(key *Key) (*Key, error) {
 	item, err := r.db.DB().UpdateItem(context.Background(), &dynamodb.UpdateItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: key.Id},
+			"PK": &types.AttributeValueMemberS{Value: key.Id},
 		},
 		ExpressionAttributeNames:  exp.Names(),
 		ExpressionAttributeValues: exp.Values(),
@@ -111,7 +111,7 @@ func (r repository) DeleteKey(id string) error {
 	_, err := r.db.DB().DeleteItem(context.Background(), &dynamodb.DeleteItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: id},
+			"PK": &types.AttributeValueMemberS{Value: id},
 		},
 	})
 	return err

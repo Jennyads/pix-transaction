@@ -1,12 +1,13 @@
 package user
 
 import (
+	"google.golang.org/protobuf/types/known/timestamppb"
 	pb "profile/proto/v1"
 	"time"
 )
 
 type User struct {
-	Id        string
+	Id        string `dynamodbav:"PK"`
 	Name      string
 	Email     string
 	Address   string
@@ -36,6 +37,18 @@ func ProtoToUser(user *pb.User) *User {
 		Birthday: user.Birthday.AsTime(),
 	}
 }
+
+func ToProto(user *User) *pb.User {
+	return &pb.User{
+		Name:     user.Name,
+		Email:    user.Email,
+		Address:  user.Address,
+		Cpf:      user.Cpf,
+		Phone:    user.Phone,
+		Birthday: timestamppb.New(user.Birthday),
+	}
+}
+
 func ProtoToUserRequest(request *pb.UserRequest) *UserRequest {
 	return &UserRequest{
 		UserID: request.Id,

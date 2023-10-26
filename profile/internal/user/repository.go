@@ -31,15 +31,11 @@ func (r repository) CreateUser(user *User) (*User, error) {
 		return nil, err
 	}
 
-	item, err := r.db.DB().PutItem(context.Background(), &dynamodb.PutItemInput{
-		TableName: aws.String(r.cfg.DynamodbConfig.UserTable),
-		Item:      value,
+	_, err = r.db.DB().PutItem(context.Background(), &dynamodb.PutItemInput{
+		TableName:           aws.String(r.cfg.DynamodbConfig.UserTable),
+		Item:                value,
+		ConditionExpression: aws.String("attribute_not_exists(PK)"),
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	err = attributevalue.UnmarshalMap(item.Attributes, user)
 	if err != nil {
 		return nil, err
 	}
@@ -138,14 +134,15 @@ func (r repository) DeleteUser(id string) error {
 	_, err := r.db.DB().DeleteItem(context.Background(), &dynamodb.DeleteItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.UserTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: id},
+			"PK": &types.AttributeValueMemberS{Value: id},
 		},
 	})
 	return err
 }
 
-func NewRepository(db dynamo.Client) Repository {
+func NewRepository(db dynamo.Client, config *cfg.Config) Repository {
 	return &repository{
-		db: db,
+		db:  db,
+		cfg: config,
 	}
 }

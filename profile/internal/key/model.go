@@ -1,4 +1,4 @@
-package keys
+package key
 
 import (
 	pb "profile/proto/v1"
@@ -40,7 +40,7 @@ func ProtoToKey(key *pb.Key) *Key {
 	}
 }
 
-func KeyToProto(key *Key) *pb.Key {
+func ToProto(key *Key) *pb.Key {
 	return &pb.Key{
 		AccountId: key.AccountID,
 		Name:      key.Name,

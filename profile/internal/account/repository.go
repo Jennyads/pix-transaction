@@ -2,8 +2,10 @@ package account
 
 import (
 	"context"
+	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"profile/internal/cfg"
@@ -30,8 +32,9 @@ func (r repository) CreateAccount(account *Account) (*Account, error) {
 	}
 
 	item, err := r.db.DB().PutItem(context.Background(), &dynamodb.PutItemInput{
-		TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
-		Item:      value,
+		TableName:           aws.String(r.cfg.DynamodbConfig.AccountTable),
+		Item:                value,
+		ConditionExpression: aws.String("attribute_not_exists(PK) and attribute_not_exists(SK)"),
 	})
 	if err != nil {
 		return nil, err
@@ -49,7 +52,7 @@ func (r repository) FindAccountById(id string) (*Account, error) {
 	value, err := r.db.DB().GetItem(context.Background(), &dynamodb.GetItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: id},
+			"PK": &types.AttributeValueMemberS{Value: id},
 		},
 	})
 	if err != nil {
@@ -65,38 +68,33 @@ func (r repository) FindAccountById(id string) (*Account, error) {
 }
 
 func (r repository) UpdateAccount(account *Account) (*Account, error) {
+	upd := expression.
+		Set(expression.Name("Agency"), expression.Value(account.Agency)).
+		Set(expression.Name("Type"), expression.Value(account.Bank))
 
-	//upd := expression.
-	//	Set(expression.Name("Status"), expression.Value(elem.Status)).
-	//	Set(expression.Name("UpdateAt"), expression.Value(elem.UpdateAt)).
-	//	Set(expression.Name("Attempts"), expression.Value(elem.Attempts)).
-	//	Set(expression.Name("TransactionId"), expression.Value(elem.TransactionId))
-	//
-	//exp, err := expression.NewBuilder().WithUpdate(upd).Build()
-	//if err != nil {
-	//	return nil, errors.New("failed to build expression")
-	//}
-	//item, err := r.db.DB().UpdateItem(context.Background(), &dynamodb.UpdateItemInput{
-	//	TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
-	//	Key: map[string]types.AttributeValue{
-	//		"PK": &types.AttributeValueMemberN{Value: strconv.FormatInt(account.Id, 10)},
-	//	},
-	//	ExpressionAttributeNames:  exp.Names(),
-	//	ExpressionAttributeValues: exp.Values(),
-	//	UpdateExpression:          exp.Update(),
-	//	ReturnValues:              types.ReturnValueAllNew,
-	//})
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//err = attributevalue.UnmarshalMap(item.Attributes, account)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//return account, nil
-	return nil, nil
+	exp, err := expression.NewBuilder().WithUpdate(upd).Build()
+	if err != nil {
+		return nil, errors.New("failed to build expression")
+	}
+	item, err := r.db.DB().UpdateItem(context.Background(), &dynamodb.UpdateItemInput{
+		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{Value: account.Id},
+		},
+		ExpressionAttributeNames:  exp.Names(),
+		ExpressionAttributeValues: exp.Values(),
+		UpdateExpression:          exp.Update(),
+		ReturnValues:              types.ReturnValueAllNew,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = attributevalue.UnmarshalMap(item.Attributes, account)
+	if err != nil {
+		return nil, err
+	}
+	return account, nil
 }
 
 func (r repository) ListAccount(ids []string) ([]*Account, error) {
@@ -132,7 +130,7 @@ func (r repository) DeleteAccount(id string) error {
 	_, err := r.db.DB().DeleteItem(context.Background(), &dynamodb.DeleteItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
 		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberN{Value: id},
+			"PK": &types.AttributeValueMemberS{Value: id},
 		},
 	})
 	return err

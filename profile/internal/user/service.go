@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -19,6 +20,7 @@ type service struct {
 func (s service) CreateUser(user *User) (*User, error) {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
+	user.Id = uuid.New().String()
 	return s.repo.CreateUser(user)
 }
 
