@@ -91,8 +91,9 @@ func (r repository) ListTransactions(ids []string) ([]*Transaction, error) {
 	return listTransaction, nil
 }
 
-func NewRepository(db dynamo.Client) Repository {
+func NewRepository(db dynamo.Client, config *cfg.Config) Repository {
 	return &repository{
-		db: db,
+		db:  db,
+		cfg: config,
 	}
 }

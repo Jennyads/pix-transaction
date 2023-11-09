@@ -1,6 +1,9 @@
 package kafka
 
-import "github.com/segmentio/kafka-go"
+import (
+	"github.com/segmentio/kafka-go"
+	"os"
+)
 
 type Client interface {
 	Connect() Client
@@ -19,7 +22,11 @@ func (c *client) Close() {
 }
 
 func (c *client) Connect() Client {
-	conn, err := kafka.Dial("tcp", "localhost:9092")
+	kafkaBrokers := os.Getenv("KAFKA_ADVERTISED_LISTENERS")
+	if kafkaBrokers == "" {
+		kafkaBrokers = "localhost:9092"
+	}
+	conn, err := kafka.Dial("tcp", kafkaBrokers)
 	if err != nil {
 		panic(err.Error())
 	}
