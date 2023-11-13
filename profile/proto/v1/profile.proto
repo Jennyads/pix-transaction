@@ -119,3 +119,29 @@ service KeysService {
     }
 
 }
+
+message PixTransaction {
+    string id = 1;
+    string user_id = 2;
+    string key = 3;
+    double amount = 4;
+    google.protobuf.Timestamp hour  = 5;
+    string status = 6;
+}
+
+message CreatePixTransactionRequest {
+    PixTransaction pix_transaction = 1;
+}
+
+message ListPixRequest {
+    repeated string id = 1;
+}
+
+message ListPix {
+    repeated PixTransaction pix_transactions = 1;
+}
+
+service PixTransactionService {
+    rpc CreatePixTransaction(CreatePixTransactionRequest) returns (PixTransaction) {}
+    rpc ListPixTransactions(ListPixRequest) returns (ListPix){}
+}
