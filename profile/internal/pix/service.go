@@ -2,7 +2,6 @@ package pix
 
 import (
 	"errors"
-	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/google/uuid"
 	"time"
 )
@@ -17,9 +16,7 @@ type service struct {
 
 func (s service) CreatePixTransaction(pixTransaction *PixTransaction) (*PixTransaction, error) {
 	pixTransaction.ID = uuid.New().String()
-	pixTransaction.Timestamp = &timestamp.Timestamp{
-		Seconds: time.Now().Unix(),
-	}
+	pixTransaction.Hour = time.Now()
 	return s.repo.CreatePixTransaction(pixTransaction)
 }
 

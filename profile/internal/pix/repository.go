@@ -66,6 +66,7 @@ func (r repository) ListPixTransactions(request *ListPixTransactionsRequest) ([]
 	}
 	return listPixTransaction, nil
 }
+
 func NewRepository(db dynamo.Client, config *cfg.Config) Repository {
 	return &repository{
 		db:  db,

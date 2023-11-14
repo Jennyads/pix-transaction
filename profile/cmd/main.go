@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/golang/protobuf/proto"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"profile/internal/cfg"
 	"profile/internal/event"
 	"profile/internal/key"
+	"profile/internal/pix"
 	"profile/internal/user"
 	"profile/platform/dynamo"
 	"profile/platform/kafka"
@@ -49,6 +51,22 @@ func main() {
 	eventTransaction := event.NewEvent(kafkaConn, "transaction_events_topic",
 		event.WithAttempts(4), event.WithBroker("localhost:9094"))
 	eventTransaction.Publish(context.Background(), []byte("test"))
+
+	//pix kafka
+	repo := pix.NewRepository(db, config)
+	dynamicData, err := repo.CreatePixTransaction(&pix.PixTransaction{})
+	if err != nil {
+		log.Fatalf("Failed to create PIX transaction: %v", err)
+	}
+	protoPix := pix.ToProto(dynamicData)
+	protoPixBytes, err := proto.Marshal(protoPix)
+	if err != nil {
+		log.Fatalf("Failed to marshal PIX transaction to bytes: %v", err)
+	}
+	err = eventTransaction.Publish(context.Background(), protoPixBytes)
+	if err != nil {
+		log.Fatalf("Failed to publish PIX transaction to Kafka: %v", err)
+	}
 
 	//server
 	profileServer := NewProfileService(userService, accountService, keyService)

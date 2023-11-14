@@ -123,10 +123,11 @@ service KeysService {
 message PixTransaction {
     string id = 1;
     string user_id = 2;
-    string key = 3;
-    double amount = 4;
-    google.protobuf.Timestamp hour  = 5;
-    string status = 6;
+    string SenderKey = 3;
+    string ReceiverKey = 4;
+    double amount = 5;
+    google.protobuf.Timestamp hour  = 6;
+    string status = 7;
 }
 
 message CreatePixTransactionRequest {
