@@ -1,6 +1,9 @@
 package cfg
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type DynamodbConfig struct {
 	AccountTable string
@@ -9,17 +12,33 @@ type DynamodbConfig struct {
 	PixTable     string
 }
 
-type Config struct {
-	DynamodbConfig DynamodbConfig
+type KafkaConfig struct {
+	Brokers []string
 }
 
-func Get() (*Config, error) {
+// Config is the struct that holds all the configuration for the application
+type Config struct {
+	DynamodbConfig DynamodbConfig
+	KafkaConfig    KafkaConfig
+}
+
+func Load() (*Config, error) {
 	return &Config{
 		DynamodbConfig{
-			AccountTable: os.Getenv("ACCOUNT_TABLE"),
-			UserTable:    os.Getenv("USER_TABLE"),
-			KeyTable:     os.Getenv("KEY_TABLE"),
-			PixTable:     os.Getenv("PIX_TABLE"),
+			AccountTable: Getenv("ACCOUNT_TABLE", "account"),
+			UserTable:    Getenv("USER_TABLE", "user"),
+			KeyTable:     Getenv("KEY_TABLE", "key"),
+			PixTable:     Getenv("PIX_TABLE", "pix"),
+		},
+		KafkaConfig{
+			Brokers: strings.Split(Getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"), ","),
 		},
 	}, nil
+}
+
+func Getenv(key, fallback string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return fallback
 }

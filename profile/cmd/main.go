@@ -11,7 +11,6 @@ import (
 	"profile/internal/cfg"
 	"profile/internal/event"
 	"profile/internal/key"
-	"profile/internal/pix"
 	"profile/internal/user"
 	"profile/platform/dynamo"
 	"profile/platform/kafka"
@@ -24,7 +23,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	config, err := cfg.Get()
+	config, err := cfg.Load()
 	if err != nil {
 		return
 	}
@@ -53,12 +52,12 @@ func main() {
 	eventTransaction.Publish(context.Background(), []byte("test"))
 
 	//pix kafka
-	repo := pix.NewRepository(db, config)
-	dynamicData, err := repo.CreatePixTransaction(&pix.PixTransaction{})
+	repo := transaction.NewRepository(db, config)
+	dynamicData, err := repo.CreatePixTransaction(&transaction.PixTransaction{})
 	if err != nil {
 		log.Fatalf("Failed to create PIX transaction: %v", err)
 	}
-	protoPix := pix.ToProto(dynamicData)
+	protoPix := transaction.ToProto(dynamicData)
 	protoPixBytes, err := proto.Marshal(protoPix)
 	if err != nil {
 		log.Fatalf("Failed to marshal PIX transaction to bytes: %v", err)

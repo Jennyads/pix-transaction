@@ -1,4 +1,4 @@
-package pix
+package transaction
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-func ValidatePixTransaction(pixTransaction *Transaction) error {
+func ValidatePixTransaction(pixTransaction *Pix) error {
 	validate := validator.New()
 	if err := validate.RegisterValidation("validatePixKey", validatePixKey); err != nil {
 		return err

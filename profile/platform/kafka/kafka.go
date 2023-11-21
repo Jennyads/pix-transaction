@@ -2,7 +2,7 @@ package kafka
 
 import (
 	"github.com/segmentio/kafka-go"
-	"os"
+	"profile/internal/cfg"
 )
 
 type Client interface {
@@ -10,7 +10,8 @@ type Client interface {
 }
 
 type client struct {
-	conn *kafka.Conn
+	conn   *kafka.Conn
+	config *cfg.Config
 }
 
 func (c *client) Conn() *kafka.Conn {
@@ -22,11 +23,7 @@ func (c *client) Close() {
 }
 
 func (c *client) Connect() Client {
-	kafkaBrokers := os.Getenv("KAFKA_ADVERTISED_LISTENERS")
-	if kafkaBrokers == "" {
-		kafkaBrokers = "localhost:9092"
-	}
-	conn, err := kafka.Dial("tcp", kafkaBrokers)
+	conn, err := kafka.Dial("tcp", c.config.KafkaConfig.Brokers[0])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -34,6 +31,8 @@ func (c *client) Connect() Client {
 	return c
 }
 
-func NewClient() Client {
-	return &client{}
+func NewClient(config *cfg.Config) Client {
+	return &client{
+		config: config,
+	}
 }
