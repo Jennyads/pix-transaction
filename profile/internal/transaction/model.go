@@ -3,32 +3,28 @@ package pix
 import (
 	"time"
 
-	//account2 "profile/internal/account"
-	//user2 "profile/internal/user"
-	//key2 "profile/internal/key"
 	pb "profile/proto/v1"
 )
 
-//	type PixTransaction struct {
-//		ID        string
-//		UserID    user2.User
-//		AccountId account2.Account
-//		Key       key2.Key
-//		Amount    float64
-//		Timestamp *timestamp.Timestamp
-//		Status    string
-//	}
-
-type PixTransaction struct {
-	ID           string    `validate:"required"`
-	UserID       string    `validate:"required"`
-	AccountId    string    `validate:"required"`
-	SenderKey    string    `validate:"required,validatePixKey"`
-	RecipientKey string    `validate:"required,validatePixKey"`
-	Amount       float64   `validate:"required,gte=0,validateSenderBalance"`
-	Hour         time.Time `validate:"required"`
-	Status       string    `validate:"required"`
+type Transaction struct {
+	UserID    string
+	AccountId string
+	Key       string
+	Amount    float64
+	Date      time.Time
+	Status    string
 }
+
+//type PixTransaction struct {
+//	ID           string    `validate:"required"`
+//	UserID       string    `validate:"required"`
+//	AccountId    string    `validate:"required"`
+//	SenderKey    string    `validate:"required,validatePixKey"`
+//	RecipientKey string    `validate:"required,validatePixKey"`
+//	Amount       float64   `validate:"required,gte=0,validateSenderBalance"`
+//	Hour         time.Time `validate:"required"`
+//	Status       string    `validate:"required"`
+//}
 
 type CreatePixTransactionRequest struct {
 	PixTransaction *PixTransaction

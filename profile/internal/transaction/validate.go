@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-func ValidatePixTransaction(pixTransaction *PixTransaction) error {
+func ValidatePixTransaction(pixTransaction *Transaction) error {
 	validate := validator.New()
 	if err := validate.RegisterValidation("validatePixKey", validatePixKey); err != nil {
 		return err
@@ -26,7 +26,7 @@ func ValidatePixTransaction(pixTransaction *PixTransaction) error {
 func validatePixKey(fl validator.FieldLevel) bool {
 	pixKey := fl.Field().String()
 	switch {
-	case isValidEmail(pixKey):
+	case isValidEmail(pixKey), isValidPhoneNumber(pixKey), isValidCPF(pixKey), isValidRandomKey(pixKey):
 		return true
 	case isValidPhoneNumber(pixKey):
 		return true
@@ -35,7 +35,7 @@ func validatePixKey(fl validator.FieldLevel) bool {
 	case isValidRandomKey(pixKey):
 		return true
 	default:
-		panic("invalid pix key")
+		return false
 	}
 }
 
