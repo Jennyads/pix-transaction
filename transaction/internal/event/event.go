@@ -9,6 +9,7 @@ import (
 
 type Client interface {
 	Publish(ctx context.Context, payload []byte) error
+	RegisterHandler(ctx context.Context, topic string, handler Function) error
 }
 
 type Options func(*event)
@@ -24,6 +25,8 @@ func WithBroker(broker string) Options {
 		e.brokers = append(e.brokers, broker)
 	}
 }
+
+type Function func(ctx context.Context, payload []byte) ([]byte, error)
 
 type event struct {
 	topic       string
@@ -49,6 +52,10 @@ func (e *event) Publish(ctx context.Context, payload []byte) error {
 	if err = w.Close(); err != nil {
 		log.Print("failed to close writer:", err)
 	}
+	return nil
+}
+
+func (e *event) RegisterHandler(ctx context.Context, topic string, handler Function) error {
 	return nil
 }
 

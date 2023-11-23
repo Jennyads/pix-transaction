@@ -19,6 +19,7 @@ type Account struct {
 
 type AccountRequest struct {
 	AccountID string
+	UserID    string
 }
 
 type ListAccountRequest struct {
@@ -47,6 +48,7 @@ func ToProto(account *Account) *pb.Account {
 
 func ProtoToAccountRequest(request *pb.AccountRequest) *AccountRequest {
 	return &AccountRequest{
+		UserID:    request.UserId,
 		AccountID: request.AccountId,
 	}
 }

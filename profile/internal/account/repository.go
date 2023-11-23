@@ -17,7 +17,7 @@ type Repository interface {
 	FindAccountById(id string) (*Account, error)
 	UpdateAccount(account *Account) (*Account, error)
 	ListAccount(accountIDs []string) ([]*Account, error)
-	DeleteAccount(id string) error
+	DeleteAccount(id, userId string) error
 }
 
 type repository struct {
@@ -70,16 +70,17 @@ func (r repository) FindAccountById(id string) (*Account, error) {
 func (r repository) UpdateAccount(account *Account) (*Account, error) {
 	upd := expression.
 		Set(expression.Name("Agency"), expression.Value(account.Agency)).
-		Set(expression.Name("Type"), expression.Value(account.Bank))
+		Set(expression.Name("Bank"), expression.Value(account.Bank))
 
 	exp, err := expression.NewBuilder().WithUpdate(upd).Build()
 	if err != nil {
 		return nil, errors.New("failed to build expression")
 	}
 	item, err := r.db.DB().UpdateItem(context.Background(), &dynamodb.UpdateItemInput{
-		TableName: aws.String(r.cfg.DynamodbConfig.KeyTable),
+		TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
 		Key: map[string]types.AttributeValue{
 			"PK": &types.AttributeValueMemberS{Value: account.Id},
+			"SK": &types.AttributeValueMemberS{Value: account.UserID},
 		},
 		ExpressionAttributeNames:  exp.Names(),
 		ExpressionAttributeValues: exp.Values(),
@@ -126,11 +127,12 @@ func (r repository) ListAccount(ids []string) ([]*Account, error) {
 	return listAccount, nil
 }
 
-func (r repository) DeleteAccount(id string) error {
+func (r repository) DeleteAccount(id, userId string) error {
 	_, err := r.db.DB().DeleteItem(context.Background(), &dynamodb.DeleteItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
 		Key: map[string]types.AttributeValue{
 			"PK": &types.AttributeValueMemberS{Value: id},
+			"SK": &types.AttributeValueMemberS{Value: userId},
 		},
 	})
 	return err

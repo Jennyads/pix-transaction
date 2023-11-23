@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"log"
@@ -46,9 +45,8 @@ func main() {
 
 	//kafka
 	kafkaConn := kafka.NewClient(config).Connect()
-	eventTransaction := event.NewEvent(kafkaConn, "transaction_events_topic",
-		event.WithAttempts(4), event.WithBroker("localhost:9094"))
-	eventTransaction.Publish(context.Background(), []byte("test"))
+	_ = event.NewEvent(kafkaConn, "transaction_events_topic",
+		event.WithAttempts(4), event.WithBroker("localhost:9092"))
 
 	//server
 	profileServer := NewProfileService(userService, accountService, keyService)

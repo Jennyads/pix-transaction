@@ -64,14 +64,14 @@ func (p ProfileServer) UpdateAccount(ctx context.Context, request *v1.Account) (
 
 	toUpdate := account.ProtoToAccount(request)
 	toUpdate.Id = id
-	_, err := p.account.UpdateAccount(ctx, account.ProtoToAccount(request))
+	_, err := p.account.UpdateAccount(ctx, toUpdate)
 	if err != nil {
 		switch err {
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 	}
-	return nil, nil
+	return &empty.Empty{}, nil
 }
 
 func (p ProfileServer) ListAccounts(ctx context.Context, request *v1.ListAccountRequest) (*v1.ListAccount, error) {
@@ -93,8 +93,8 @@ func (p ProfileServer) ListAccounts(ctx context.Context, request *v1.ListAccount
 	return &v1.ListAccount{Account: findAccounts}, nil
 }
 func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountRequest) (*empty.Empty, error) {
-	if request == nil || request.AccountId == "" {
-		return nil, status.Error(codes.InvalidArgument, "account_id is required")
+	if request.UserId == "" || request.AccountId == "" {
+		return nil, status.Error(codes.InvalidArgument, "account_id and user_id are required")
 	}
 	err := p.account.DeleteAccount(ctx, account.ProtoToAccountRequest(request))
 	if err != nil {
@@ -103,7 +103,7 @@ func (p ProfileServer) DeleteAccount(ctx context.Context, request *v1.AccountReq
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 	}
-	return nil, nil
+	return &empty.Empty{}, nil
 }
 func (p ProfileServer) CreateUser(ctx context.Context, request *v1.User) (*empty.Empty, error) {
 	_, err := p.user.CreateUser(user.ProtoToUser(request))

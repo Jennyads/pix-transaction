@@ -46,10 +46,7 @@ func (s service) ListAccounts(ctx context.Context, listAccount *ListAccountReque
 }
 
 func (s service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
-	if request.AccountID == "" {
-		return errors.New("account_id is required")
-	}
-	return s.repo.DeleteAccount(request.AccountID)
+	return s.repo.DeleteAccount(request.AccountID, request.UserID)
 }
 
 func NewService(repo Repository) Service {

@@ -1,9 +1,12 @@
 package transactions
 
 import (
+	"context"
 	"errors"
 	"github.com/google/uuid"
+	"log"
 	"time"
+	"transaction/internal/event"
 )
 
 type Service interface {
@@ -13,7 +16,8 @@ type Service interface {
 }
 
 type service struct {
-	repo Repository
+	repo   Repository
+	events event.Client
 }
 
 func (s service) CreateTransaction(transaction *Transaction) (*Transaction, error) {
@@ -32,6 +36,19 @@ func (s service) ListTransactions(req *ListTransactionRequest) ([]*Transaction, 
 		return nil, errors.New("transaction_ids is required")
 	}
 	return s.repo.ListTransactions(req.transactionIDs)
+}
+
+func (s service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
+	log.Println(payload)
+	return nil, nil
+}
+
+func (s service) StartListener(ctx context.Context) error {
+	err := s.events.RegisterHandler(ctx, "pix-topic", s.Handler)
+	if err != nil {
+		return nil
+	}
+	return nil
 }
 
 func NewService(repo Repository) Service {

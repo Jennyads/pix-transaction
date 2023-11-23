@@ -12,3 +12,7 @@ type Pix struct {
 	Date      time.Time
 	Status    string
 }
+
+type PixEvent struct {
+	PixData *Pix
+}
