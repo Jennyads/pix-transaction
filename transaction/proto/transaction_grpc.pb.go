@@ -8,7 +8,6 @@ package transaction
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -29,7 +28,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TransactionServiceClient interface {
-	CreateTransaction(ctx context.Context, in *Transaction, opts ...grpc.CallOption) (*empty.Empty, error)
+	CreateTransaction(ctx context.Context, in *Transaction, opts ...grpc.CallOption) (*Transaction, error)
 	FindTransaction(ctx context.Context, in *TransactionRequest, opts ...grpc.CallOption) (*Transaction, error)
 	ListTransactions(ctx context.Context, in *ListTransactionRequest, opts ...grpc.CallOption) (*ListTransaction, error)
 }
@@ -42,8 +41,8 @@ func NewTransactionServiceClient(cc grpc.ClientConnInterface) TransactionService
 	return &transactionServiceClient{cc}
 }
 
-func (c *transactionServiceClient) CreateTransaction(ctx context.Context, in *Transaction, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *transactionServiceClient) CreateTransaction(ctx context.Context, in *Transaction, opts ...grpc.CallOption) (*Transaction, error) {
+	out := new(Transaction)
 	err := c.cc.Invoke(ctx, TransactionService_CreateTransaction_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -73,7 +72,7 @@ func (c *transactionServiceClient) ListTransactions(ctx context.Context, in *Lis
 // All implementations must embed UnimplementedTransactionServiceServer
 // for forward compatibility
 type TransactionServiceServer interface {
-	CreateTransaction(context.Context, *Transaction) (*empty.Empty, error)
+	CreateTransaction(context.Context, *Transaction) (*Transaction, error)
 	FindTransaction(context.Context, *TransactionRequest) (*Transaction, error)
 	ListTransactions(context.Context, *ListTransactionRequest) (*ListTransaction, error)
 	mustEmbedUnimplementedTransactionServiceServer()
@@ -83,7 +82,7 @@ type TransactionServiceServer interface {
 type UnimplementedTransactionServiceServer struct {
 }
 
-func (UnimplementedTransactionServiceServer) CreateTransaction(context.Context, *Transaction) (*empty.Empty, error) {
+func (UnimplementedTransactionServiceServer) CreateTransaction(context.Context, *Transaction) (*Transaction, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTransaction not implemented")
 }
 func (UnimplementedTransactionServiceServer) FindTransaction(context.Context, *TransactionRequest) (*Transaction, error) {

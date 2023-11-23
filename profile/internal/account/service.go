@@ -2,6 +2,7 @@ package account
 
 import (
 	"context"
+	"errors"
 	"github.com/google/uuid"
 	"time"
 )
@@ -30,15 +31,24 @@ func (s service) FindAccountById(ctx context.Context, request *AccountRequest) (
 }
 
 func (s service) UpdateAccount(ctx context.Context, account *Account) (*Account, error) {
+	if account.Id == "" {
+		return nil, errors.New("account_id is required")
+	}
 	account.UpdatedAt = time.Now()
 	return s.repo.UpdateAccount(account)
 }
 
 func (s service) ListAccounts(ctx context.Context, listAccount *ListAccountRequest) ([]*Account, error) {
+	if len(listAccount.AccountIDs) == 0 {
+		return nil, errors.New("account_ids is required")
+	}
 	return s.repo.ListAccount(listAccount.AccountIDs)
 }
 
 func (s service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
+	if request.AccountID == "" {
+		return errors.New("account_id is required")
+	}
 	return s.repo.DeleteAccount(request.AccountID)
 }
 

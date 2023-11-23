@@ -47,3 +47,12 @@ func ProtoToTransaction(transaction *pb.Transaction) *Transaction {
 		Status:    transaction.Status,
 	}
 }
+
+func ToProto(transaction *Transaction) *pb.Transaction {
+	return &pb.Transaction{
+		AccountId: transaction.AccountID,
+		Receiver:  transaction.Receiver,
+		Value:     transaction.Value,
+		Status:    transaction.Status,
+	}
+}

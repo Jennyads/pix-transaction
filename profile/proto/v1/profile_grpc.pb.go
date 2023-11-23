@@ -697,126 +697,89 @@ var KeysService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	PixTransactionService_CreatePixTransaction_FullMethodName = "/profile.proto.v2.PixTransactionService/CreatePixTransaction"
-	PixTransactionService_ListPixTransactions_FullMethodName  = "/profile.proto.v2.PixTransactionService/ListPixTransactions"
+	WebhookService_SetWebhook_FullMethodName = "/profile.proto.v2.WebhookService/SetWebhook"
 )
 
-// PixTransactionServiceClient is the client API for PixTransactionService service.
+// WebhookServiceClient is the client API for WebhookService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type PixTransactionServiceClient interface {
-	CreatePixTransaction(ctx context.Context, in *CreatePixTransactionRequest, opts ...grpc.CallOption) (*PixTransaction, error)
-	ListPixTransactions(ctx context.Context, in *ListPixRequest, opts ...grpc.CallOption) (*ListPix, error)
+type WebhookServiceClient interface {
+	SetWebhook(ctx context.Context, in *Webhook, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
-type pixTransactionServiceClient struct {
+type webhookServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewPixTransactionServiceClient(cc grpc.ClientConnInterface) PixTransactionServiceClient {
-	return &pixTransactionServiceClient{cc}
+func NewWebhookServiceClient(cc grpc.ClientConnInterface) WebhookServiceClient {
+	return &webhookServiceClient{cc}
 }
 
-func (c *pixTransactionServiceClient) CreatePixTransaction(ctx context.Context, in *CreatePixTransactionRequest, opts ...grpc.CallOption) (*PixTransaction, error) {
-	out := new(PixTransaction)
-	err := c.cc.Invoke(ctx, PixTransactionService_CreatePixTransaction_FullMethodName, in, out, opts...)
+func (c *webhookServiceClient) SetWebhook(ctx context.Context, in *Webhook, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, WebhookService_SetWebhook_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *pixTransactionServiceClient) ListPixTransactions(ctx context.Context, in *ListPixRequest, opts ...grpc.CallOption) (*ListPix, error) {
-	out := new(ListPix)
-	err := c.cc.Invoke(ctx, PixTransactionService_ListPixTransactions_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// PixTransactionServiceServer is the server API for PixTransactionService service.
-// All implementations must embed UnimplementedPixTransactionServiceServer
+// WebhookServiceServer is the server API for WebhookService service.
+// All implementations must embed UnimplementedWebhookServiceServer
 // for forward compatibility
-type PixTransactionServiceServer interface {
-	CreatePixTransaction(context.Context, *CreatePixTransactionRequest) (*PixTransaction, error)
-	ListPixTransactions(context.Context, *ListPixRequest) (*ListPix, error)
-	mustEmbedUnimplementedPixTransactionServiceServer()
+type WebhookServiceServer interface {
+	SetWebhook(context.Context, *Webhook) (*empty.Empty, error)
+	mustEmbedUnimplementedWebhookServiceServer()
 }
 
-// UnimplementedPixTransactionServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedPixTransactionServiceServer struct {
+// UnimplementedWebhookServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedWebhookServiceServer struct {
 }
 
-func (UnimplementedPixTransactionServiceServer) CreatePixTransaction(context.Context, *CreatePixTransactionRequest) (*PixTransaction, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreatePixTransaction not implemented")
+func (UnimplementedWebhookServiceServer) SetWebhook(context.Context, *Webhook) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetWebhook not implemented")
 }
-func (UnimplementedPixTransactionServiceServer) ListPixTransactions(context.Context, *ListPixRequest) (*ListPix, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListPixTransactions not implemented")
-}
-func (UnimplementedPixTransactionServiceServer) mustEmbedUnimplementedPixTransactionServiceServer() {}
+func (UnimplementedWebhookServiceServer) mustEmbedUnimplementedWebhookServiceServer() {}
 
-// UnsafePixTransactionServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to PixTransactionServiceServer will
+// UnsafeWebhookServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to WebhookServiceServer will
 // result in compilation errors.
-type UnsafePixTransactionServiceServer interface {
-	mustEmbedUnimplementedPixTransactionServiceServer()
+type UnsafeWebhookServiceServer interface {
+	mustEmbedUnimplementedWebhookServiceServer()
 }
 
-func RegisterPixTransactionServiceServer(s grpc.ServiceRegistrar, srv PixTransactionServiceServer) {
-	s.RegisterService(&PixTransactionService_ServiceDesc, srv)
+func RegisterWebhookServiceServer(s grpc.ServiceRegistrar, srv WebhookServiceServer) {
+	s.RegisterService(&WebhookService_ServiceDesc, srv)
 }
 
-func _PixTransactionService_CreatePixTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreatePixTransactionRequest)
+func _WebhookService_SetWebhook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Webhook)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PixTransactionServiceServer).CreatePixTransaction(ctx, in)
+		return srv.(WebhookServiceServer).SetWebhook(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PixTransactionService_CreatePixTransaction_FullMethodName,
+		FullMethod: WebhookService_SetWebhook_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PixTransactionServiceServer).CreatePixTransaction(ctx, req.(*CreatePixTransactionRequest))
+		return srv.(WebhookServiceServer).SetWebhook(ctx, req.(*Webhook))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PixTransactionService_ListPixTransactions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListPixRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PixTransactionServiceServer).ListPixTransactions(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PixTransactionService_ListPixTransactions_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PixTransactionServiceServer).ListPixTransactions(ctx, req.(*ListPixRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// PixTransactionService_ServiceDesc is the grpc.ServiceDesc for PixTransactionService service.
+// WebhookService_ServiceDesc is the grpc.ServiceDesc for WebhookService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var PixTransactionService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "profile.proto.v2.PixTransactionService",
-	HandlerType: (*PixTransactionServiceServer)(nil),
+var WebhookService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "profile.proto.v2.WebhookService",
+	HandlerType: (*WebhookServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreatePixTransaction",
-			Handler:    _PixTransactionService_CreatePixTransaction_Handler,
-		},
-		{
-			MethodName: "ListPixTransactions",
-			Handler:    _PixTransactionService_ListPixTransactions_Handler,
+			MethodName: "SetWebhook",
+			Handler:    _WebhookService_SetWebhook_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

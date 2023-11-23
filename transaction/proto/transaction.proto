@@ -1,7 +1,5 @@
 syntax = "proto3";
-
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 package profile.proto.v2;
 
@@ -30,7 +28,7 @@ message ListTransactionRequest {
 }
 
 service TransactionService {
-  rpc CreateTransaction(Transaction) returns (google.protobuf.Empty) {
+  rpc CreateTransaction(Transaction) returns (Transaction) {
   }
 
   rpc FindTransaction(TransactionRequest) returns (Transaction) {

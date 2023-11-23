@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"transaction/internal/transactions"
@@ -14,18 +13,18 @@ type TransactionServer struct {
 	v1.UnimplementedTransactionServiceServer
 }
 
-func (t TransactionServer) CreateTransaction(ctx context.Context, request *v1.Transaction) (*empty.Empty, error) {
-	err := t.transaction.CreateTransaction(transactions.ProtoToTransaction(request))
+func (t TransactionServer) CreateTransaction(ctx context.Context, request *v1.Transaction) (*v1.Transaction, error) {
+	created, err := t.transaction.CreateTransaction(transactions.ProtoToTransaction(request))
 	if err != nil {
 		switch err {
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 	}
-	return nil, nil
+	return transactions.ToProto(created), nil
 }
 
-func (t TransactionServer) FindTransaction(ctx context.Context, transaction *v1.TransactionRequest) (*v1.Transaction, error) {
+func (t TransactionServer) FindTransactionById(ctx context.Context, transaction *v1.TransactionRequest) (*v1.Transaction, error) {
 	_, err := t.transaction.FindTransaction(transactions.ProtoToTransactionRequest(transaction))
 	if err != nil {
 		switch err {

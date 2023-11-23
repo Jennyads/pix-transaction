@@ -20,7 +20,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	config, err := cfg.Get()
+	config, err := cfg.Load()
 	if err != nil {
 		return
 	}
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	//kafka
-	kafkaConn := kafka.NewClient().Connect()
+	kafkaConn := kafka.NewClient(config).Connect()
 
 	eventTransaction := event.NewEvent(kafkaConn, "transaction_events_topic",
 		event.WithAttempts(4), event.WithBroker("localhost:9094"))
