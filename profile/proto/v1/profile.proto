@@ -130,19 +130,10 @@ message PixTransaction {
     string status = 7;
 }
 
-message CreatePixTransactionRequest {
-    PixTransaction pix_transaction = 1;
+message Webhook {
+    string url = 1;
 }
 
-message ListPixRequest {
-    repeated string id = 1;
-}
-
-message ListPix {
-    repeated PixTransaction pix_transactions = 1;
-}
-
-service PixTransactionService {
-    rpc CreatePixTransaction(CreatePixTransactionRequest) returns (PixTransaction) {}
-    rpc ListPixTransactions(ListPixRequest) returns (ListPix){}
+service WebhookService {
+    rpc SetWebhook(Webhook) returns (google.protobuf.Empty) {}
 }

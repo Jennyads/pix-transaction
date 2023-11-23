@@ -47,5 +47,7 @@ func (t TransactionServer) ListTransactions(ctx context.Context, transaction *v1
 	return nil, nil
 }
 func newTransactionService(transactionService transactions.Service) *TransactionServer {
-	return &TransactionServer{}
+	return &TransactionServer{
+		transaction: transactionService,
+	}
 }

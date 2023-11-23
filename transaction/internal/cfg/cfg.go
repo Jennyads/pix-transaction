@@ -1,19 +1,37 @@
 package cfg
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type DynamodbConfig struct {
 	TransactionTable string
 }
 
-type Config struct {
-	DynamodbConfig DynamodbConfig
+type KafkaConfig struct {
+	Brokers []string
 }
 
-func Get() (*Config, error) {
+type Config struct {
+	DynamodbConfig DynamodbConfig
+	KafkaConfig    KafkaConfig
+}
+
+func Load() (*Config, error) {
 	return &Config{
 		DynamodbConfig{
-			TransactionTable: os.Getenv("TRANSACTION_TABLE"),
+			TransactionTable: Getenv("TRANSACTION_TABLE", "transaction"),
+		},
+		KafkaConfig{
+			Brokers: strings.Split(Getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"), ","),
 		},
 	}, nil
+}
+
+func Getenv(key, fallback string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return fallback
 }
