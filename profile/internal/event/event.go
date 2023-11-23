@@ -2,13 +2,19 @@ package event
 
 import (
 	"context"
+	"encoding/json"
 	kafkago "github.com/segmentio/kafka-go"
 	"log"
+	"profile/internal/transaction"
 	"profile/platform/kafka"
 )
 
 type Client interface {
 	Publish(ctx context.Context, payload []byte) error
+}
+
+type PixEvent struct {
+	PixData *transaction.Pix
 }
 
 type Options func(*event)
@@ -50,6 +56,14 @@ func (e *event) Publish(ctx context.Context, payload []byte) error {
 		log.Print("failed to close writer:", err)
 	}
 	return nil
+}
+
+func (e *event) PublishPix(ctx context.Context, pixEvent PixEvent) error {
+	payload, err := json.Marshal(pixEvent)
+	if err != nil {
+		return err
+	}
+	return e.Publish(ctx, payload)
 }
 
 func NewEvent(client kafka.Client, topic string, opts ...Options) Client {
