@@ -27,11 +27,16 @@ func (r repository) CreateTransaction(transaction *Transaction) (*Transaction, e
 		return nil, err
 	}
 
-	_, err = r.db.DB().PutItem(context.Background(), &dynamodb.PutItemInput{
+	var item *dynamodb.PutItemOutput
+	item, err = r.db.DB().PutItem(context.Background(), &dynamodb.PutItemInput{
 		TableName:           aws.String(r.cfg.DynamodbConfig.TransactionTable),
 		Item:                value,
-		ConditionExpression: aws.String("attribute_not_exists(PK)"),
+		ConditionExpression: aws.String("attribute_not_exists(PK) and attribute_not_exists(SK)"),
 	})
+	if err != nil {
+		return nil, err
+	}
+	err = attributevalue.UnmarshalMap(item.Attributes, transaction)
 	if err != nil {
 		return nil, err
 	}

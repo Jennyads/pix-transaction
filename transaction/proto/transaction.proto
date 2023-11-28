@@ -21,6 +21,7 @@ message ListTransaction {
 
 message TransactionRequest {
   string transaction_id = 1;
+  string account_id = 2;
 }
 
 message ListTransactionRequest {
@@ -31,7 +32,7 @@ service TransactionService {
   rpc CreateTransaction(Transaction) returns (Transaction) {
   }
 
-  rpc FindTransaction(TransactionRequest) returns (Transaction) {
+  rpc FindTransactionById(TransactionRequest) returns (Transaction) {
   }
 
   rpc ListTransactions(ListTransactionRequest) returns (ListTransaction) {

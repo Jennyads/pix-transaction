@@ -1,23 +1,24 @@
 package transactions
 
 import (
-	"context"
 	"errors"
 	"github.com/google/uuid"
-	"log"
 	"time"
 	"transaction/internal/event"
 )
 
 type Service interface {
 	CreateTransaction(transaction *Transaction) (*Transaction, error)
-	FindTransaction(id *TransactionRequest) (*Transaction, error)
+	FindTransactionById(id *TransactionRequest) (*Transaction, error)
 	ListTransactions(transactionIDs *ListTransactionRequest) ([]*Transaction, error)
 }
 
 type service struct {
 	repo   Repository
 	events event.Client
+}
+type kafka struct {
+	c *event.Client
 }
 
 func (s service) CreateTransaction(transaction *Transaction) (*Transaction, error) {
@@ -27,8 +28,8 @@ func (s service) CreateTransaction(transaction *Transaction) (*Transaction, erro
 	return s.repo.CreateTransaction(transaction)
 }
 
-func (s service) FindTransaction(id *TransactionRequest) (*Transaction, error) {
-	return s.repo.FindTransactionById(id.transactionID)
+func (s service) FindTransactionById(id *TransactionRequest) (*Transaction, error) {
+	return s.repo.FindTransactionById(id.TransactionID)
 }
 
 func (s service) ListTransactions(req *ListTransactionRequest) ([]*Transaction, error) {
@@ -38,18 +39,27 @@ func (s service) ListTransactions(req *ListTransactionRequest) ([]*Transaction, 
 	return s.repo.ListTransactions(req.transactionIDs)
 }
 
-func (s service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
-	log.Println(payload)
-	return nil, nil
-}
-
-func (s service) StartListener(ctx context.Context) error {
-	err := s.events.RegisterHandler(ctx, "pix-topic", s.Handler)
-	if err != nil {
-		return nil
-	}
-	return nil
-}
+//func (s service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
+//	var pixEvent *Transaction
+//	if err := json.Unmarshal(payload, &pixEvent); err != nil {
+//		log.WithContext(ctx).WithError(err).Error("Failed to unmarshal Pix event payload")
+//		return nil, err
+//	}
+//	return nil, nil
+//
+//}
+//
+//func (s service) StartListener(ctx context.Context, topic string) error {
+//	err := s.events.RegisterHandler(ctx, "pix-topic", s.Handler)
+//	if err != nil {
+//		return err
+//	}
+//	if topic == "transaction_events_topic" {
+//		go c.handleIncomingMessages(ctx, topic, handler)
+//	}
+//	return nil
+//
+//}
 
 func NewService(repo Repository) Service {
 	return &service{

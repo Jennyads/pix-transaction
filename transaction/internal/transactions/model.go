@@ -6,7 +6,7 @@ import (
 )
 
 type Transaction struct {
-	ID          string
+	ID          string `dynamodbav:"PK"`
 	AccountID   string `dynamodbav:"SK"`
 	Receiver    int64
 	Value       float64
@@ -16,7 +16,8 @@ type Transaction struct {
 }
 
 type TransactionRequest struct {
-	transactionID string
+	TransactionID string
+	AccountID     string
 }
 
 type ListTransactionRequest struct {
@@ -29,7 +30,8 @@ type ListTransaction struct {
 
 func ProtoToTransactionRequest(request *pb.TransactionRequest) *TransactionRequest {
 	return &TransactionRequest{
-		transactionID: request.TransactionId,
+		TransactionID: request.TransactionId,
+		AccountID:     request.AccountId,
 	}
 }
 
