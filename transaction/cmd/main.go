@@ -46,7 +46,7 @@ func main() {
 		panic(err)
 	}
 
-	list, err := net.Listen("tcp", ":9080")
+	list, err := net.Listen("tcp", ":9090")
 	if err != nil {
 		log.Fatalf("Failed to listen port 9080 %v", err)
 	}
@@ -54,9 +54,9 @@ func main() {
 	server := grpc.NewServer()
 	v1.RegisterTransactionServiceServer(server, transactionServer)
 
-	log.Printf("Serve is running  on port: %v", "9080")
+	log.Printf("Serve is running  on port: %v", "9090")
 	if err := server.Serve(list); err != nil {
-		log.Fatalf("Failed to serve gRPC server on port 9080: %v", err)
+		log.Fatalf("Failed to serve gRPC server on port 9090: %v", err)
 	}
 
 	//kafka
