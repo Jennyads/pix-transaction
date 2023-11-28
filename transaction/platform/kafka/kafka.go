@@ -7,6 +7,7 @@ import (
 
 type Client interface {
 	Connect() Client
+	Conn() *kafka.Conn
 }
 
 type client struct {

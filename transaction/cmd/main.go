@@ -24,10 +24,6 @@ func main() {
 	if err != nil {
 		return
 	}
-	list, err := net.Listen("tcp", ":9080")
-	if err != nil {
-		log.Fatalf("Failed to listen port 9080 %v", err)
-	}
 
 	db := dynamo.NewClient().Connect()
 
@@ -39,6 +35,22 @@ func main() {
 
 	//server
 	transactionServer := newTransactionService(transactionService)
+
+	kafkaConn := kafka.NewClient(config).Connect()
+
+	eventTransaction := event.NewEvent(kafkaConn, "transaction_events_topic",
+		event.WithAttempts(4), event.WithBroker("localhost:9092"))
+
+	err = eventTransaction.RegisterHandler(context.Background(), transactionService.Handler)
+	if err != nil {
+		panic(err)
+	}
+
+	list, err := net.Listen("tcp", ":9080")
+	if err != nil {
+		log.Fatalf("Failed to listen port 9080 %v", err)
+	}
+
 	server := grpc.NewServer()
 	v1.RegisterTransactionServiceServer(server, transactionServer)
 
@@ -48,10 +60,4 @@ func main() {
 	}
 
 	//kafka
-	kafkaConn := kafka.NewClient(config).Connect()
-
-	eventTransaction := event.NewEvent(kafkaConn, "transaction_events_topic",
-		event.WithAttempts(4), event.WithBroker("localhost:9094"))
-
-	eventTransaction.Publish(context.Background(), []byte("test"))
 }

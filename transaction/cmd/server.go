@@ -25,7 +25,7 @@ func (t TransactionServer) CreateTransaction(ctx context.Context, request *v1.Tr
 }
 
 func (t TransactionServer) FindTransactionById(ctx context.Context, transaction *v1.TransactionRequest) (*v1.Transaction, error) {
-	_, err := t.transaction.FindTransaction(transactions.ProtoToTransactionRequest(transaction))
+	_, err := t.transaction.FindTransactionById(transactions.ProtoToTransactionRequest(transaction))
 	if err != nil {
 		switch err {
 		default:

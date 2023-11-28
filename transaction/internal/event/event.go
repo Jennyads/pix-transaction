@@ -8,8 +8,9 @@ import (
 )
 
 type Client interface {
+	CreateTopic() error
 	Publish(ctx context.Context, payload []byte) error
-	RegisterHandler(ctx context.Context, topic string, handler Function) error
+	RegisterHandler(ctx context.Context, handler Function) error
 }
 
 type Options func(*event)
@@ -35,6 +36,10 @@ type event struct {
 	brokers     []string
 }
 
+func (e *event) CreateTopic() error {
+	return e.kafka.Conn().CreateTopics(kafkago.TopicConfig{Topic: e.topic, NumPartitions: 1, ReplicationFactor: 1})
+}
+
 func (e *event) Publish(ctx context.Context, payload []byte) error {
 	w := &kafkago.Writer{
 		Addr:                   kafkago.TCP(e.brokers...),
@@ -55,49 +60,44 @@ func (e *event) Publish(ctx context.Context, payload []byte) error {
 	return nil
 }
 
-//func (client *kafkaClient) handleIncomingMessages(ctx context.Context, topic string, handler Function) {
-//	r := client.newReader(topic)
-//
-//	log.WithContext(ctx).WithField("topic", topic).Info("Listener registered")
-//
-//	for {
-//		select {
-//		case <-ctx.Done():
-//			client.Close()
-//			return
-//		case <-client.stopSignal:
-//			if err := r.Close(); err != nil {
-//				log.WithContext(ctx).WithError(err).Warn("Failed to close reader")
-//			}
-//		default:
-//			msg, err := r.FetchMessage(ctx)
-//
-//			if err != nil {
-//				log.WithContext(ctx).WithError(err).Error("Failed to fetch message")
-//			}
-//
-//			if msg.Value != nil {
-//				log.WithContext(ctx).WithField("topic", topic).Info("Message received")
-//
-//				if topic == "transaction_events_topic" {
-//
-//					pixHandler(ctx, msg.Value)
-//				} else {
-//					_, err = handler.Handle(ctx, msg.Value)
-//					if err != nil {
-//						client.reprocess <- reprocess{msg, handler, ctx}
-//					}
-//
-//					if err = r.CommitMessages(ctx, msg); err != nil {
-//						log.WithError(err).Error("Failed to commit messages")
-//					}
-//				}
-//			}
-//		}
-//	}
-//}
+func (e *event) handleMessages(ctx context.Context, handler Function) {
+	r := kafkago.NewReader(kafkago.ReaderConfig{
+		Brokers: e.brokers,
+		Topic:   e.topic,
+		GroupID: e.topic + "_handler",
+	})
+	log.Printf("listener registered for topic [%s]\n", e.topic)
 
-func (e *event) RegisterHandler(ctx context.Context, topic string, handler Function) error {
+	for {
+		select {
+		case <-ctx.Done():
+			if err := r.Close(); err != nil {
+				log.Print("failed to close reader:", err)
+			}
+			return
+		default:
+			msg, err := r.FetchMessage(ctx)
+			if err != nil {
+				log.Println("Failed to fetch message")
+			}
+
+			if msg.Value != nil {
+				log.Printf("Message received: [%s]\n", e.topic)
+				_, err = handler(ctx, msg.Value)
+				if err != nil {
+					log.Print("failed to handle message:", err)
+				}
+
+				if err = r.CommitMessages(ctx, msg); err != nil {
+					log.Println("Failed to commit messages")
+				}
+			}
+		}
+	}
+}
+
+func (e *event) RegisterHandler(ctx context.Context, handler Function) error {
+	go e.handleMessages(ctx, handler)
 	return nil
 }
 

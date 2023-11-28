@@ -1,8 +1,10 @@
 package transactions
 
 import (
+	"context"
 	"errors"
 	"github.com/google/uuid"
+	"log"
 	"time"
 	"transaction/internal/event"
 )
@@ -11,6 +13,7 @@ type Service interface {
 	CreateTransaction(transaction *Transaction) (*Transaction, error)
 	FindTransactionById(id *TransactionRequest) (*Transaction, error)
 	ListTransactions(transactionIDs *ListTransactionRequest) ([]*Transaction, error)
+	Handler(ctx context.Context, payload []byte) ([]byte, error)
 }
 
 type service struct {
@@ -19,6 +22,13 @@ type service struct {
 }
 type kafka struct {
 	c *event.Client
+}
+
+func (s service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
+
+	log.Println("Handling event")
+	log.Println(string(payload))
+	return nil, nil
 }
 
 func (s service) CreateTransaction(transaction *Transaction) (*Transaction, error) {
@@ -39,16 +49,6 @@ func (s service) ListTransactions(req *ListTransactionRequest) ([]*Transaction, 
 	return s.repo.ListTransactions(req.transactionIDs)
 }
 
-//func (s service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
-//	var pixEvent *Transaction
-//	if err := json.Unmarshal(payload, &pixEvent); err != nil {
-//		log.WithContext(ctx).WithError(err).Error("Failed to unmarshal Pix event payload")
-//		return nil, err
-//	}
-//	return nil, nil
-//
-//}
-//
 //func (s service) StartListener(ctx context.Context, topic string) error {
 //	err := s.events.RegisterHandler(ctx, "pix-topic", s.Handler)
 //	if err != nil {
