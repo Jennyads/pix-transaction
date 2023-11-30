@@ -11,7 +11,7 @@ import (
 	"profile/internal/transaction"
 	"profile/internal/user"
 	"profile/internal/utils"
-	"transaction/proto"
+	"profile/proto/v1"
 )
 
 type ProfileServer struct {
