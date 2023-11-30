@@ -11,7 +11,7 @@ import (
 	"transaction/internal/transactions"
 	"transaction/platform/dynamo"
 	"transaction/platform/kafka"
-	v1 "transaction/proto"
+	"transaction/proto/v1"
 )
 
 func main() {
@@ -46,7 +46,6 @@ func main() {
 		panic(err)
 	}
 
-<<<<<<< HEAD
 	examplePayload := []byte("Exemplo de mensagem do Kafka")
 	err = eventTransaction.Publish(context.Background(), examplePayload)
 	if err != nil {
@@ -54,9 +53,6 @@ func main() {
 	} else {
 		log.Println("Mensagem de exemplo enviada com sucesso!")
 	}
-=======
-	eventTransaction.Publish(context.Background(), []byte("teste"))
->>>>>>> 2fbf5682b1d723f5f619b178f34f39b46d42edf5
 
 	list, err := net.Listen("tcp", ":9090")
 	if err != nil {

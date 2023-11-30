@@ -131,6 +131,11 @@ message PixTransaction {
     string status = 7;
 }
 
+service PixTransactionService {
+    rpc SendPix(PixTransaction) returns (google.protobuf.Empty) {
+    }
+}
+
 message Webhook {
     string url = 1;
 }

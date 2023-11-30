@@ -2,7 +2,7 @@ package transactions
 
 import (
 	"time"
-	pb "transaction/proto"
+	proto "transaction/proto/v1"
 )
 
 type Transaction struct {
@@ -28,20 +28,20 @@ type ListTransaction struct {
 	Transactions []*Transaction
 }
 
-func ProtoToTransactionRequest(request *pb.TransactionRequest) *TransactionRequest {
+func ProtoToTransactionRequest(request *proto.TransactionRequest) *TransactionRequest {
 	return &TransactionRequest{
 		TransactionID: request.TransactionId,
 		AccountID:     request.AccountId,
 	}
 }
 
-func ProtoToListTransactionRequest(request *pb.ListTransactionRequest) *ListTransactionRequest {
+func ProtoToListTransactionRequest(request *proto.ListTransactionRequest) *ListTransactionRequest {
 	return &ListTransactionRequest{
 		transactionIDs: request.TransactionId,
 	}
 }
 
-func ProtoToTransaction(transaction *pb.Transaction) *Transaction {
+func ProtoToTransaction(transaction *proto.Transaction) *Transaction {
 	return &Transaction{
 		AccountID: transaction.AccountId,
 		Receiver:  transaction.Receiver,
@@ -50,8 +50,8 @@ func ProtoToTransaction(transaction *pb.Transaction) *Transaction {
 	}
 }
 
-func ToProto(transaction *Transaction) *pb.Transaction {
-	return &pb.Transaction{
+func ToProto(transaction *Transaction) *proto.Transaction {
+	return &proto.Transaction{
 		AccountId: transaction.AccountID,
 		Receiver:  transaction.Receiver,
 		Value:     transaction.Value,

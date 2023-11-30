@@ -1,10 +1,8 @@
 package transactions
 
 import (
-	"context"
 	"errors"
 	"github.com/google/uuid"
-	"log"
 	"time"
 	"transaction/internal/event"
 )
@@ -13,22 +11,11 @@ type Service interface {
 	CreateTransaction(transaction *Transaction) (*Transaction, error)
 	FindTransactionById(id *TransactionRequest) (*Transaction, error)
 	ListTransactions(transactionIDs *ListTransactionRequest) ([]*Transaction, error)
-	Handler(ctx context.Context, payload []byte) ([]byte, error)
 }
 
 type service struct {
 	repo   Repository
 	events event.Client
-}
-type kafka struct {
-	c *event.Client
-}
-
-func (s service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
-
-	log.Println("Handling event")
-	log.Println(string(payload))
-	return nil, nil
 }
 
 func (s service) CreateTransaction(transaction *Transaction) (*Transaction, error) {

@@ -9,10 +9,11 @@ import (
 	"profile/internal/cfg"
 	"profile/internal/event"
 	"profile/internal/key"
+	"profile/internal/transaction"
 	"profile/internal/user"
 	"profile/platform/dynamo"
 	"profile/platform/kafka"
-	"profile/proto/v1"
+	proto "profile/proto/v1"
 )
 
 func main() {
@@ -45,11 +46,13 @@ func main() {
 
 	//kafka
 	kafkaConn := kafka.NewClient(config).Connect()
-	_ = event.NewEvent(kafkaConn, "transaction_events_topic",
+	events := event.NewEvent(kafkaConn, "transaction_events_topic",
 		event.WithAttempts(4), event.WithBroker("localhost:9092"))
 
+	transactionService := transaction.NewService(events)
+
 	//server
-	profileServer := NewProfileService(userService, accountService, keyService)
+	profileServer := NewProfileService(userService, accountService, keyService, transactionService)
 	server := grpc.NewServer()
 	proto.RegisterUserServiceServer(server, profileServer)
 	proto.RegisterAccountServiceServer(server, profileServer)

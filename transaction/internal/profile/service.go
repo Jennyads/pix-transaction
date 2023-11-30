@@ -5,7 +5,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"transaction/internal/cfg"
-	"transaction/proto"
+	proto "transaction/proto/v1"
 )
 
 type Service interface {
@@ -26,7 +26,16 @@ func (s *service) FindAccountBalance(ctx context.Context, id string, userId stri
 	return account.Balance, nil
 }
 
-func NewUserService(config cfg.Config) Service {
+// FindKey encontra a chave do usuário para buscar usuário a ser enviado o pix
+func (s *service) FindKey(ctx context.Context, key string, accountId string) (float64, error) {
+	keys, err := s.keys.FindKeys(ctx, &proto.KeyRequest{Key: key})
+	if err != nil {
+		return 0, err
+	}
+	return keys, nil
+}
+
+func NewService(config cfg.Config) Service {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	conn, err := grpc.Dial(config.ProfileConfig.Host, opts...)

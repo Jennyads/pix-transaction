@@ -6,24 +6,24 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"profile/internal/event"
-	"profile/internal/transaction"
 )
 
 type Service interface {
-	SendPix(ctx context.Context, req Pix) error
+	SendPix(ctx context.Context, req *Pix) error
 }
 
 type service struct {
 	events event.Client
 }
 
-func (s service) SendPix(ctx context.Context, req Pix) error {
-	pixEvent := transaction.PixEvent{
-		PixData: &transaction.Pix{
-			UserID: req.UserID,
-			Key:    req.Key,
-			Amount: req.Amount,
-			Status: req.Status,
+func (s service) SendPix(ctx context.Context, req *Pix) error {
+	pixEvent := PixEvent{
+		PixData: &Pix{
+			UserID:    req.UserID,
+			AccountId: req.AccountId,
+			Key:       req.Key,
+			Amount:    req.Amount,
+			Status:    req.Status,
 		},
 	}
 

@@ -4,7 +4,7 @@
 // - protoc             v3.6.1
 // source: profile.proto
 
-package proto
+package v1
 
 import (
 	context "context"
@@ -690,6 +690,96 @@ var KeysService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteKey",
 			Handler:    _KeysService_DeleteKey_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "profile.proto",
+}
+
+const (
+	PixTransactionService_SendPix_FullMethodName = "/profile.proto.v2.PixTransactionService/SendPix"
+)
+
+// PixTransactionServiceClient is the client API for PixTransactionService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type PixTransactionServiceClient interface {
+	SendPix(ctx context.Context, in *PixTransaction, opts ...grpc.CallOption) (*empty.Empty, error)
+}
+
+type pixTransactionServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewPixTransactionServiceClient(cc grpc.ClientConnInterface) PixTransactionServiceClient {
+	return &pixTransactionServiceClient{cc}
+}
+
+func (c *pixTransactionServiceClient) SendPix(ctx context.Context, in *PixTransaction, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, PixTransactionService_SendPix_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// PixTransactionServiceServer is the server API for PixTransactionService service.
+// All implementations must embed UnimplementedPixTransactionServiceServer
+// for forward compatibility
+type PixTransactionServiceServer interface {
+	SendPix(context.Context, *PixTransaction) (*empty.Empty, error)
+	mustEmbedUnimplementedPixTransactionServiceServer()
+}
+
+// UnimplementedPixTransactionServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedPixTransactionServiceServer struct {
+}
+
+func (UnimplementedPixTransactionServiceServer) SendPix(context.Context, *PixTransaction) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendPix not implemented")
+}
+func (UnimplementedPixTransactionServiceServer) mustEmbedUnimplementedPixTransactionServiceServer() {}
+
+// UnsafePixTransactionServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PixTransactionServiceServer will
+// result in compilation errors.
+type UnsafePixTransactionServiceServer interface {
+	mustEmbedUnimplementedPixTransactionServiceServer()
+}
+
+func RegisterPixTransactionServiceServer(s grpc.ServiceRegistrar, srv PixTransactionServiceServer) {
+	s.RegisterService(&PixTransactionService_ServiceDesc, srv)
+}
+
+func _PixTransactionService_SendPix_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PixTransaction)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PixTransactionServiceServer).SendPix(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PixTransactionService_SendPix_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PixTransactionServiceServer).SendPix(ctx, req.(*PixTransaction))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// PixTransactionService_ServiceDesc is the grpc.ServiceDesc for PixTransactionService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var PixTransactionService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "profile.proto.v2.PixTransactionService",
+	HandlerType: (*PixTransactionServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SendPix",
+			Handler:    _PixTransactionService_SendPix_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

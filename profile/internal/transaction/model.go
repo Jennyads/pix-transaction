@@ -5,11 +5,12 @@ import (
 )
 
 type Pix struct {
-	UserID   string
-	Key      string
-	Receiver string
-	Amount   float64
-	Status   string
+	UserID    string
+	AccountId string
+	Key       string
+	Receiver  string
+	Amount    float64
+	Status    string
 }
 
 func ToProto(pix *Pix) *pb.PixTransaction {

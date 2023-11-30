@@ -11,7 +11,7 @@ import (
 	"profile/internal/transaction"
 	"profile/internal/user"
 	"profile/internal/utils"
-	"profile/proto/v1"
+	proto "profile/proto/v1"
 )
 
 type ProfileServer struct {
@@ -19,12 +19,12 @@ type ProfileServer struct {
 	account            account.Service
 	keys               key.Service
 	transactionService transaction.Service
-	v1.UnimplementedUserServiceServer
-	v1.UnimplementedAccountServiceServer
-	v1.UnimplementedKeysServiceServer
+	proto.UnimplementedUserServiceServer
+	proto.UnimplementedAccountServiceServer
+	proto.UnimplementedKeysServiceServer
 }
 
-func (p ProfileServer) SendPix(ctx context.Context, pixEvent *v1.PixTransaction) (*empty.Empty, error) {
+func (p ProfileServer) SendPix(ctx context.Context, pixEvent *proto.PixTransaction) (*empty.Empty, error) {
 	err := p.transactionService.SendPix(ctx, transaction.ProtoToPix(pixEvent))
 	if err != nil {
 		switch err {
