@@ -2,6 +2,7 @@ package user
 
 import (
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"profile/proto/v1"
 	"time"
 )
 

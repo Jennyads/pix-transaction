@@ -1,6 +1,7 @@
 package key
 
 import (
+	"profile/proto/v1"
 	"time"
 )
 

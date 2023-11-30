@@ -12,6 +12,7 @@ import (
 	"profile/internal/user"
 	"profile/platform/dynamo"
 	"profile/platform/kafka"
+	"profile/proto/v1"
 )
 
 func main() {

@@ -1,6 +1,7 @@
 package account
 
 import (
+	"profile/proto/v1"
 	"time"
 )
 
