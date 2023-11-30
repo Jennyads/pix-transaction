@@ -27,7 +27,7 @@ func (s service) CreateAccount(ctx context.Context, account *Account) (*Account,
 }
 
 func (s service) FindAccountById(ctx context.Context, request *AccountRequest) (*Account, error) {
-	return s.repo.FindAccountById(request.AccountID)
+	return s.repo.FindAccountById(request.AccountID, request.UserID)
 }
 
 func (s service) UpdateAccount(ctx context.Context, account *Account) (*Account, error) {

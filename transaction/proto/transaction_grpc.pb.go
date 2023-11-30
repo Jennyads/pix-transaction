@@ -4,7 +4,7 @@
 // - protoc             v3.6.1
 // source: transaction.proto
 
-package transaction
+package proto
 
 import (
 	context "context"

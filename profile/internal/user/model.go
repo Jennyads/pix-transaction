@@ -2,7 +2,6 @@ package user
 
 import (
 	"google.golang.org/protobuf/types/known/timestamppb"
-	pb "profile/proto/v1"
 	"time"
 )
 
@@ -27,7 +26,7 @@ type ListUserRequest struct {
 	UserIDs []string
 }
 
-func ProtoToUser(user *pb.User) *User {
+func ProtoToUser(user *proto.User) *User {
 	return &User{
 		Name:     user.Name,
 		Email:    user.Email,
@@ -38,8 +37,8 @@ func ProtoToUser(user *pb.User) *User {
 	}
 }
 
-func ToProto(user *User) *pb.User {
-	return &pb.User{
+func ToProto(user *User) *proto.User {
+	return &proto.User{
 		Name:     user.Name,
 		Email:    user.Email,
 		Address:  user.Address,
@@ -49,14 +48,14 @@ func ToProto(user *User) *pb.User {
 	}
 }
 
-func ProtoToUserRequest(request *pb.UserRequest) *UserRequest {
+func ProtoToUserRequest(request *proto.UserRequest) *UserRequest {
 	return &UserRequest{
 		UserID: request.Id,
 	}
 
 }
 
-func ProtoToUserListRequest(request *pb.ListUserRequest) *ListUserRequest {
+func ProtoToUserListRequest(request *proto.ListUserRequest) *ListUserRequest {
 	return &ListUserRequest{
 		UserIDs: request.Id,
 	}

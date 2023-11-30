@@ -46,6 +46,8 @@ func main() {
 		panic(err)
 	}
 
+	eventTransaction.Publish(context.Background(), []byte("teste"))
+
 	list, err := net.Listen("tcp", ":9090")
 	if err != nil {
 		log.Fatalf("Failed to listen port 9080 %v", err)

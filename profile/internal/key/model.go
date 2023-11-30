@@ -1,7 +1,6 @@
 package key
 
 import (
-	pb "profile/proto/v1"
 	"time"
 )
 
@@ -32,7 +31,7 @@ type ListKeyRequest struct {
 	keyIDs []string
 }
 
-func ProtoToKey(key *pb.Key) *Key {
+func ProtoToKey(key *proto.Key) *Key {
 	return &Key{
 		AccountID: key.AccountId,
 		Name:      key.Name,
@@ -40,20 +39,20 @@ func ProtoToKey(key *pb.Key) *Key {
 	}
 }
 
-func ToProto(key *Key) *pb.Key {
-	return &pb.Key{
+func ToProto(key *Key) *proto.Key {
+	return &proto.Key{
 		AccountId: key.AccountID,
 		Name:      key.Name,
-		Type:      pb.Type(pb.Type_value[string(key.Type)]),
+		Type:      proto.Type(proto.Type_value[string(key.Type)]),
 	}
 }
 
-func ProtoToKeyListRequest(request *pb.ListKeyRequest) *ListKeyRequest {
+func ProtoToKeyListRequest(request *proto.ListKeyRequest) *ListKeyRequest {
 	return &ListKeyRequest{
 		keyIDs: request.KeyId,
 	}
 }
-func ProtoToKeyRequest(request *pb.KeyRequest) *KeyRequest {
+func ProtoToKeyRequest(request *proto.KeyRequest) *KeyRequest {
 	return &KeyRequest{
 		keyID: request.KeyId,
 	}

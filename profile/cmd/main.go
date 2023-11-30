@@ -12,7 +12,6 @@ import (
 	"profile/internal/user"
 	"profile/platform/dynamo"
 	"profile/platform/kafka"
-	v1 "profile/proto/v1"
 )
 
 func main() {
@@ -51,9 +50,9 @@ func main() {
 	//server
 	profileServer := NewProfileService(userService, accountService, keyService)
 	server := grpc.NewServer()
-	v1.RegisterUserServiceServer(server, profileServer)
-	v1.RegisterAccountServiceServer(server, profileServer)
-	v1.RegisterKeysServiceServer(server, profileServer)
+	proto.RegisterUserServiceServer(server, profileServer)
+	proto.RegisterAccountServiceServer(server, profileServer)
+	proto.RegisterKeysServiceServer(server, profileServer)
 
 	log.Printf("Serve is running  on port: %v", "9080")
 	if err := server.Serve(list); err != nil {
