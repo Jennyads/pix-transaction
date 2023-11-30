@@ -14,7 +14,7 @@ import (
 
 type Repository interface {
 	CreateAccount(account *Account) (*Account, error)
-	FindAccountById(id string) (*Account, error)
+	FindAccountById(id string, userId string) (*Account, error)
 	UpdateAccount(account *Account) (*Account, error)
 	ListAccount(accountIDs []string) ([]*Account, error)
 	DeleteAccount(id, userId string) error
@@ -48,11 +48,12 @@ func (r repository) CreateAccount(account *Account) (*Account, error) {
 	return account, nil
 }
 
-func (r repository) FindAccountById(id string) (*Account, error) {
+func (r repository) FindAccountById(id string, userId string) (*Account, error) {
 	value, err := r.db.DB().GetItem(context.Background(), &dynamodb.GetItemInput{
 		TableName: aws.String(r.cfg.DynamodbConfig.AccountTable),
 		Key: map[string]types.AttributeValue{
 			"PK": &types.AttributeValueMemberS{Value: id},
+			"SK": &types.AttributeValueMemberS{Value: userId},
 		},
 	})
 	if err != nil {

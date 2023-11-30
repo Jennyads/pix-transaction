@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+type ProfileConfig struct {
+	Host string
+}
+
 type DynamodbConfig struct {
 	TransactionTable string
 }
@@ -16,6 +20,7 @@ type KafkaConfig struct {
 type Config struct {
 	DynamodbConfig DynamodbConfig
 	KafkaConfig    KafkaConfig
+	ProfileConfig  ProfileConfig
 }
 
 func Load() (*Config, error) {
@@ -25,6 +30,9 @@ func Load() (*Config, error) {
 		},
 		KafkaConfig{
 			Brokers: strings.Split(Getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"), ","),
+		},
+		ProfileConfig{
+			Host: Getenv("PROFILE_HOST", "localhost:9080"),
 		},
 	}, nil
 }

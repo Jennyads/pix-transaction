@@ -1,7 +1,6 @@
 package account
 
 import (
-	pb "profile/proto/v1"
 	"time"
 )
 
@@ -26,7 +25,7 @@ type ListAccountRequest struct {
 	AccountIDs []string
 }
 
-func ProtoToAccount(account *pb.Account) *Account {
+func ProtoToAccount(account *proto.Account) *Account {
 	return &Account{
 		UserID:  account.UserId,
 		Balance: account.Balance,
@@ -36,8 +35,8 @@ func ProtoToAccount(account *pb.Account) *Account {
 	}
 }
 
-func ToProto(account *Account) *pb.Account {
-	return &pb.Account{
+func ToProto(account *Account) *proto.Account {
+	return &proto.Account{
 		UserId:  account.UserID,
 		Balance: account.Balance,
 		Agency:  account.Agency,
@@ -46,14 +45,14 @@ func ToProto(account *Account) *pb.Account {
 	}
 }
 
-func ProtoToAccountRequest(request *pb.AccountRequest) *AccountRequest {
+func ProtoToAccountRequest(request *proto.AccountRequest) *AccountRequest {
 	return &AccountRequest{
 		UserID:    request.UserId,
 		AccountID: request.AccountId,
 	}
 }
 
-func ProtoToAccountListRequest(request *pb.ListAccountRequest) *ListAccountRequest {
+func ProtoToAccountListRequest(request *proto.ListAccountRequest) *ListAccountRequest {
 	return &ListAccountRequest{
 		AccountIDs: request.AccountId,
 	}
