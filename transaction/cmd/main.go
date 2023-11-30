@@ -46,6 +46,14 @@ func main() {
 		panic(err)
 	}
 
+	examplePayload := []byte("Exemplo de mensagem do Kafka")
+	err = eventTransaction.Publish(context.Background(), examplePayload)
+	if err != nil {
+		log.Printf("Falha ao enviar mensagem de exemplo: %v", err)
+	} else {
+		log.Println("Mensagem de exemplo enviada com sucesso!")
+	}
+
 	list, err := net.Listen("tcp", ":9090")
 	if err != nil {
 		log.Fatalf("Failed to listen port 9080 %v", err)

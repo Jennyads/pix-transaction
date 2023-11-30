@@ -1045,6 +1045,12 @@ var file_profile_proto_rawDesc = []byte{
 	0x2e, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x76,
 	0x32, 0x2e, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67,
 	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x32, 0x5e, 0x0a, 0x15, 0x50, 0x69, 0x78, 0x54, 0x72, 0x61,
+	0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
+	0x45, 0x0a, 0x07, 0x53, 0x65, 0x6e, 0x64, 0x50, 0x69, 0x78, 0x12, 0x20, 0x2e, 0x70, 0x72, 0x6f,
+	0x66, 0x69, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x76, 0x32, 0x2e, 0x50, 0x69,
+	0x78, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x16, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
 	0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x32, 0x53, 0x0a, 0x0e, 0x57, 0x65, 0x62, 0x68, 0x6f, 0x6f,
 	0x6b, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x41, 0x0a, 0x0a, 0x53, 0x65, 0x74, 0x57,
 	0x65, 0x62, 0x68, 0x6f, 0x6f, 0x6b, 0x12, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65,
@@ -1111,24 +1117,26 @@ var file_profile_proto_depIdxs = []int32{
 	9,  // 19: profile.proto.v2.KeysService.UpdateKey:input_type -> profile.proto.v2.Key
 	10, // 20: profile.proto.v2.KeysService.ListKey:input_type -> profile.proto.v2.ListKeyRequest
 	11, // 21: profile.proto.v2.KeysService.DeleteKey:input_type -> profile.proto.v2.KeyRequest
-	14, // 22: profile.proto.v2.WebhookService.SetWebhook:input_type -> profile.proto.v2.Webhook
-	16, // 23: profile.proto.v2.UserService.CreateUser:output_type -> google.protobuf.Empty
-	1,  // 24: profile.proto.v2.UserService.FindUser:output_type -> profile.proto.v2.User
-	16, // 25: profile.proto.v2.UserService.UpdateUser:output_type -> google.protobuf.Empty
-	2,  // 26: profile.proto.v2.UserService.ListUsers:output_type -> profile.proto.v2.ListUser
-	16, // 27: profile.proto.v2.UserService.DeleteUser:output_type -> google.protobuf.Empty
-	5,  // 28: profile.proto.v2.AccountService.CreateAccount:output_type -> profile.proto.v2.Account
-	5,  // 29: profile.proto.v2.AccountService.FindAccount:output_type -> profile.proto.v2.Account
-	16, // 30: profile.proto.v2.AccountService.UpdateAccount:output_type -> google.protobuf.Empty
-	6,  // 31: profile.proto.v2.AccountService.ListAccounts:output_type -> profile.proto.v2.ListAccount
-	16, // 32: profile.proto.v2.AccountService.DeleteAccount:output_type -> google.protobuf.Empty
-	16, // 33: profile.proto.v2.KeysService.CreateKey:output_type -> google.protobuf.Empty
-	16, // 34: profile.proto.v2.KeysService.UpdateKey:output_type -> google.protobuf.Empty
-	12, // 35: profile.proto.v2.KeysService.ListKey:output_type -> profile.proto.v2.ListKeys
-	16, // 36: profile.proto.v2.KeysService.DeleteKey:output_type -> google.protobuf.Empty
-	16, // 37: profile.proto.v2.WebhookService.SetWebhook:output_type -> google.protobuf.Empty
-	23, // [23:38] is the sub-list for method output_type
-	8,  // [8:23] is the sub-list for method input_type
+	13, // 22: profile.proto.v2.PixTransactionService.SendPix:input_type -> profile.proto.v2.PixTransaction
+	14, // 23: profile.proto.v2.WebhookService.SetWebhook:input_type -> profile.proto.v2.Webhook
+	16, // 24: profile.proto.v2.UserService.CreateUser:output_type -> google.protobuf.Empty
+	1,  // 25: profile.proto.v2.UserService.FindUser:output_type -> profile.proto.v2.User
+	16, // 26: profile.proto.v2.UserService.UpdateUser:output_type -> google.protobuf.Empty
+	2,  // 27: profile.proto.v2.UserService.ListUsers:output_type -> profile.proto.v2.ListUser
+	16, // 28: profile.proto.v2.UserService.DeleteUser:output_type -> google.protobuf.Empty
+	5,  // 29: profile.proto.v2.AccountService.CreateAccount:output_type -> profile.proto.v2.Account
+	5,  // 30: profile.proto.v2.AccountService.FindAccount:output_type -> profile.proto.v2.Account
+	16, // 31: profile.proto.v2.AccountService.UpdateAccount:output_type -> google.protobuf.Empty
+	6,  // 32: profile.proto.v2.AccountService.ListAccounts:output_type -> profile.proto.v2.ListAccount
+	16, // 33: profile.proto.v2.AccountService.DeleteAccount:output_type -> google.protobuf.Empty
+	16, // 34: profile.proto.v2.KeysService.CreateKey:output_type -> google.protobuf.Empty
+	16, // 35: profile.proto.v2.KeysService.UpdateKey:output_type -> google.protobuf.Empty
+	12, // 36: profile.proto.v2.KeysService.ListKey:output_type -> profile.proto.v2.ListKeys
+	16, // 37: profile.proto.v2.KeysService.DeleteKey:output_type -> google.protobuf.Empty
+	16, // 38: profile.proto.v2.PixTransactionService.SendPix:output_type -> google.protobuf.Empty
+	16, // 39: profile.proto.v2.WebhookService.SetWebhook:output_type -> google.protobuf.Empty
+	24, // [24:40] is the sub-list for method output_type
+	8,  // [8:24] is the sub-list for method input_type
 	8,  // [8:8] is the sub-list for extension type_name
 	8,  // [8:8] is the sub-list for extension extendee
 	0,  // [0:8] is the sub-list for field type_name
@@ -1317,7 +1325,7 @@ func file_profile_proto_init() {
 			NumEnums:      1,
 			NumMessages:   14,
 			NumExtensions: 0,
-			NumServices:   4,
+			NumServices:   5,
 		},
 		GoTypes:           file_profile_proto_goTypes,
 		DependencyIndexes: file_profile_proto_depIdxs,

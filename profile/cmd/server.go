@@ -8,18 +8,32 @@ import (
 	"google.golang.org/grpc/status"
 	"profile/internal/account"
 	"profile/internal/key"
+	"profile/internal/transaction"
 	"profile/internal/user"
 	"profile/internal/utils"
 	v1 "profile/proto/v1"
 )
 
 type ProfileServer struct {
-	user    user.Service
-	account account.Service
-	keys    key.Service
+	user               user.Service
+	account            account.Service
+	keys               key.Service
+	transactionService transaction.Service
 	v1.UnimplementedUserServiceServer
 	v1.UnimplementedAccountServiceServer
 	v1.UnimplementedKeysServiceServer
+}
+
+func (p ProfileServer) SendPix(ctx context.Context, pixEvent *v1.PixTransaction) (*empty.Empty, error) {
+	err := p.transactionService.SendPix(ctx, transaction.ProtoToPix(pixEvent))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return &empty.Empty{}, nil
+
 }
 
 func (p ProfileServer) CreateAccount(ctx context.Context, ac *v1.Account) (*v1.Account, error) {
@@ -234,7 +248,7 @@ func (p ProfileServer) DeleteKey(ctx context.Context, req *v1.KeyRequest) (*empt
 	return &empty.Empty{}, nil
 }
 
-func NewProfileService(userService user.Service, accountService account.Service, keyService key.Service) *ProfileServer {
+func NewProfileService(userService user.Service, accountService account.Service, keyService key.Service, service transaction.Service) *ProfileServer {
 	return &ProfileServer{
 		user:    userService,
 		account: accountService,
