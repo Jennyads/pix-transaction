@@ -5,15 +5,15 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"transaction/internal/transactions"
-	"transaction/proto/v1"
+	"transaction/proto"
 )
 
 type TransactionServer struct {
 	transaction transactions.Service
-	v1.UnimplementedTransactionServiceServer
+	proto.UnimplementedTransactionServiceServer
 }
 
-func (t TransactionServer) CreateTransaction(ctx context.Context, request *v1.Transaction) (*v1.Transaction, error) {
+func (t TransactionServer) CreateTransaction(ctx context.Context, request *proto.Transaction) (*proto.Transaction, error) {
 	created, err := t.transaction.CreateTransaction(transactions.ProtoToTransaction(request))
 	if err != nil {
 		switch err {
@@ -24,7 +24,7 @@ func (t TransactionServer) CreateTransaction(ctx context.Context, request *v1.Tr
 	return transactions.ToProto(created), nil
 }
 
-func (t TransactionServer) FindTransactionById(ctx context.Context, transaction *v1.TransactionRequest) (*v1.Transaction, error) {
+func (t TransactionServer) FindTransactionById(ctx context.Context, transaction *proto.TransactionRequest) (*proto.Transaction, error) {
 	_, err := t.transaction.FindTransactionById(transactions.ProtoToTransactionRequest(transaction))
 	if err != nil {
 		switch err {
@@ -35,7 +35,7 @@ func (t TransactionServer) FindTransactionById(ctx context.Context, transaction 
 	return nil, nil
 }
 
-func (t TransactionServer) ListTransactions(ctx context.Context, transaction *v1.ListTransactionRequest) (*v1.ListTransaction, error) {
+func (t TransactionServer) ListTransactions(ctx context.Context, transaction *proto.ListTransactionRequest) (*proto.ListTransaction, error) {
 	_, err := t.transaction.ListTransactions(transactions.ProtoToListTransactionRequest(transaction))
 	if err != nil {
 		switch err {

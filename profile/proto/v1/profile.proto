@@ -2,6 +2,8 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
 
 package profile.proto.v2;
 
@@ -83,6 +85,7 @@ service AccountService {
 
     rpc DeleteAccount(AccountRequest) returns (google.protobuf.Empty){
     }
+    rpc IsAccountActive(AccountRequest) returns (google.protobuf.BoolValue);
 }
 enum Type {
     cpf = 0;
@@ -95,12 +98,14 @@ message Key {
     string account_id = 1;
     string name = 2;
     Type type = 3;
+    float value = 4;
 }
 message ListKeyRequest{
     repeated string key_id = 1;
 }
 message KeyRequest{
     string key_id = 1;
+    string account_id = 2;
 }
 
 message ListKeys{

@@ -2,7 +2,7 @@ package transactions
 
 import (
 	"time"
-	proto "transaction/proto/v1"
+	"transaction/proto"
 )
 
 type Transaction struct {

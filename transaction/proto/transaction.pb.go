@@ -4,7 +4,7 @@
 // 	protoc        v3.6.1
 // source: transaction.proto
 
-package v1
+package proto
 
 import (
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"

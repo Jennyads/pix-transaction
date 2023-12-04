@@ -11,7 +11,7 @@ import (
 	"transaction/internal/transactions"
 	"transaction/platform/dynamo"
 	"transaction/platform/kafka"
-	"transaction/proto/v1"
+	"transaction/proto"
 )
 
 func main() {
@@ -60,7 +60,7 @@ func main() {
 	}
 
 	server := grpc.NewServer()
-	v1.RegisterTransactionServiceServer(server, transactionServer)
+	proto.RegisterTransactionServiceServer(server, transactionServer)
 
 	log.Printf("Serve is running  on port: %v", "9090")
 	if err := server.Serve(list); err != nil {

@@ -3,10 +3,12 @@ package pix
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"transaction/internal/event"
 	"transaction/internal/profile"
 	"transaction/internal/transactions"
+	proto "transaction/proto/v1"
 )
 
 type Service interface {
@@ -46,7 +48,22 @@ func (s service) Validations(ctx context.Context, pix *Pix) error {
 		return ErrInsufficientBalance
 	}
 
-	// TODO ...
+	_, err = s.profile.FindKey(ctx, pix.Key, pix.Receiver)
+	if err != nil {
+		if errors.Is(ErrKeyNotFound, err) {
+			return ErrInvalidKey
+		}
+		return err
+	}
+
+	isActive, err := s.profile.IsAccountActive(ctx, &proto.AccountRequest{AccountId: pix.AccountId, UserId: pix.UserID})
+	if err != nil {
+		return err
+	}
+
+	if !isActive.GetValue() {
+		return ErrInactiveAccount
+	}
 
 	return nil
 }
