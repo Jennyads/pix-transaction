@@ -37,11 +37,6 @@ func main() {
 		log.Fatalf("Failed to connect to database %v", err)
 	}
 
-	err = db.AutoMigrate(&user.User{}, &key.Key{}, &account.Account{})
-	if err != nil {
-		log.Fatalf("Failed to migrate tables %v", err)
-	}
-
 	// repositories
 	userRepository := user.NewRepository(db, config)
 	keyRepository := key.NewRepository(db, config)

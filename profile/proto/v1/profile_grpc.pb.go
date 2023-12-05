@@ -9,6 +9,7 @@ package profile
 import (
 	context "context"
 	empty "github.com/golang/protobuf/ptypes/empty"
+	wrappers "github.com/golang/protobuf/ptypes/wrappers"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -258,11 +259,12 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	AccountService_CreateAccount_FullMethodName = "/profile.proto.v2.AccountService/CreateAccount"
-	AccountService_FindAccount_FullMethodName   = "/profile.proto.v2.AccountService/FindAccount"
-	AccountService_UpdateAccount_FullMethodName = "/profile.proto.v2.AccountService/UpdateAccount"
-	AccountService_ListAccounts_FullMethodName  = "/profile.proto.v2.AccountService/ListAccounts"
-	AccountService_DeleteAccount_FullMethodName = "/profile.proto.v2.AccountService/DeleteAccount"
+	AccountService_CreateAccount_FullMethodName   = "/profile.proto.v2.AccountService/CreateAccount"
+	AccountService_FindAccount_FullMethodName     = "/profile.proto.v2.AccountService/FindAccount"
+	AccountService_UpdateAccount_FullMethodName   = "/profile.proto.v2.AccountService/UpdateAccount"
+	AccountService_ListAccounts_FullMethodName    = "/profile.proto.v2.AccountService/ListAccounts"
+	AccountService_DeleteAccount_FullMethodName   = "/profile.proto.v2.AccountService/DeleteAccount"
+	AccountService_IsAccountActive_FullMethodName = "/profile.proto.v2.AccountService/IsAccountActive"
 )
 
 // AccountServiceClient is the client API for AccountService service.
@@ -274,6 +276,7 @@ type AccountServiceClient interface {
 	UpdateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*empty.Empty, error)
 	ListAccounts(ctx context.Context, in *ListAccountRequest, opts ...grpc.CallOption) (*ListAccount, error)
 	DeleteAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	IsAccountActive(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*wrappers.BoolValue, error)
 }
 
 type accountServiceClient struct {
@@ -329,6 +332,15 @@ func (c *accountServiceClient) DeleteAccount(ctx context.Context, in *AccountReq
 	return out, nil
 }
 
+func (c *accountServiceClient) IsAccountActive(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*wrappers.BoolValue, error) {
+	out := new(wrappers.BoolValue)
+	err := c.cc.Invoke(ctx, AccountService_IsAccountActive_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServiceServer is the server API for AccountService service.
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility
@@ -338,6 +350,7 @@ type AccountServiceServer interface {
 	UpdateAccount(context.Context, *Account) (*empty.Empty, error)
 	ListAccounts(context.Context, *ListAccountRequest) (*ListAccount, error)
 	DeleteAccount(context.Context, *AccountRequest) (*empty.Empty, error)
+	IsAccountActive(context.Context, *AccountRequest) (*wrappers.BoolValue, error)
 	mustEmbedUnimplementedAccountServiceServer()
 }
 
@@ -359,6 +372,9 @@ func (UnimplementedAccountServiceServer) ListAccounts(context.Context, *ListAcco
 }
 func (UnimplementedAccountServiceServer) DeleteAccount(context.Context, *AccountRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAccount not implemented")
+}
+func (UnimplementedAccountServiceServer) IsAccountActive(context.Context, *AccountRequest) (*wrappers.BoolValue, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsAccountActive not implemented")
 }
 func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}
 
@@ -463,6 +479,24 @@ func _AccountService_DeleteAccount_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountService_IsAccountActive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).IsAccountActive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AccountService_IsAccountActive_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).IsAccountActive(ctx, req.(*AccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccountService_ServiceDesc is the grpc.ServiceDesc for AccountService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -489,6 +523,10 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAccount",
 			Handler:    _AccountService_DeleteAccount_Handler,
+		},
+		{
+			MethodName: "IsAccountActive",
+			Handler:    _AccountService_IsAccountActive_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -8,11 +8,10 @@ import (
 
 type Account struct {
 	Id        string `gorm:"primarykey;type:varchar(36)"`
-	UserID    string `gorm:"foreignKey:ID;references:users;type:varchar(36)"`
+	UserID    string `gorm:"foreignKey;type:varchar(36)"`
 	Balance   float64
 	Agency    string
 	Bank      string
-	Key       string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
@@ -33,7 +32,6 @@ func ProtoToAccount(account *proto.Account) *Account {
 		Balance: account.Balance,
 		Agency:  account.Agency,
 		Bank:    account.Bank,
-		Key:     account.Key,
 	}
 }
 
@@ -43,7 +41,6 @@ func ToProto(account *Account) *proto.Account {
 		Balance: account.Balance,
 		Agency:  account.Agency,
 		Bank:    account.Bank,
-		Key:     account.Key,
 	}
 }
 
