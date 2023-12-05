@@ -2,12 +2,13 @@ package user
 
 import (
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"gorm.io/gorm"
 	proto "profile/proto/v1"
 	"time"
 )
 
 type User struct {
-	Id        string `dynamodbav:"PK"`
+	Id        string `gorm:"primarykey;type:varchar(36)"`
 	Name      string
 	Email     string
 	Address   string
@@ -16,7 +17,7 @@ type User struct {
 	Birthday  time.Time
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
+	DeletedAt gorm.DeletedAt
 }
 
 type UserRequest struct {

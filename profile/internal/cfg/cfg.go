@@ -5,11 +5,12 @@ import (
 	"strings"
 )
 
-type DynamodbConfig struct {
-	AccountTable string
-	UserTable    string
-	KeyTable     string
-	PixTable     string
+type SqlServerConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
 }
 
 type KafkaConfig struct {
@@ -18,17 +19,18 @@ type KafkaConfig struct {
 
 // Config is the struct that holds all the configuration for the application
 type Config struct {
-	DynamodbConfig DynamodbConfig
-	KafkaConfig    KafkaConfig
+	SqlServerConfig SqlServerConfig
+	KafkaConfig     KafkaConfig
 }
 
 func Load() (*Config, error) {
 	return &Config{
-		DynamodbConfig{
-			AccountTable: Getenv("ACCOUNT_TABLE", "account"),
-			UserTable:    Getenv("USER_TABLE", "user"),
-			KeyTable:     Getenv("KEY_TABLE", "key"),
-			PixTable:     Getenv("PIX_TABLE", "pix"),
+		SqlServerConfig{
+			Host:     Getenv("DB_HOST", "localhost"),
+			Port:     Getenv("DB_PORT", "1433"),
+			User:     Getenv("DB_USER", ""),
+			Password: Getenv("DB_PASS", ""),
+			Database: Getenv("DB_NAME", ""),
 		},
 		KafkaConfig{
 			Brokers: strings.Split(Getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"), ","),
