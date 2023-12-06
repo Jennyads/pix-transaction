@@ -52,8 +52,6 @@ message Account{
     double balance = 2;
     string agency = 3;
     string bank = 4;
-    string key = 5;
-    bool is_active = 6;
 }
 
 message ListAccount{
@@ -99,12 +97,14 @@ message Key {
     string account_id = 1;
     string name = 2;
     Type type = 3;
+    float value = 4;
 }
 message ListKeyRequest{
     repeated string key_id = 1;
 }
 message KeyRequest{
     string key_id = 1;
+    string account_id = 2;
 }
 
 message ListKeys{
@@ -118,8 +118,6 @@ service KeysService {
     }
 
     rpc ListKey(ListKeyRequest) returns (ListKeys) {
-    }
-    rpc FindKey(KeyRequest) returns (Key) {
     }
 
     rpc DeleteKey(KeyRequest) returns (google.protobuf.Empty){

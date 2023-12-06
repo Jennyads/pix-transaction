@@ -52,7 +52,6 @@ message Account{
     double balance = 2;
     string agency = 3;
     string bank = 4;
-    string key = 5;
 }
 
 message ListAccount{

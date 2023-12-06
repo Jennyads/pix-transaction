@@ -537,7 +537,6 @@ const (
 	KeysService_CreateKey_FullMethodName = "/profile.proto.v2.KeysService/CreateKey"
 	KeysService_UpdateKey_FullMethodName = "/profile.proto.v2.KeysService/UpdateKey"
 	KeysService_ListKey_FullMethodName   = "/profile.proto.v2.KeysService/ListKey"
-	KeysService_FindKey_FullMethodName   = "/profile.proto.v2.KeysService/FindKey"
 	KeysService_DeleteKey_FullMethodName = "/profile.proto.v2.KeysService/DeleteKey"
 )
 
@@ -548,7 +547,6 @@ type KeysServiceClient interface {
 	CreateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*empty.Empty, error)
 	UpdateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*empty.Empty, error)
 	ListKey(ctx context.Context, in *ListKeyRequest, opts ...grpc.CallOption) (*ListKeys, error)
-	FindKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*Key, error)
 	DeleteKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
@@ -587,15 +585,6 @@ func (c *keysServiceClient) ListKey(ctx context.Context, in *ListKeyRequest, opt
 	return out, nil
 }
 
-func (c *keysServiceClient) FindKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*Key, error) {
-	out := new(Key)
-	err := c.cc.Invoke(ctx, KeysService_FindKey_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *keysServiceClient) DeleteKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, KeysService_DeleteKey_FullMethodName, in, out, opts...)
@@ -612,7 +601,6 @@ type KeysServiceServer interface {
 	CreateKey(context.Context, *Key) (*empty.Empty, error)
 	UpdateKey(context.Context, *Key) (*empty.Empty, error)
 	ListKey(context.Context, *ListKeyRequest) (*ListKeys, error)
-	FindKey(context.Context, *KeyRequest) (*Key, error)
 	DeleteKey(context.Context, *KeyRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedKeysServiceServer()
 }
@@ -629,9 +617,6 @@ func (UnimplementedKeysServiceServer) UpdateKey(context.Context, *Key) (*empty.E
 }
 func (UnimplementedKeysServiceServer) ListKey(context.Context, *ListKeyRequest) (*ListKeys, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListKey not implemented")
-}
-func (UnimplementedKeysServiceServer) FindKey(context.Context, *KeyRequest) (*Key, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindKey not implemented")
 }
 func (UnimplementedKeysServiceServer) DeleteKey(context.Context, *KeyRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteKey not implemented")
@@ -703,24 +688,6 @@ func _KeysService_ListKey_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _KeysService_FindKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(KeyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(KeysServiceServer).FindKey(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: KeysService_FindKey_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KeysServiceServer).FindKey(ctx, req.(*KeyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _KeysService_DeleteKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(KeyRequest)
 	if err := dec(in); err != nil {
@@ -757,10 +724,6 @@ var KeysService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListKey",
 			Handler:    _KeysService_ListKey_Handler,
-		},
-		{
-			MethodName: "FindKey",
-			Handler:    _KeysService_FindKey_Handler,
 		},
 		{
 			MethodName: "DeleteKey",

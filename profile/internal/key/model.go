@@ -1,6 +1,7 @@
 package key
 
 import (
+	"gorm.io/gorm"
 	proto "profile/proto/v1"
 	"time"
 )
@@ -15,13 +16,13 @@ const (
 )
 
 type Key struct {
-	Id        string `dynamodbav:"PK"`
-	AccountID string `dynamodbav:"SK"`
+	Id        string `gorm:"primarykey;type:varchar(36)"`
+	AccountID string `gorm:"foreignKey;type:varchar(36)"`
 	Name      string
 	Type      Type
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
+	DeletedAt gorm.DeletedAt
 }
 
 type KeyRequest struct {

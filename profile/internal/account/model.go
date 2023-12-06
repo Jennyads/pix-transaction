@@ -1,20 +1,20 @@
 package account
 
 import (
+	"gorm.io/gorm"
 	proto "profile/proto/v1"
 	"time"
 )
 
 type Account struct {
-	Id        string `dynamodbav:"PK"`
-	UserID    string `dynamodbav:"SK"`
+	Id        string `gorm:"primarykey;type:varchar(36)"`
+	UserID    string `gorm:"foreignKey;type:varchar(36)"`
 	Balance   float64
 	Agency    string
 	Bank      string
-	Key       string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
+	DeletedAt gorm.DeletedAt
 }
 
 type AccountRequest struct {
@@ -32,7 +32,6 @@ func ProtoToAccount(account *proto.Account) *Account {
 		Balance: account.Balance,
 		Agency:  account.Agency,
 		Bank:    account.Bank,
-		Key:     account.Key,
 	}
 }
 
@@ -42,7 +41,6 @@ func ToProto(account *Account) *proto.Account {
 		Balance: account.Balance,
 		Agency:  account.Agency,
 		Bank:    account.Bank,
-		Key:     account.Key,
 	}
 }
 

@@ -11,8 +11,8 @@ import (
 	"profile/internal/key"
 	"profile/internal/transaction"
 	"profile/internal/user"
-	"profile/platform/dynamo"
 	"profile/platform/kafka"
+	"profile/platform/sqlserver"
 	proto "profile/proto/v1"
 )
 
@@ -32,7 +32,10 @@ func main() {
 		log.Fatalf("Failed to listen port 9080 %v", err)
 	}
 
-	db := dynamo.NewClient().Connect()
+	db, err := sqlserver.Start(config)
+	if err != nil {
+		log.Fatalf("Failed to connect to database %v", err)
+	}
 
 	// repositories
 	userRepository := user.NewRepository(db, config)
