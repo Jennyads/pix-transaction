@@ -3,9 +3,6 @@ package account
 import (
 	"context"
 	"errors"
-	"github.com/google/uuid"
-	proto "profile/proto/v1"
-	"time"
 )
 
 type Service interface {
@@ -22,44 +19,40 @@ type service struct {
 	repo Repository
 }
 
-func (s service) CreateAccount(ctx context.Context, account *Account) (*Account, error) {
-	account.CreatedAt = time.Now()
-	account.UpdatedAt = time.Now()
-	account.Id = uuid.New().String()
+func (s *service) CreateAccount(ctx context.Context, account *Account) (*Account, error) {
 	return s.repo.CreateAccount(account)
 }
 
-func (s service) FindAccountById(ctx context.Context, request *AccountRequest) (*Account, error) {
+func (s *service) FindAccountById(ctx context.Context, request *AccountRequest) (*Account, error) {
 	return s.repo.FindAccountById(request.AccountID)
 }
 
-func (s service) UpdateAccount(ctx context.Context, account *Account) (*Account, error) {
+func (s *service) UpdateAccount(ctx context.Context, account *Account) (*Account, error) {
 	if account.Id == "" {
 		return nil, errors.New("account_id is required")
 	}
-	account.UpdatedAt = time.Now()
 	return s.repo.UpdateAccount(account)
 }
 
-func (s service) ListAccounts(ctx context.Context, listAccount *ListAccountRequest) ([]*Account, error) {
+func (s *service) ListAccounts(ctx context.Context, listAccount *ListAccountRequest) ([]*Account, error) {
 	if len(listAccount.AccountIDs) == 0 {
 		return nil, errors.New("account_ids is required")
 	}
 	return s.repo.ListAccount(listAccount.AccountIDs)
 }
 
-func (s service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
+func (s *service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
 	return s.repo.DeleteAccount(request.AccountID)
 }
 func (s *service) IsAccountActive(ctx context.Context, id string) (bool, error) {
-	_, err := s.repo.IsAccountActive(ctx, &proto.AccountRequest{AccountId: id})
+	_, err := s.repo.IsAccountActive(ctx, id)
 	if err != nil {
 		return false, err
 	}
 	return true, nil
 }
 
-func (s service) FindByKey(ctx context.Context, key string) (*Account, error) {
+func (s *service) FindByKey(ctx context.Context, key string) (*Account, error) {
 	if key == "" {
 		return nil, errors.New("key is required")
 	}

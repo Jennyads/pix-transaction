@@ -12,7 +12,7 @@ type User struct {
 	Name      string         `gorm:"type:varchar(255);column:name"`
 	Email     string         `gorm:"type:varchar(255);uniqueIndex;column:email"`
 	Address   string         `gorm:"type:varchar(255);column:address"`
-	Cpf       string         `gorm:"type:varchar(14);uniqueIndex;column:cpf"`
+	Cpf       string         `gorm:"type:varchar(11);uniqueIndex;column:cpf"`
 	Phone     string         `gorm:"type:varchar(20);column:phone"`
 	Birthday  time.Time      `gorm:"type:date;column:birthday"`
 	CreatedAt time.Time      `gorm:"type:timestamp;column:created_at"`

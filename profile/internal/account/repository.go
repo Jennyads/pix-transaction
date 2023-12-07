@@ -3,8 +3,10 @@ package account
 import (
 	"context"
 	"database/sql"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"profile/internal/cfg"
+	"time"
 )
 
 type Repository interface {
@@ -23,6 +25,9 @@ type repository struct {
 }
 
 func (r repository) CreateAccount(account *Account) (*Account, error) {
+	account.CreatedAt = time.Now()
+	account.UpdatedAt = time.Now()
+	account.Id = uuid.New().String()
 	err := r.db.Create(&account).Error
 	if err != nil {
 		return nil, err
@@ -40,6 +45,7 @@ func (r repository) FindAccountById(id string) (*Account, error) {
 }
 
 func (r repository) UpdateAccount(account *Account) (*Account, error) {
+	account.UpdatedAt = time.Now()
 	result := r.db.Save(&account)
 	if result.Error != nil {
 		return nil, result.Error

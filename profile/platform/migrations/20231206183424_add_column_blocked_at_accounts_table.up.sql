@@ -1,2 +1,2 @@
 ALTER TABLE accounts
-ADD blocked_at datetimeoffset NULL;
+ADD blocked_at timestamp NULL;
