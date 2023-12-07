@@ -14,6 +14,7 @@ type Account struct {
 	Bank      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	BlockedAt *time.Time
 	DeletedAt gorm.DeletedAt
 }
 

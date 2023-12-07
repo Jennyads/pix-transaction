@@ -13,6 +13,7 @@ type Service interface {
 	UpdateAccount(ctx context.Context, account *Account) (*Account, error)
 	ListAccounts(ctx context.Context, req *ListAccountRequest) ([]*Account, error)
 	DeleteAccount(ctx context.Context, req *AccountRequest) error
+	FindByKey(ctx context.Context, key string) (*Account, error)
 }
 
 type service struct {
@@ -47,6 +48,18 @@ func (s service) ListAccounts(ctx context.Context, listAccount *ListAccountReque
 
 func (s service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
 	return s.repo.DeleteAccount(request.AccountID)
+}
+
+func (s service) FindByKey(ctx context.Context, key string) (*Account, error) {
+	if key == "" {
+		return nil, errors.New("key is required")
+	}
+
+	account, err := s.repo.FindByKey(key)
+	if err != nil {
+		return nil, err
+	}
+	return account, nil
 }
 
 func NewService(repo Repository) Service {

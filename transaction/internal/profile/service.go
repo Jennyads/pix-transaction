@@ -3,14 +3,17 @@ package profile
 import (
 	"context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 	"transaction/internal/cfg"
+	"transaction/internal/errutils"
 	proto "transaction/proto/v1"
 )
 
 type Service interface {
 	FindAccountBalance(ctx context.Context, id string, userId string) (float64, error)
-	FindKey(ctx context.Context, key string, accountId string) (float64, error)
+	FindReceiver(ctx context.Context, key string) (*Account, error)
 	IsAccountActive(ctx context.Context, id string) (bool, error)
 }
 
@@ -28,21 +31,25 @@ func (s *service) FindAccountBalance(ctx context.Context, id string, userId stri
 	return account.Balance, nil
 }
 
-// FindKey encontra a chave do usuário para buscar usuário a ser enviado o pix
-func (s *service) FindKey(ctx context.Context, key string, accountId string) (float64, error) {
-	keys, err := s.keys.FindKey(ctx, &proto.KeyRequest{KeyId: key})
+func (s *service) FindReceiver(ctx context.Context, key string) (*Account, error) {
+	account, err := s.account.FindByKey(ctx, &proto.FindByKeyRequest{Key: key})
 	if err != nil {
-		return 0, err
+		switch status.Code(err) {
+		case codes.NotFound:
+			return nil, errutils.ErrInvalidKey
+		}
+
+		return nil, err
 	}
-	return keys.Value, nil
+	return ProtoToAccount(account), nil
 }
 
 func (s *service) IsAccountActive(ctx context.Context, id string) (bool, error) {
-	_, err := s.account.IsAccountActive(ctx, &proto.AccountRequest{AccountId: id})
+	isActive, err := s.account.IsAccountActive(ctx, &proto.AccountRequest{AccountId: id})
 	if err != nil {
 		return false, err
 	}
-	return true, nil
+	return isActive.GetValue(), nil
 }
 
 func NewService(config cfg.Config) Service {

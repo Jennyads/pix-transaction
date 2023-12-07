@@ -69,6 +69,10 @@ message ListAccountRequest{
     repeated string account_id = 1;
 }
 
+message FindByKeyRequest{
+    string key = 1;
+}
+
 service AccountService {
     rpc CreateAccount(Account) returns (Account) {
     }
@@ -84,7 +88,12 @@ service AccountService {
 
     rpc DeleteAccount(AccountRequest) returns (google.protobuf.Empty){
     }
-    rpc IsAccountActive(AccountRequest) returns (google.protobuf.BoolValue);
+
+    rpc IsAccountActive(AccountRequest) returns (google.protobuf.BoolValue){
+    }
+
+    rpc FindByKey(FindByKeyRequest) returns (Account){
+    }
 }
 enum Type {
     cpf = 0;

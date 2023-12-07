@@ -33,7 +33,6 @@ func (p ProfileServer) SendPix(ctx context.Context, pixEvent *proto.PixTransacti
 		}
 	}
 	return &empty.Empty{}, nil
-
 }
 
 func (p ProfileServer) CreateAccount(ctx context.Context, ac *proto.Account) (*proto.Account, error) {
@@ -119,6 +118,18 @@ func (p ProfileServer) DeleteAccount(ctx context.Context, request *proto.Account
 	}
 	return &empty.Empty{}, nil
 }
+
+func (p ProfileServer) FindByKey(ctx context.Context, request *proto.FindByKeyRequest) (*proto.Account, error) {
+	found, err := p.account.FindByKey(ctx, request.Key)
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return account.ToProto(found), nil
+}
+
 func (p ProfileServer) CreateUser(ctx context.Context, request *proto.User) (*empty.Empty, error) {
 	_, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {

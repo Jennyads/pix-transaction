@@ -1,6 +1,7 @@
 package account
 
 import (
+	"database/sql"
 	"gorm.io/gorm"
 	"profile/internal/cfg"
 )
@@ -11,6 +12,7 @@ type Repository interface {
 	UpdateAccount(account *Account) (*Account, error)
 	ListAccount(accountIDs []string) ([]*Account, error)
 	DeleteAccount(id string) error
+	FindByKey(key string) (*Account, error)
 }
 
 type repository struct {
@@ -53,6 +55,18 @@ func (r repository) ListAccount(ids []string) ([]*Account, error) {
 
 func (r repository) DeleteAccount(id string) error {
 	return r.db.Delete(&Account{}, "id = ?", id).Error
+}
+
+func (r repository) FindByKey(key string) (*Account, error) {
+	var account Account
+	err := r.db.Raw(`SELECT * FROM accounts
+						INNER JOIN keys on accounts.id = keys.account_id
+						WHERE keys.name = @key`,
+		sql.Named("key", key)).Scan(&account).Error
+	if err != nil {
+		return nil, err
+	}
+	return &account, err
 }
 
 func NewRepository(db *gorm.DB, config *cfg.Config) Repository {

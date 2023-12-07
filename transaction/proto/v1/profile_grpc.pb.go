@@ -265,6 +265,7 @@ const (
 	AccountService_ListAccounts_FullMethodName    = "/profile.proto.v2.AccountService/ListAccounts"
 	AccountService_DeleteAccount_FullMethodName   = "/profile.proto.v2.AccountService/DeleteAccount"
 	AccountService_IsAccountActive_FullMethodName = "/profile.proto.v2.AccountService/IsAccountActive"
+	AccountService_FindByKey_FullMethodName       = "/profile.proto.v2.AccountService/FindByKey"
 )
 
 // AccountServiceClient is the client API for AccountService service.
@@ -277,6 +278,7 @@ type AccountServiceClient interface {
 	ListAccounts(ctx context.Context, in *ListAccountRequest, opts ...grpc.CallOption) (*ListAccount, error)
 	DeleteAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	IsAccountActive(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*wrappers.BoolValue, error)
+	FindByKey(ctx context.Context, in *FindByKeyRequest, opts ...grpc.CallOption) (*Account, error)
 }
 
 type accountServiceClient struct {
@@ -341,6 +343,15 @@ func (c *accountServiceClient) IsAccountActive(ctx context.Context, in *AccountR
 	return out, nil
 }
 
+func (c *accountServiceClient) FindByKey(ctx context.Context, in *FindByKeyRequest, opts ...grpc.CallOption) (*Account, error) {
+	out := new(Account)
+	err := c.cc.Invoke(ctx, AccountService_FindByKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServiceServer is the server API for AccountService service.
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility
@@ -351,6 +362,7 @@ type AccountServiceServer interface {
 	ListAccounts(context.Context, *ListAccountRequest) (*ListAccount, error)
 	DeleteAccount(context.Context, *AccountRequest) (*empty.Empty, error)
 	IsAccountActive(context.Context, *AccountRequest) (*wrappers.BoolValue, error)
+	FindByKey(context.Context, *FindByKeyRequest) (*Account, error)
 	mustEmbedUnimplementedAccountServiceServer()
 }
 
@@ -375,6 +387,9 @@ func (UnimplementedAccountServiceServer) DeleteAccount(context.Context, *Account
 }
 func (UnimplementedAccountServiceServer) IsAccountActive(context.Context, *AccountRequest) (*wrappers.BoolValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAccountActive not implemented")
+}
+func (UnimplementedAccountServiceServer) FindByKey(context.Context, *FindByKeyRequest) (*Account, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindByKey not implemented")
 }
 func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}
 
@@ -497,6 +512,24 @@ func _AccountService_IsAccountActive_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountService_FindByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindByKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).FindByKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AccountService_FindByKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).FindByKey(ctx, req.(*FindByKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccountService_ServiceDesc is the grpc.ServiceDesc for AccountService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -527,6 +560,10 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsAccountActive",
 			Handler:    _AccountService_IsAccountActive_Handler,
+		},
+		{
+			MethodName: "FindByKey",
+			Handler:    _AccountService_FindByKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

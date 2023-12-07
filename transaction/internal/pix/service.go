@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
+	"transaction/internal/errutils"
 	"transaction/internal/event"
 	"transaction/internal/profile"
 	"transaction/internal/transactions"
-	proto "transaction/proto/v1"
 )
 
 type Service interface {
@@ -39,30 +39,34 @@ func (s service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
 }
 
 func (s service) Validations(ctx context.Context, pix *Pix) error {
+	isActive, err := s.profile.IsAccountActive(ctx, pix.AccountId)
+	if err != nil {
+		return err
+	}
+
+	if !isActive {
+		return errutils.ErrInactiveAccount
+	}
+
 	balance, err := s.profile.FindAccountBalance(ctx, pix.AccountId, pix.UserID)
 	if err != nil {
 		return err
 	}
 
 	if balance < pix.Amount {
-		return ErrInsufficientBalance
+		return errutils.ErrInsufficientBalance
 	}
 
-	_, err = s.profile.FindKey(ctx, pix.Key, pix.Receiver)
+	account, err := s.profile.FindReceiver(ctx, pix.Key)
 	if err != nil {
-		if errors.Is(ErrKeyNotFound, err) {
-			return ErrInvalidKey
+		if errors.Is(errutils.ErrKeyNotFound, err) {
+			return errutils.ErrInvalidKey
 		}
 		return err
 	}
 
-	isActive, err := s.profile.IsAccountActive(ctx, &proto.AccountRequest{AccountId: pix.AccountId, UserId: pix.UserID})
-	if err != nil {
-		return err
-	}
-
-	if !isActive.GetValue() {
-		return ErrInactiveAccount
+	if account.BlockedAt == nil {
+		return errutils.ErrReceiverAccountBlocked
 	}
 
 	return nil
