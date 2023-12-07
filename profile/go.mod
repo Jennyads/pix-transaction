@@ -43,6 +43,7 @@ require (
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/net v0.18.0 // indirect
 	golang.org/x/sys v0.14.0 // indirect

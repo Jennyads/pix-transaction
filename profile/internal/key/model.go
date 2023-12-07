@@ -16,13 +16,13 @@ const (
 )
 
 type Key struct {
-	Id        string `gorm:"primarykey;type:varchar(36)"`
-	AccountID string `gorm:"foreignKey;type:varchar(36)"`
-	Name      string
-	Type      Type
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	Id        string         `gorm:"primaryKey;type:varchar(36);column:id"`
+	AccountID string         `gorm:"foreignKey;type:varchar(36);column:account_id"`
+	Name      string         `gorm:"type:varchar(200);column:name"`
+	Type      Type           `gorm:"type:varchar(100);column:type"`
+	CreatedAt time.Time      `gorm:"type:timestamp;column:created_at"`
+	UpdatedAt time.Time      `gorm:"type:timestamp;column:updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index;type:timestamp;column:deleted_at"`
 }
 
 type KeyRequest struct {

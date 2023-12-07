@@ -1,6 +1,7 @@
 package account
 
 import (
+	"context"
 	"database/sql"
 	"gorm.io/gorm"
 	"profile/internal/cfg"
@@ -13,6 +14,7 @@ type Repository interface {
 	ListAccount(accountIDs []string) ([]*Account, error)
 	DeleteAccount(id string) error
 	FindByKey(key string) (*Account, error)
+	IsAccountActive(ctx context.Context, id string) (bool, error)
 }
 
 type repository struct {
@@ -67,6 +69,19 @@ func (r repository) FindByKey(key string) (*Account, error) {
 		return nil, err
 	}
 	return &account, err
+}
+
+func (r repository) IsAccountActive(ctx context.Context, id string) (bool, error) {
+	var account Account
+	result := r.db.Select("deleted_at").Where("id = ?", id).First(&account)
+
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return false, nil
+		}
+		return false, result.Error
+	}
+	return account.DeletedAt == gorm.DeletedAt{}, nil
 }
 
 func NewRepository(db *gorm.DB, config *cfg.Config) Repository {

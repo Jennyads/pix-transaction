@@ -1,6 +1,7 @@
 package key
 
 import (
+	"context"
 	"gorm.io/gorm"
 	"profile/internal/cfg"
 )
@@ -10,6 +11,8 @@ type Repository interface {
 	UpdateKey(key *Key) (*Key, error)
 	ListKey(ids []string) ([]*Key, error)
 	DeleteKey(id string) error
+
+	FindKey(ctx context.Context, key string, accountId string) (float64, error)
 }
 
 type repository struct {
@@ -43,6 +46,20 @@ func (r repository) ListKey(ids []string) ([]*Key, error) {
 
 func (r repository) DeleteKey(id string) error {
 	return r.db.Delete(&Key{}, "id = ?", id).Error
+}
+
+func (r repository) FindKey(ctx context.Context, key string, accountId string) (float64, error) {
+	var keyInfo Key
+	result := r.db.Select("value").Where("key = ? AND account_id = ?", key, accountId).First(&keyInfo)
+
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return 0.0, nil
+		}
+		return 0.0, result.Error
+	}
+
+	return keyInfo.Value, nil
 }
 
 func NewRepository(db *gorm.DB, config *cfg.Config) Repository {
