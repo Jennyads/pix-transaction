@@ -1,8 +1,10 @@
 package key
 
 import (
+	"context"
 	"errors"
 	"github.com/google/uuid"
+	proto "profile/proto/v1"
 	"time"
 )
 
@@ -11,6 +13,8 @@ type Service interface {
 	UpdateKey(key *Key) (*Key, error)
 	ListKey(req *ListKeyRequest) ([]*Key, error)
 	DeleteKey(id *KeyRequest) error
+
+	FindKey(ctx context.Context, key string, accountId string) (float64, error)
 }
 
 type service struct {
@@ -43,6 +47,14 @@ func (s service) DeleteKey(request *KeyRequest) error {
 		return errors.New("account_id is required")
 	}
 	return s.repo.DeleteKey(request.keyID)
+}
+
+func (s *service) FindKey(ctx context.Context, key string, accountId string) (float64, error) {
+	keys, err := s.repo.FindKey(ctx, &proto.KeyRequest{KeyId: key})
+	if err != nil {
+		return 0, err
+	}
+	return keys.Value, nil
 }
 
 func NewService(repo Repository) Service {

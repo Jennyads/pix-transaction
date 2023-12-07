@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/google/uuid"
+	proto "profile/proto/v1"
 	"time"
 )
 
@@ -13,6 +14,7 @@ type Service interface {
 	UpdateAccount(ctx context.Context, account *Account) (*Account, error)
 	ListAccounts(ctx context.Context, req *ListAccountRequest) ([]*Account, error)
 	DeleteAccount(ctx context.Context, req *AccountRequest) error
+	IsAccountActive(ctx context.Context, id string) (bool, error)
 }
 
 type service struct {
@@ -47,6 +49,13 @@ func (s service) ListAccounts(ctx context.Context, listAccount *ListAccountReque
 
 func (s service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
 	return s.repo.DeleteAccount(request.AccountID)
+}
+func (s *service) IsAccountActive(ctx context.Context, id string) (bool, error) {
+	_, err := s.repo.IsAccountActive(ctx, &proto.AccountRequest{AccountId: id})
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func NewService(repo Repository) Service {
