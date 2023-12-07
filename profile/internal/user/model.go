@@ -8,16 +8,16 @@ import (
 )
 
 type User struct {
-	Id        string `gorm:"primarykey;type:varchar(36)"`
-	Name      string
-	Email     string
-	Address   string
-	Cpf       string
-	Phone     string
-	Birthday  time.Time
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	Id        string         `gorm:"primaryKey;type:varchar(36);column:id"`
+	Name      string         `gorm:"type:varchar(255);column:name"`
+	Email     string         `gorm:"type:varchar(255);uniqueIndex;column:email"`
+	Address   string         `gorm:"type:varchar(255);column:address"`
+	Cpf       string         `gorm:"type:varchar(14);uniqueIndex;column:cpf"`
+	Phone     string         `gorm:"type:varchar(20);column:phone"`
+	Birthday  time.Time      `gorm:"type:date;column:birthday"`
+	CreatedAt time.Time      `gorm:"type:timestamp;column:created_at"`
+	UpdatedAt time.Time      `gorm:"type:timestamp;column:updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index;type:timestamp;column:deleted_at"`
 }
 
 type UserRequest struct {

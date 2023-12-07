@@ -1,20 +1,22 @@
 package account
 
 import (
+	"fmt"
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 	proto "profile/proto/v1"
 	"time"
 )
 
 type Account struct {
-	Id        string `gorm:"primarykey;type:varchar(36)"`
-	UserID    string `gorm:"foreignKey;type:varchar(36)"`
-	Balance   float64
-	Agency    string
-	Bank      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	Id        string          `gorm:"primaryKey;type:varchar(36);column:id"`
+	UserID    string          `gorm:"foreignKey;type:varchar(36);column:user_id"`
+	Balance   decimal.Decimal `gorm:"type:decimal(10,2);column:balance"`
+	Agency    string          `gorm:"type:varchar(100);column:agency"`
+	Bank      string          `gorm:"type:varchar(100);column:bank"`
+	CreatedAt time.Time       `gorm:"type:timestamp;column:created_at"`
+	UpdatedAt time.Time       `gorm:"type:timestamp;column:updated_at"`
+	DeletedAt gorm.DeletedAt  `gorm:"index;type:timestamp;column:deleted_at"`
 }
 
 type AccountRequest struct {
@@ -27,18 +29,25 @@ type ListAccountRequest struct {
 }
 
 func ProtoToAccount(account *proto.Account) *Account {
+	balanceStr := fmt.Sprintf("%.2f", account.Balance)
+	balance, err := decimal.NewFromString(balanceStr)
+	if err != nil {
+		return nil
+	}
+
 	return &Account{
 		UserID:  account.UserId,
-		Balance: account.Balance,
+		Balance: balance,
 		Agency:  account.Agency,
 		Bank:    account.Bank,
 	}
 }
 
 func ToProto(account *Account) *proto.Account {
+	balance, _ := account.Balance.Float64()
 	return &proto.Account{
 		UserId:  account.UserID,
-		Balance: account.Balance,
+		Balance: balance,
 		Agency:  account.Agency,
 		Bank:    account.Bank,
 	}
