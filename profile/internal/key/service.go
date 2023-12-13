@@ -12,8 +12,7 @@ type Service interface {
 	UpdateKey(key *Key) (*Key, error)
 	ListKey(req *ListKeyRequest) ([]*Key, error)
 	DeleteKey(id *KeyRequest) error
-
-	FindKey(ctx context.Context, key string, accountId string) (float64, error)
+	FindKey(ctx context.Context, key string, accountId string) (*Key, error)
 }
 
 type service struct {
@@ -48,10 +47,10 @@ func (s service) DeleteKey(request *KeyRequest) error {
 	return s.repo.DeleteKey(request.keyID)
 }
 
-func (s *service) FindKey(ctx context.Context, key string, accountId string) (float64, error) {
+func (s *service) FindKey(ctx context.Context, key string, accountId string) (*Key, error) {
 	keys, err := s.repo.FindKey(ctx, key, accountId)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 	return keys, nil
 }

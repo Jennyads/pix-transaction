@@ -17,10 +17,16 @@ type KafkaConfig struct {
 	Brokers []string
 }
 
+type RedisConfig struct {
+	Host string
+	Port string
+}
+
 // Config is the struct that holds all the configuration for the application
 type Config struct {
 	SqlServerConfig SqlServerConfig
 	KafkaConfig     KafkaConfig
+	RedisConfig     RedisConfig
 }
 
 func Load() (*Config, error) {

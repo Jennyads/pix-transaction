@@ -64,3 +64,9 @@ services:
     image: mcr.microsoft.com/mssql-tools
     depends_on:
       - sqlserver
+
+  redis:
+    image: redis
+    command: redis-server --requirepass redis
+    ports:
+      - "6379:6379"

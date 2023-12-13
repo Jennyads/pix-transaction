@@ -1,10 +1,5 @@
 package user
 
-import (
-	"github.com/google/uuid"
-	"time"
-)
-
 type Service interface {
 	CreateUser(user *User) (*User, error)
 	FindUserById(req *UserRequest) (*User, error)
@@ -18,9 +13,6 @@ type service struct {
 }
 
 func (s service) CreateUser(user *User) (*User, error) {
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-	user.Id = uuid.New().String()
 	return s.repo.CreateUser(user)
 }
 
@@ -29,7 +21,6 @@ func (s service) FindUserById(userRequest *UserRequest) (*User, error) {
 }
 
 func (s service) UpdateUser(user *User) (*User, error) {
-	user.UpdatedAt = time.Now()
 	return s.repo.UpdateUser(user)
 }
 

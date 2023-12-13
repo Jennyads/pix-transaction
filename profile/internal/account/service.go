@@ -45,11 +45,11 @@ func (s *service) DeleteAccount(ctx context.Context, request *AccountRequest) er
 	return s.repo.DeleteAccount(request.AccountID)
 }
 func (s *service) IsAccountActive(ctx context.Context, id string) (bool, error) {
-	_, err := s.repo.IsAccountActive(ctx, id)
+	active, err := s.repo.IsAccountActive(ctx, id)
 	if err != nil {
 		return false, err
 	}
-	return true, nil
+	return active, nil
 }
 
 func (s *service) FindByKey(ctx context.Context, key string) (*Account, error) {

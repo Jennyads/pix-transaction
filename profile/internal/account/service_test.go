@@ -428,21 +428,21 @@ func TestIsAccountActive(t *testing.T) {
 			id:   "1",
 			mockFunc: func(repo *mockRepo) {
 				repo.On("IsAccountActive", "1").
-					Return(true, nil)
+					Return(true, nil).Times(1)
 			},
 			want: true,
 			err:  nil,
 		},
-		//{
-		//	name: "inactive account",
-		//	id:   "2",
-		//	mockFunc: func(repo *mockRepo) {
-		//		repo.On("IsAccountActive", "2").
-		//			Return(false, nil)
-		//	},
-		//	want: false,
-		//	err:  nil,
-		//},
+		{
+			name: "inactive account",
+			id:   "2",
+			mockFunc: func(repo *mockRepo) {
+				repo.On("IsAccountActive", "2").
+					Return(false, nil).Times(1)
+			},
+			want: false,
+			err:  nil,
+		},
 	}
 
 	for _, c := range cases {
@@ -454,8 +454,8 @@ func TestIsAccountActive(t *testing.T) {
 			s := NewService(repo)
 
 			got, err := s.IsAccountActive(context.Background(), c.id)
-			assert.Equal(t, err, c.err)
-			assert.Equal(t, got, c.want)
+			assert.Equal(t, c.err, err)
+			assert.Equal(t, c.want, got)
 		})
 	}
 }

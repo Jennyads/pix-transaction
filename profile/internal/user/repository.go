@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"profile/internal/cfg"
 )
@@ -19,6 +20,7 @@ type repository struct {
 }
 
 func (r repository) CreateUser(user *User) (*User, error) {
+	user.Id = uuid.New().String()
 	err := r.db.Create(&user).Error
 	if err != nil {
 		return nil, err
