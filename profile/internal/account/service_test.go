@@ -340,7 +340,7 @@ func TestListAccounts(t *testing.T) {
 			err: nil,
 		},
 		{
-			name: "failed because error in create account",
+			name: "failed because error in list accounts",
 			req: &ListAccountRequest{
 				AccountIDs: []string{"1", "2"},
 			},
