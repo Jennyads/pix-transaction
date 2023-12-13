@@ -18,13 +18,7 @@ type service struct {
 
 func (s service) SendPix(ctx context.Context, req *Pix) error {
 	pixEvent := PixEvent{
-		PixData: &Pix{
-			UserID:    req.UserID,
-			AccountId: req.AccountId,
-			Key:       req.Key,
-			Amount:    req.Amount,
-			Status:    req.Status,
-		},
+		PixData: req,
 	}
 
 	payload, err := json.Marshal(pixEvent)

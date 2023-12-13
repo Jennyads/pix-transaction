@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/google/uuid"
-	proto "profile/proto/v1"
 	"time"
 )
 
@@ -50,11 +49,11 @@ func (s service) DeleteKey(request *KeyRequest) error {
 }
 
 func (s *service) FindKey(ctx context.Context, key string, accountId string) (float64, error) {
-	keys, err := s.repo.FindKey(ctx, &proto.KeyRequest{KeyId: key})
+	keys, err := s.repo.FindKey(ctx, key, accountId)
 	if err != nil {
 		return 0, err
 	}
-	return keys.Value, nil
+	return keys, nil
 }
 
 func NewService(repo Repository) Service {
