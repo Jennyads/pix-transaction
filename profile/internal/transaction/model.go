@@ -45,3 +45,27 @@ func ProtoToPix(pix *pb.PixTransaction) *Pix {
 type PixEvent struct {
 	PixData *Pix
 }
+
+type Status string
+
+const (
+	StatusCompleted Status = "COMPLETED"
+	StatusFailed    Status = "FAILED"
+)
+
+func ProtoToWebhook(webhook *pb.Webhook) *Webhook {
+	amount := decimal.NewFromFloat(webhook.Amount)
+	return &Webhook{
+		AccountID:  webhook.AccountId,
+		ReceiverID: webhook.ReceiverId,
+		Amount:     amount,
+		Status:     Status(webhook.Status.String()),
+	}
+}
+
+type Webhook struct {
+	AccountID  string
+	ReceiverID string
+	Amount     decimal.Decimal
+	Status     Status
+}

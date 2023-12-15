@@ -144,15 +144,23 @@ message PixTransaction {
     string status = 7;
 }
 
-service PixTransactionService {
-    rpc SendPix(PixTransaction) returns (google.protobuf.Empty) {
-    }
+enum Status {
+    PENDING = 0;
+    COMPLETED = 1;
 }
 
 message Webhook {
-    string url = 1;
+    string account_id = 1;
+    string receiver_id = 2;
+    double amount = 3;
+    Status status = 4;
 }
 
-service WebhookService {
-    rpc SetWebhook(Webhook) returns (google.protobuf.Empty) {}
+
+service PixTransactionService {
+    rpc SendPix(PixTransaction) returns (google.protobuf.Empty) {
+    }
+
+    rpc PixWebhook(Webhook) returns (google.protobuf.Empty) {
+    }
 }

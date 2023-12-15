@@ -1,11 +1,13 @@
 package pix
 
+import "github.com/shopspring/decimal"
+
 type Pix struct {
 	UserID    string
 	AccountId string
 	Key       string
 	Receiver  string
-	Amount    float64
+	Amount    decimal.Decimal
 	Status    string
 }
 

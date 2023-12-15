@@ -17,6 +17,7 @@ type Repository interface {
 	DeleteAccount(id string) error
 	FindByKey(key string) (*Account, error)
 	IsAccountActive(ctx context.Context, id string) (bool, error)
+	UpdateAccounts(accounts []*Account) error
 }
 
 type repository struct {
@@ -51,6 +52,21 @@ func (r repository) UpdateAccount(account *Account) (*Account, error) {
 		return nil, result.Error
 	}
 	return account, nil
+}
+
+func (r repository) UpdateAccounts(accounts []*Account) error {
+	tx := r.db.Begin()
+	now := time.Now()
+	for _, account := range accounts {
+		account.UpdatedAt = now
+		result := tx.Save(&account)
+		if result.Error != nil {
+			tx.Rollback()
+			return result.Error
+		}
+	}
+	tx.Commit()
+	return nil
 }
 
 func (r repository) ListAccount(ids []string) ([]*Account, error) {

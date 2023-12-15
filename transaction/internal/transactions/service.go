@@ -11,6 +11,7 @@ type Service interface {
 	CreateTransaction(transaction *Transaction) (*Transaction, error)
 	FindTransactionById(id *TransactionRequest) (*Transaction, error)
 	ListTransactions(transactionIDs *ListTransactionRequest) ([]*Transaction, error)
+	UpdateTransactionStatus(transaction *Transaction) error
 }
 
 type service struct {
@@ -20,7 +21,6 @@ type service struct {
 
 func (s service) CreateTransaction(transaction *Transaction) (*Transaction, error) {
 	transaction.CreatedAt = time.Now()
-	transaction.ProcessedAt = time.Now()
 	transaction.ID = uuid.New().String()
 	return s.repo.CreateTransaction(transaction)
 }
@@ -36,17 +36,10 @@ func (s service) ListTransactions(req *ListTransactionRequest) ([]*Transaction, 
 	return s.repo.ListTransactions(req.transactionIDs)
 }
 
-//func (s service) StartListener(ctx context.Context, topic string) error {
-//	err := s.events.RegisterHandler(ctx, "pix-topic", s.Handler)
-//	if err != nil {
-//		return err
-//	}
-//	if topic == "transaction_events_topic" {
-//		go c.handleIncomingMessages(ctx, topic, handler)
-//	}
-//	return nil
-//
-//}
+func (s service) UpdateTransactionStatus(transaction *Transaction) error {
+	transaction.UpdatedAt = time.Now()
+	return s.repo.UpdateTransactionStatus(transaction)
+}
 
 func NewService(repo Repository) Service {
 	return &service{

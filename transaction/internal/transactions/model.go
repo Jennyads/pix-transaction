@@ -5,14 +5,24 @@ import (
 	"transaction/proto"
 )
 
+type Status string
+
+const (
+	StatusPending   Status = "PENDING"
+	StatusCompleted Status = "COMPLETED"
+	StatusFailed    Status = "FAILED"
+)
+
 type Transaction struct {
 	ID          string `dynamodbav:"PK"`
-	AccountID   string `dynamodbav:"SK"`
-	Receiver    int64
+	AccountID   string
+	Receiver    string
 	Value       float64
-	Status      string
+	Status      Status
+	ErrMessage  string
 	CreatedAt   time.Time
 	ProcessedAt time.Time
+	UpdatedAt   time.Time
 }
 
 type TransactionRequest struct {

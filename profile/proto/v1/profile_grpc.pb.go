@@ -772,7 +772,8 @@ var KeysService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	PixTransactionService_SendPix_FullMethodName = "/profile.proto.v2.PixTransactionService/SendPix"
+	PixTransactionService_SendPix_FullMethodName    = "/profile.proto.v2.PixTransactionService/SendPix"
+	PixTransactionService_PixWebhook_FullMethodName = "/profile.proto.v2.PixTransactionService/PixWebhook"
 )
 
 // PixTransactionServiceClient is the client API for PixTransactionService service.
@@ -780,6 +781,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PixTransactionServiceClient interface {
 	SendPix(ctx context.Context, in *PixTransaction, opts ...grpc.CallOption) (*empty.Empty, error)
+	PixWebhook(ctx context.Context, in *Webhook, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type pixTransactionServiceClient struct {
@@ -799,11 +801,21 @@ func (c *pixTransactionServiceClient) SendPix(ctx context.Context, in *PixTransa
 	return out, nil
 }
 
+func (c *pixTransactionServiceClient) PixWebhook(ctx context.Context, in *Webhook, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, PixTransactionService_PixWebhook_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PixTransactionServiceServer is the server API for PixTransactionService service.
 // All implementations must embed UnimplementedPixTransactionServiceServer
 // for forward compatibility
 type PixTransactionServiceServer interface {
 	SendPix(context.Context, *PixTransaction) (*empty.Empty, error)
+	PixWebhook(context.Context, *Webhook) (*empty.Empty, error)
 	mustEmbedUnimplementedPixTransactionServiceServer()
 }
 
@@ -813,6 +825,9 @@ type UnimplementedPixTransactionServiceServer struct {
 
 func (UnimplementedPixTransactionServiceServer) SendPix(context.Context, *PixTransaction) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendPix not implemented")
+}
+func (UnimplementedPixTransactionServiceServer) PixWebhook(context.Context, *Webhook) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PixWebhook not implemented")
 }
 func (UnimplementedPixTransactionServiceServer) mustEmbedUnimplementedPixTransactionServiceServer() {}
 
@@ -845,6 +860,24 @@ func _PixTransactionService_SendPix_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PixTransactionService_PixWebhook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Webhook)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PixTransactionServiceServer).PixWebhook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PixTransactionService_PixWebhook_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PixTransactionServiceServer).PixWebhook(ctx, req.(*Webhook))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PixTransactionService_ServiceDesc is the grpc.ServiceDesc for PixTransactionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -856,95 +889,9 @@ var PixTransactionService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "SendPix",
 			Handler:    _PixTransactionService_SendPix_Handler,
 		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "profile.proto",
-}
-
-const (
-	WebhookService_SetWebhook_FullMethodName = "/profile.proto.v2.WebhookService/SetWebhook"
-)
-
-// WebhookServiceClient is the client API for WebhookService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type WebhookServiceClient interface {
-	SetWebhook(ctx context.Context, in *Webhook, opts ...grpc.CallOption) (*empty.Empty, error)
-}
-
-type webhookServiceClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewWebhookServiceClient(cc grpc.ClientConnInterface) WebhookServiceClient {
-	return &webhookServiceClient{cc}
-}
-
-func (c *webhookServiceClient) SetWebhook(ctx context.Context, in *Webhook, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
-	err := c.cc.Invoke(ctx, WebhookService_SetWebhook_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// WebhookServiceServer is the server API for WebhookService service.
-// All implementations must embed UnimplementedWebhookServiceServer
-// for forward compatibility
-type WebhookServiceServer interface {
-	SetWebhook(context.Context, *Webhook) (*empty.Empty, error)
-	mustEmbedUnimplementedWebhookServiceServer()
-}
-
-// UnimplementedWebhookServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedWebhookServiceServer struct {
-}
-
-func (UnimplementedWebhookServiceServer) SetWebhook(context.Context, *Webhook) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetWebhook not implemented")
-}
-func (UnimplementedWebhookServiceServer) mustEmbedUnimplementedWebhookServiceServer() {}
-
-// UnsafeWebhookServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to WebhookServiceServer will
-// result in compilation errors.
-type UnsafeWebhookServiceServer interface {
-	mustEmbedUnimplementedWebhookServiceServer()
-}
-
-func RegisterWebhookServiceServer(s grpc.ServiceRegistrar, srv WebhookServiceServer) {
-	s.RegisterService(&WebhookService_ServiceDesc, srv)
-}
-
-func _WebhookService_SetWebhook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Webhook)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(WebhookServiceServer).SetWebhook(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: WebhookService_SetWebhook_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WebhookServiceServer).SetWebhook(ctx, req.(*Webhook))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// WebhookService_ServiceDesc is the grpc.ServiceDesc for WebhookService service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var WebhookService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "profile.proto.v2.WebhookService",
-	HandlerType: (*WebhookServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SetWebhook",
-			Handler:    _WebhookService_SetWebhook_Handler,
+			MethodName: "PixWebhook",
+			Handler:    _PixTransactionService_PixWebhook_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

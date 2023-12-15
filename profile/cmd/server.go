@@ -22,10 +22,22 @@ type ProfileServer struct {
 	proto.UnimplementedUserServiceServer
 	proto.UnimplementedAccountServiceServer
 	proto.UnimplementedKeysServiceServer
+	proto.UnimplementedPixTransactionServiceServer
 }
 
 func (p ProfileServer) SendPix(ctx context.Context, pixEvent *proto.PixTransaction) (*empty.Empty, error) {
 	err := p.transactionService.SendPix(ctx, transaction.ProtoToPix(pixEvent))
+	if err != nil {
+		switch err {
+		default:
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+	return &empty.Empty{}, nil
+}
+
+func (p ProfileServer) PixWebhook(ctx context.Context, webhook *proto.Webhook) (*empty.Empty, error) {
+	err := p.transactionService.PixWebhook(ctx, transaction.ProtoToWebhook(webhook))
 	if err != nil {
 		switch err {
 		default:
