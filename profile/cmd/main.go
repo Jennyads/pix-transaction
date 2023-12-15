@@ -32,6 +32,11 @@ func main() {
 		log.Fatalf("Failed to listen port 9080 %v", err)
 	}
 
+	err = sqlserver.RunMigrations(config)
+	if err != nil {
+		log.Fatalf("Failed to run migrations %v", err)
+	}
+
 	db, err := sqlserver.Start(config)
 	if err != nil {
 		log.Fatalf("Failed to connect to database %v", err)
@@ -52,7 +57,7 @@ func main() {
 	events := event.NewEvent(kafkaConn, "transaction_events_topic",
 		event.WithAttempts(4), event.WithBroker("localhost:9092"))
 
-	transactionService := transaction.NewService(events)
+	transactionService := transaction.NewService(events, accountRepository)
 
 	//server
 	profileServer := NewProfileService(userService, accountService, keyService, transactionService)

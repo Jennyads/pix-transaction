@@ -18,8 +18,10 @@ type KafkaConfig struct {
 }
 
 type RedisConfig struct {
-	Host string
-	Port string
+	Host     string
+	Port     string
+	User     string
+	Password string
 }
 
 // Config is the struct that holds all the configuration for the application
@@ -40,6 +42,12 @@ func Load() (*Config, error) {
 		},
 		KafkaConfig{
 			Brokers: strings.Split(Getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"), ","),
+		},
+		RedisConfig{
+			Host:     Getenv("REDIS_HOST", "localhost"),
+			Port:     Getenv("REDIS_PORT", "6379"),
+			User:     Getenv("REDIS_USER", "default"),
+			Password: Getenv("REDIS_PASSWORD", "redis"),
 		},
 	}, nil
 }

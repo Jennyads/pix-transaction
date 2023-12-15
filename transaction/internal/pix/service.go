@@ -6,7 +6,6 @@ import (
 	"errors"
 	"log"
 	"transaction/internal/errutils"
-	"transaction/internal/event"
 	"transaction/internal/profile"
 	"transaction/internal/transactions"
 	"transaction/internal/utils"
@@ -19,7 +18,6 @@ type Service interface {
 type service struct {
 	transaction transactions.Service
 	profile     profile.Service
-	events      event.Client
 }
 
 func (s *service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
@@ -127,4 +125,11 @@ func (s *service) Transaction(ctx context.Context, receiver *profile.Account, se
 		return err
 	}
 	return nil
+}
+
+func NewService(transaction transactions.Service, profile profile.Service) Service {
+	return &service{
+		transaction: transaction,
+		profile:     profile,
+	}
 }

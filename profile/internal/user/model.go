@@ -15,9 +15,9 @@ type User struct {
 	Cpf       string         `gorm:"type:varchar(11);uniqueIndex;column:cpf"`
 	Phone     string         `gorm:"type:varchar(20);column:phone"`
 	Birthday  time.Time      `gorm:"type:date;column:birthday"`
-	CreatedAt time.Time      `gorm:"type:timestamp;column:created_at"`
-	UpdatedAt time.Time      `gorm:"type:timestamp;column:updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index;type:timestamp;column:deleted_at"`
+	CreatedAt time.Time      `gorm:"type:datetime;column:created_at"`
+	UpdatedAt time.Time      `gorm:"type:datetime;column:updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index;type:datetime;column:deleted_at"`
 }
 
 type UserRequest struct {

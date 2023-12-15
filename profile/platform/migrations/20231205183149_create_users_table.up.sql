@@ -7,9 +7,8 @@ create table users
     cpf        varchar(11),
     phone      varchar(20),
     birthday   date,
-    created_at timestamp,
-    updated_at timestamp,
-    deleted_at timestamp
+    created_at datetime,
+    updated_at datetime,
+    deleted_at datetime
 )
-go
 

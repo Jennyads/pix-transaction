@@ -7,7 +7,7 @@ option go_package = "profile/proto/v2;transaction";
 
 message Transaction {
   string account_id = 1;
-  int64 receiver = 2;
+  string receiver = 2;
   double value = 3;
   string status = 4;
 

@@ -2,7 +2,7 @@ package transactions
 
 import (
 	"time"
-	"transaction/proto"
+	proto "transaction/proto/v1"
 )
 
 type Status string
@@ -56,7 +56,7 @@ func ProtoToTransaction(transaction *proto.Transaction) *Transaction {
 		AccountID: transaction.AccountId,
 		Receiver:  transaction.Receiver,
 		Value:     transaction.Value,
-		Status:    transaction.Status,
+		Status:    Status(transaction.Status),
 	}
 }
 
@@ -65,6 +65,6 @@ func ToProto(transaction *Transaction) *proto.Transaction {
 		AccountId: transaction.AccountID,
 		Receiver:  transaction.Receiver,
 		Value:     transaction.Value,
-		Status:    transaction.Status,
+		Status:    string(transaction.Status),
 	}
 }

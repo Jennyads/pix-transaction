@@ -4,9 +4,9 @@ create table keys
     account_id varchar(36) foreign key references accounts(id),
     name       varchar(200),
     type       varchar(100),
-    created_at timestamp,
-    updated_at timestamp,
-    deleted_at timestamp
+    created_at datetime,
+    updated_at datetime,
+    deleted_at datetime
 )
-go
+
 

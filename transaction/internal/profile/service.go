@@ -83,7 +83,7 @@ func (s *service) SendWebhook(ctx context.Context, webhook *Webhook) error {
 	return nil
 }
 
-func NewService(config cfg.Config) Service {
+func NewService(config *cfg.Config) Service {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	conn, err := grpc.Dial(config.ProfileConfig.Host, opts...)

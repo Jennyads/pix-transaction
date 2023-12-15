@@ -5,7 +5,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"transaction/internal/transactions"
-	"transaction/proto"
+	proto "transaction/proto/v1"
 )
 
 type TransactionServer struct {

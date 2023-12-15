@@ -8,10 +8,12 @@ import (
 	"net"
 	"transaction/internal/cfg"
 	"transaction/internal/event"
+	"transaction/internal/pix"
+	"transaction/internal/profile"
 	"transaction/internal/transactions"
 	"transaction/platform/dynamo"
 	"transaction/platform/kafka"
-	"transaction/proto"
+	proto "transaction/proto/v1"
 )
 
 func main() {
@@ -36,22 +38,18 @@ func main() {
 	//server
 	transactionServer := newTransactionService(transactionService)
 
+	profileService := profile.NewService(config)
+
+	pixService := pix.NewService(transactionService, profileService)
+
 	kafkaConn := kafka.NewClient(config).Connect()
 
 	eventTransaction := event.NewEvent(kafkaConn, "transaction_events_topic",
 		event.WithAttempts(4), event.WithBroker("localhost:9092"))
 
-	err = eventTransaction.RegisterHandler(context.Background(), transactionService.Handler)
+	err = eventTransaction.RegisterHandler(context.Background(), pixService.Handler)
 	if err != nil {
 		panic(err)
-	}
-
-	examplePayload := []byte("Exemplo de mensagem do Kafka")
-	err = eventTransaction.Publish(context.Background(), examplePayload)
-	if err != nil {
-		log.Printf("Falha ao enviar mensagem de exemplo: %v", err)
-	} else {
-		log.Println("Mensagem de exemplo enviada com sucesso!")
 	}
 
 	list, err := net.Listen("tcp", ":9090")
@@ -66,6 +64,4 @@ func main() {
 	if err := server.Serve(list); err != nil {
 		log.Fatalf("Failed to serve gRPC server on port 9090: %v", err)
 	}
-
-	//kafka
 }

@@ -5,9 +5,9 @@ create table accounts
     balance    decimal(10,2),
     agency     varchar(100),
     bank      varchar(100),
-    created_at timestamp,
-    updated_at timestamp,
-    deleted_at timestamp,
+    created_at datetime,
+    updated_at datetime,
+    deleted_at datetime,
     )
-go
+
 

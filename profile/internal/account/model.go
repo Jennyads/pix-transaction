@@ -14,10 +14,10 @@ type Account struct {
 	Balance   decimal.Decimal `gorm:"type:decimal(10,2);column:balance"`
 	Agency    string          `gorm:"type:varchar(100);column:agency"`
 	Bank      string          `gorm:"type:varchar(100);column:bank"`
-	CreatedAt time.Time       `gorm:"type:timestamp;column:created_at"`
-	UpdatedAt time.Time       `gorm:"type:timestamp;column:updated_at"`
-	DeletedAt gorm.DeletedAt  `gorm:"index;type:timestamp;column:deleted_at"`
-	BlockedAt *time.Time      `gorm:"type:timestamp;column:blocked_at"`
+	CreatedAt time.Time       `gorm:"type:datetime;column:created_at"`
+	UpdatedAt time.Time       `gorm:"type:datetime;column:updated_at"`
+	DeletedAt gorm.DeletedAt  `gorm:"index;type:datetime;column:deleted_at"`
+	BlockedAt *time.Time      `gorm:"type:datetime;column:blocked_at"`
 }
 
 type AccountRequest struct {
