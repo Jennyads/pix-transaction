@@ -92,16 +92,6 @@ func (s *service) TransactionWorkflow(ctx context.Context, pixEvent *PixEvent) e
 		return err
 	}
 
-	err = s.profile.SendWebhook(ctx, &profile.Webhook{
-		AccountID:  sender.Id,
-		ReceiverID: receiver.Id,
-		Amount:     pixEvent.PixData.Amount,
-		Status:     profile.StatusCompleted,
-	})
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -127,17 +117,14 @@ func (s *service) Validations(ctx context.Context, receiver *profile.Account, se
 }
 
 func (s *service) Transaction(ctx context.Context, receiver *profile.Account, sender *profile.Account, pix *Pix) error {
-	receiver.Balance = receiver.Balance.Add(pix.Amount)
-	err := s.profile.UpdateAccountBalance(ctx, receiver)
+	err := s.profile.SendWebhook(ctx, &profile.Webhook{
+		AccountID:  sender.Id,
+		ReceiverID: receiver.Id,
+		Amount:     pix.Amount,
+		Status:     profile.StatusCompleted,
+	})
 	if err != nil {
 		return err
 	}
-
-	sender.Balance = sender.Balance.Sub(pix.Amount)
-	err = s.profile.UpdateAccountBalance(ctx, sender)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
