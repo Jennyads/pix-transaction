@@ -24,15 +24,22 @@ func TestLoad(t *testing.T) {
 				t.Setenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092,localhost:9093,localhost:9094")
 			},
 			want: &Config{
-				SqlServerConfig{
+				SqlServerConfig: SqlServerConfig{
 					Host:     "example.net",
 					Port:     "1433",
 					User:     "user",
 					Password: "pass",
 					Database: "name",
 				},
-				KafkaConfig{
-					Brokers: []string{"localhost:9092", "localhost:9093", "localhost:9094"}},
+				KafkaConfig: KafkaConfig{
+					Brokers: []string{"localhost:9092", "localhost:9093", "localhost:9094"},
+				},
+				RedisConfig: RedisConfig{
+					Host:     "localhost",
+					Port:     "6379",
+					User:     "default",
+					Password: "redis",
+				},
 			},
 			err: nil,
 		},

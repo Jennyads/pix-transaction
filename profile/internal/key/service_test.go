@@ -33,9 +33,9 @@ func (m *mockRepoKey) DeleteKey(id string) error {
 	return args.Error(0)
 }
 
-func (m *mockRepoKey) FindKey(ctx context.Context, key string, accountId string) (float64, error) {
+func (m *mockRepoKey) FindKey(ctx context.Context, key string, accountId string) (*Key, error) {
 	args := m.Called(ctx, key, accountId)
-	return args.Get(0).(float64), args.Error(1)
+	return args.Get(0).(*Key), args.Error(1)
 }
 
 func TestCreateKey(t *testing.T) {
@@ -298,7 +298,7 @@ func TestFindKey(t *testing.T) {
 		key       string
 		accountId string
 		mockFunc  func(repo *mockRepoKey)
-		want      float64
+		want      *Key
 		err       error
 	}{
 		{
@@ -307,10 +307,15 @@ func TestFindKey(t *testing.T) {
 			accountId: "1",
 			mockFunc: func(repo *mockRepoKey) {
 				repo.On("FindKey", context.Background(), "some_key", "1").
-					Return(42.0, nil)
+					Return(&Key{Id: "1", AccountID: "1", Name: "some_key", Type: Cpf}, nil)
 			},
-			want: 42.0,
-			err:  nil,
+			want: &Key{
+				Id:        "1",
+				AccountID: "1",
+				Name:      "some_key",
+				Type:      Cpf,
+			},
+			err: nil,
 		},
 		{
 			name:      "key not found",
@@ -318,20 +323,9 @@ func TestFindKey(t *testing.T) {
 			accountId: "1",
 			mockFunc: func(repo *mockRepoKey) {
 				repo.On("FindKey", context.Background(), "invalid_key", "1").
-					Return(0.0, nil)
+					Return((*Key)(nil), errors.New("MOCK-ERROR"))
 			},
-			want: 0.0,
-			err:  nil,
-		},
-		{
-			name:      "failed because error in find key",
-			key:       "error_key",
-			accountId: "1",
-			mockFunc: func(repo *mockRepoKey) {
-				repo.On("FindKey", context.Background(), "error_key", "1").
-					Return(0.0, errors.New("MOCK-ERROR"))
-			},
-			want: 0.0,
+			want: nil,
 			err:  errors.New("MOCK-ERROR"),
 		},
 	}

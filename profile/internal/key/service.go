@@ -3,8 +3,6 @@ package key
 import (
 	"context"
 	"errors"
-	"github.com/google/uuid"
-	"time"
 )
 
 type Service interface {
@@ -20,9 +18,9 @@ type service struct {
 }
 
 func (s service) CreateKey(key *Key) (*Key, error) {
-	key.CreatedAt = time.Now()
-	key.UpdatedAt = time.Now()
-	key.Id = uuid.New().String()
+	//key.CreatedAt = time.Now()
+	//key.UpdatedAt = time.Now()
+	//key.Id = uuid.New().String()
 	return s.repo.CreateKey(key)
 }
 
@@ -30,7 +28,7 @@ func (s service) UpdateKey(key *Key) (*Key, error) {
 	if key.Id == "" {
 		return nil, errors.New("id is required")
 	}
-	key.UpdatedAt = time.Now()
+	//key.UpdatedAt = time.Now()
 	return s.repo.UpdateKey(key)
 }
 
