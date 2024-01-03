@@ -15,8 +15,9 @@ type Account struct {
 	BlockedAt *time.Time
 }
 
-func ProtoToAccount(account *proto.Account) *Account {
+func ProtoToAccount(account *proto.AccountResponse) *Account {
 	return &Account{
+		Id:      account.Id,
 		UserID:  account.UserId,
 		Balance: decimal.NewFromFloat(account.Balance),
 		Agency:  account.Agency,

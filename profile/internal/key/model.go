@@ -37,7 +37,7 @@ func ProtoToKey(key *proto.Key) *Key {
 	return &Key{
 		AccountID: key.AccountId,
 		Name:      key.Name,
-		Type:      Type(key.Type),
+		Type:      Type(key.Type.String()),
 	}
 }
 

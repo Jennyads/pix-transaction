@@ -34,11 +34,12 @@ func ProtoToPix(pix *pb.PixTransaction) *Pix {
 	}
 
 	return &Pix{
-		UserID:   pix.UserId,
-		Key:      pix.SenderKey,
-		Receiver: pix.ReceiverKey,
-		Amount:   amount,
-		Status:   pix.Status,
+		AccountID: pix.Id,
+		UserID:    pix.UserId,
+		Key:       pix.SenderKey,
+		Receiver:  pix.ReceiverKey,
+		Amount:    amount,
+		Status:    pix.Status,
 	}
 }
 

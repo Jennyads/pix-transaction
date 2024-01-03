@@ -272,13 +272,13 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountServiceClient interface {
-	CreateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*Account, error)
-	FindAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*Account, error)
+	CreateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*AccountResponse, error)
+	FindAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 	UpdateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*empty.Empty, error)
 	ListAccounts(ctx context.Context, in *ListAccountRequest, opts ...grpc.CallOption) (*ListAccount, error)
 	DeleteAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	IsAccountActive(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*wrappers.BoolValue, error)
-	FindByKey(ctx context.Context, in *FindByKeyRequest, opts ...grpc.CallOption) (*Account, error)
+	FindByKey(ctx context.Context, in *FindByKeyRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 }
 
 type accountServiceClient struct {
@@ -289,8 +289,8 @@ func NewAccountServiceClient(cc grpc.ClientConnInterface) AccountServiceClient {
 	return &accountServiceClient{cc}
 }
 
-func (c *accountServiceClient) CreateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*Account, error) {
-	out := new(Account)
+func (c *accountServiceClient) CreateAccount(ctx context.Context, in *Account, opts ...grpc.CallOption) (*AccountResponse, error) {
+	out := new(AccountResponse)
 	err := c.cc.Invoke(ctx, AccountService_CreateAccount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -298,8 +298,8 @@ func (c *accountServiceClient) CreateAccount(ctx context.Context, in *Account, o
 	return out, nil
 }
 
-func (c *accountServiceClient) FindAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*Account, error) {
-	out := new(Account)
+func (c *accountServiceClient) FindAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error) {
+	out := new(AccountResponse)
 	err := c.cc.Invoke(ctx, AccountService_FindAccount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -343,8 +343,8 @@ func (c *accountServiceClient) IsAccountActive(ctx context.Context, in *AccountR
 	return out, nil
 }
 
-func (c *accountServiceClient) FindByKey(ctx context.Context, in *FindByKeyRequest, opts ...grpc.CallOption) (*Account, error) {
-	out := new(Account)
+func (c *accountServiceClient) FindByKey(ctx context.Context, in *FindByKeyRequest, opts ...grpc.CallOption) (*AccountResponse, error) {
+	out := new(AccountResponse)
 	err := c.cc.Invoke(ctx, AccountService_FindByKey_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -356,13 +356,13 @@ func (c *accountServiceClient) FindByKey(ctx context.Context, in *FindByKeyReque
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility
 type AccountServiceServer interface {
-	CreateAccount(context.Context, *Account) (*Account, error)
-	FindAccount(context.Context, *AccountRequest) (*Account, error)
+	CreateAccount(context.Context, *Account) (*AccountResponse, error)
+	FindAccount(context.Context, *AccountRequest) (*AccountResponse, error)
 	UpdateAccount(context.Context, *Account) (*empty.Empty, error)
 	ListAccounts(context.Context, *ListAccountRequest) (*ListAccount, error)
 	DeleteAccount(context.Context, *AccountRequest) (*empty.Empty, error)
 	IsAccountActive(context.Context, *AccountRequest) (*wrappers.BoolValue, error)
-	FindByKey(context.Context, *FindByKeyRequest) (*Account, error)
+	FindByKey(context.Context, *FindByKeyRequest) (*AccountResponse, error)
 	mustEmbedUnimplementedAccountServiceServer()
 }
 
@@ -370,10 +370,10 @@ type AccountServiceServer interface {
 type UnimplementedAccountServiceServer struct {
 }
 
-func (UnimplementedAccountServiceServer) CreateAccount(context.Context, *Account) (*Account, error) {
+func (UnimplementedAccountServiceServer) CreateAccount(context.Context, *Account) (*AccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
 }
-func (UnimplementedAccountServiceServer) FindAccount(context.Context, *AccountRequest) (*Account, error) {
+func (UnimplementedAccountServiceServer) FindAccount(context.Context, *AccountRequest) (*AccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAccount not implemented")
 }
 func (UnimplementedAccountServiceServer) UpdateAccount(context.Context, *Account) (*empty.Empty, error) {
@@ -388,7 +388,7 @@ func (UnimplementedAccountServiceServer) DeleteAccount(context.Context, *Account
 func (UnimplementedAccountServiceServer) IsAccountActive(context.Context, *AccountRequest) (*wrappers.BoolValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAccountActive not implemented")
 }
-func (UnimplementedAccountServiceServer) FindByKey(context.Context, *FindByKeyRequest) (*Account, error) {
+func (UnimplementedAccountServiceServer) FindByKey(context.Context, *FindByKeyRequest) (*AccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByKey not implemented")
 }
 func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}

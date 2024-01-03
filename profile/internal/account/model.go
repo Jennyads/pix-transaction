@@ -44,9 +44,10 @@ func ProtoToAccount(account *proto.Account) *Account {
 	}
 }
 
-func ToProto(account *Account) *proto.Account {
+func ToProto(account *Account) *proto.AccountResponse {
 	balance, _ := account.Balance.Float64()
-	return &proto.Account{
+	return &proto.AccountResponse{
+		Id:      account.Id,
 		UserId:  account.UserID,
 		Balance: balance,
 		Agency:  account.Agency,

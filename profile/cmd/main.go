@@ -65,6 +65,7 @@ func main() {
 	proto.RegisterUserServiceServer(server, profileServer)
 	proto.RegisterAccountServiceServer(server, profileServer)
 	proto.RegisterKeysServiceServer(server, profileServer)
+	proto.RegisterPixTransactionServiceServer(server, profileServer)
 
 	log.Printf("Serve is running  on port: %v", "9080")
 	if err := server.Serve(list); err != nil {

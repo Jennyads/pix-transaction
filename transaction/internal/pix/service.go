@@ -38,7 +38,7 @@ func (s *service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
 }
 
 func (s *service) TransactionWorkflow(ctx context.Context, pixEvent *PixEvent) error {
-	receiver, err := s.profile.FindReceiver(ctx, pixEvent.PixData.Key)
+	receiver, err := s.profile.FindReceiver(ctx, pixEvent.PixData.Receiver)
 	if err != nil {
 		if errors.Is(errutils.ErrKeyNotFound, err) {
 			log.Println("error key not found")
@@ -62,16 +62,16 @@ func (s *service) TransactionWorkflow(ctx context.Context, pixEvent *PixEvent) e
 		return err
 	}
 
-	err = s.Validations(ctx, receiver, sender, pixEvent.PixData)
-	if err != nil {
-		transaction.Status = transactions.StatusFailed
-		transaction.ErrMessage = err.Error()
-		err = s.transaction.UpdateTransactionStatus(transaction)
-		if err != nil {
-			return err
-		}
-		return err
-	}
+	//err = s.Validations(ctx, receiver, sender, pixEvent.PixData)
+	//if err != nil {
+	//	transaction.Status = transactions.StatusFailed
+	//	transaction.ErrMessage = err.Error()
+	//	err = s.transaction.UpdateTransactionStatus(transaction)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	return err
+	//}
 
 	err = s.Transaction(ctx, receiver, sender, pixEvent.PixData)
 	if err != nil {

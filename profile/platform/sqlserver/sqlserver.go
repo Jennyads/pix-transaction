@@ -37,6 +37,10 @@ func RunMigrations(config *cfg.Config) error {
 	}
 
 	driver, err := mssqlserver.WithInstance(db, &mssqlserver.Config{})
+	if err != nil {
+		return err
+	}
+
 	m, err := migrate.NewWithDatabaseInstance(
 		"file://platform/migrations",
 		"profile", driver)

@@ -47,7 +47,7 @@ func (p ProfileServer) PixWebhook(ctx context.Context, webhook *proto.Webhook) (
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) CreateAccount(ctx context.Context, ac *proto.Account) (*proto.Account, error) {
+func (p ProfileServer) CreateAccount(ctx context.Context, ac *proto.Account) (*proto.AccountResponse, error) {
 	if ac.UserId == "" {
 		return nil, errors.New("user_id is required")
 	}
@@ -63,7 +63,7 @@ func (p ProfileServer) CreateAccount(ctx context.Context, ac *proto.Account) (*p
 	return account.ToProto(created), nil
 }
 
-func (p ProfileServer) FindAccount(ctx context.Context, ac *proto.AccountRequest) (*proto.Account, error) {
+func (p ProfileServer) FindAccount(ctx context.Context, ac *proto.AccountRequest) (*proto.AccountResponse, error) {
 	if ac.UserId == "" && ac.AccountId == "" {
 		return nil, errors.New("id and userId are required")
 	}
@@ -111,7 +111,7 @@ func (p ProfileServer) ListAccounts(ctx context.Context, request *proto.ListAcco
 		}
 	}
 
-	findAccounts := make([]*proto.Account, len(accounts))
+	findAccounts := make([]*proto.AccountResponse, len(accounts))
 	for i := range accounts {
 		findAccounts[i] = account.ToProto(accounts[i])
 	}
@@ -131,7 +131,7 @@ func (p ProfileServer) DeleteAccount(ctx context.Context, request *proto.Account
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) FindByKey(ctx context.Context, request *proto.FindByKeyRequest) (*proto.Account, error) {
+func (p ProfileServer) FindByKey(ctx context.Context, request *proto.FindByKeyRequest) (*proto.AccountResponse, error) {
 	found, err := p.account.FindByKey(ctx, request.Key)
 	if err != nil {
 		switch err {
@@ -271,10 +271,11 @@ func (p ProfileServer) DeleteKey(ctx context.Context, req *proto.KeyRequest) (*e
 	return &empty.Empty{}, nil
 }
 
-func NewProfileService(userService user.Service, accountService account.Service, keyService key.Service, service transaction.Service) *ProfileServer {
+func NewProfileService(userService user.Service, accountService account.Service, keyService key.Service, transactionService transaction.Service) *ProfileServer {
 	return &ProfileServer{
-		user:    userService,
-		account: accountService,
-		keys:    keyService,
+		user:               userService,
+		account:            accountService,
+		keys:               keyService,
+		transactionService: transactionService,
 	}
 }

@@ -54,8 +54,16 @@ message Account{
     string bank = 4;
 }
 
+message AccountResponse{
+    string id = 1;
+    string user_id = 2;
+    double balance = 3;
+    string agency = 4;
+    string bank = 5;
+}
+
 message ListAccount{
-    repeated Account account = 1;
+    repeated AccountResponse account = 1;
     google.protobuf.Timestamp createdAt = 2;
     google.protobuf.Timestamp updatedAt = 3;
 }
@@ -74,10 +82,10 @@ message FindByKeyRequest{
 }
 
 service AccountService {
-    rpc CreateAccount(Account) returns (Account) {
+    rpc CreateAccount(Account) returns (AccountResponse) {
     }
 
-    rpc FindAccount(AccountRequest) returns (Account) {
+    rpc FindAccount(AccountRequest) returns (AccountResponse) {
     }
 
     rpc UpdateAccount(Account) returns (google.protobuf.Empty) {
@@ -92,7 +100,7 @@ service AccountService {
     rpc IsAccountActive(AccountRequest) returns (google.protobuf.BoolValue){
     }
 
-    rpc FindByKey(FindByKeyRequest) returns (Account){
+    rpc FindByKey(FindByKeyRequest) returns (AccountResponse){
     }
 }
 enum Type {

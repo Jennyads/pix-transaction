@@ -2,8 +2,10 @@ package key
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"profile/internal/cfg"
+	"time"
 )
 
 type Repository interface {
@@ -21,6 +23,9 @@ type repository struct {
 }
 
 func (r repository) CreateKey(key *Key) (*Key, error) {
+	key.CreatedAt = time.Now()
+	key.UpdatedAt = time.Now()
+	key.Id = uuid.New().String()
 	err := r.db.Create(&key).Error
 	if err != nil {
 		return nil, err

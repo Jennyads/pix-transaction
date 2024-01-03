@@ -83,7 +83,7 @@ func (r repository) DeleteAccount(id string) error {
 
 func (r repository) FindByKey(key string) (*Account, error) {
 	var account Account
-	err := r.db.Raw(`SELECT * FROM accounts
+	err := r.db.Raw(`SELECT accounts.* FROM accounts
 						INNER JOIN keys on accounts.id = keys.account_id
 						WHERE keys.name = @key`,
 		sql.Named("key", key)).Scan(&account).Error
