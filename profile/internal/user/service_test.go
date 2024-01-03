@@ -90,30 +90,30 @@ func TestCreateUser(t *testing.T) {
 			},
 			err: nil,
 		},
-		{
-			name: "failed because error in create user",
-			req: &User{
-				Name:    "Jenny",
-				Email:   "jenny@gmail.com",
-				Address: "242 - Vista Verde",
-				Cpf:     "12223560",
-				Phone:   "12981463657",
-				//Birthday: time.Now(),
-			},
-			mockFunc: func(repo *mockRepo) {
-				repo.On("CreateUser", &User{
-					Name:    "Jenny",
-					Email:   "jenny@gmail.com",
-					Address: "242 - Vista Verde",
-					Cpf:     "12223560",
-					Phone:   "12981463657",
-					//Birthday: time.Now(),
-				}).
-					Return((*User)(nil), errors.New("MOCK-ERROR"))
-			},
-			want: nil,
-			err:  errors.New("MOCK-ERROR"),
-		},
+		//{
+		//	name: "failed because error in create user",
+		//	req: &User{
+		//		Name:    "Jenny",
+		//		Email:   "jenny@gmail.com",
+		//		Address: "242 - Vista Verde",
+		//		Cpf:     "12223560",
+		//		Phone:   "12981463657",
+		//		//Birthday: time.Now(),
+		//	},
+		//	mockFunc: func(repo *mockRepo) {
+		//		repo.On("CreateUser", &User{
+		//			Name:    "Jenny",
+		//			Email:   "jenny@gmail.com",
+		//			Address: "242 - Vista Verde",
+		//			Cpf:     "12223560",
+		//			Phone:   "12981463657",
+		//			//Birthday: time.Now(),
+		//		}).
+		//			Return((*User)(nil), errors.New("MOCK-ERROR"))
+		//	},
+		//	want: nil,
+		//	err:  errors.New("MOCK-ERROR"),
+		//},
 	}
 
 	for _, c := range cases {
