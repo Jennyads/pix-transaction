@@ -1,0 +1,26 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "httputils",
+    srcs = [
+        "error.go",
+        "grpc.go",
+        "httputils.go",
+    ],
+    importpath = "api/server/httputils",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_valyala_fasthttp//:fasthttp",
+        "@org_golang_google_grpc//codes",
+    ],
+)
+
+go_test(
+    name = "httputils_test",
+    srcs = ["grpc_test.go"],
+    embed = [":httputils"],
+    deps = [
+        "@com_github_stretchr_testify//assert",
+        "@org_golang_google_grpc//codes",
+    ],
+)
