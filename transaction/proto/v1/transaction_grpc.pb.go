@@ -4,10 +4,11 @@
 // - protoc             v3.6.1
 // source: transaction.proto
 
-package profile
+package transaction
 
 import (
 	context "context"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -176,6 +177,244 @@ var TransactionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListTransactions",
 			Handler:    _TransactionService_ListTransactions_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "transaction.proto",
+}
+
+const (
+	KeysService_CreateKey_FullMethodName = "/profile.proto.v2.KeysService/CreateKey"
+	KeysService_UpdateKey_FullMethodName = "/profile.proto.v2.KeysService/UpdateKey"
+	KeysService_ListKey_FullMethodName   = "/profile.proto.v2.KeysService/ListKey"
+	KeysService_DeleteKey_FullMethodName = "/profile.proto.v2.KeysService/DeleteKey"
+	KeysService_FindKey_FullMethodName   = "/profile.proto.v2.KeysService/FindKey"
+)
+
+// KeysServiceClient is the client API for KeysService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type KeysServiceClient interface {
+	CreateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*KeyResponse, error)
+	UpdateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*KeyResponse, error)
+	ListKey(ctx context.Context, in *ListKeyRequest, opts ...grpc.CallOption) (*ListKeys, error)
+	DeleteKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	FindKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*KeyResponse, error)
+}
+
+type keysServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewKeysServiceClient(cc grpc.ClientConnInterface) KeysServiceClient {
+	return &keysServiceClient{cc}
+}
+
+func (c *keysServiceClient) CreateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*KeyResponse, error) {
+	out := new(KeyResponse)
+	err := c.cc.Invoke(ctx, KeysService_CreateKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *keysServiceClient) UpdateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*KeyResponse, error) {
+	out := new(KeyResponse)
+	err := c.cc.Invoke(ctx, KeysService_UpdateKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *keysServiceClient) ListKey(ctx context.Context, in *ListKeyRequest, opts ...grpc.CallOption) (*ListKeys, error) {
+	out := new(ListKeys)
+	err := c.cc.Invoke(ctx, KeysService_ListKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *keysServiceClient) DeleteKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, KeysService_DeleteKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *keysServiceClient) FindKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*KeyResponse, error) {
+	out := new(KeyResponse)
+	err := c.cc.Invoke(ctx, KeysService_FindKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// KeysServiceServer is the server API for KeysService service.
+// All implementations must embed UnimplementedKeysServiceServer
+// for forward compatibility
+type KeysServiceServer interface {
+	CreateKey(context.Context, *Key) (*KeyResponse, error)
+	UpdateKey(context.Context, *Key) (*KeyResponse, error)
+	ListKey(context.Context, *ListKeyRequest) (*ListKeys, error)
+	DeleteKey(context.Context, *KeyRequest) (*empty.Empty, error)
+	FindKey(context.Context, *KeyRequest) (*KeyResponse, error)
+	mustEmbedUnimplementedKeysServiceServer()
+}
+
+// UnimplementedKeysServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedKeysServiceServer struct {
+}
+
+func (UnimplementedKeysServiceServer) CreateKey(context.Context, *Key) (*KeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateKey not implemented")
+}
+func (UnimplementedKeysServiceServer) UpdateKey(context.Context, *Key) (*KeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateKey not implemented")
+}
+func (UnimplementedKeysServiceServer) ListKey(context.Context, *ListKeyRequest) (*ListKeys, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListKey not implemented")
+}
+func (UnimplementedKeysServiceServer) DeleteKey(context.Context, *KeyRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteKey not implemented")
+}
+func (UnimplementedKeysServiceServer) FindKey(context.Context, *KeyRequest) (*KeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindKey not implemented")
+}
+func (UnimplementedKeysServiceServer) mustEmbedUnimplementedKeysServiceServer() {}
+
+// UnsafeKeysServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to KeysServiceServer will
+// result in compilation errors.
+type UnsafeKeysServiceServer interface {
+	mustEmbedUnimplementedKeysServiceServer()
+}
+
+func RegisterKeysServiceServer(s grpc.ServiceRegistrar, srv KeysServiceServer) {
+	s.RegisterService(&KeysService_ServiceDesc, srv)
+}
+
+func _KeysService_CreateKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Key)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KeysServiceServer).CreateKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KeysService_CreateKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KeysServiceServer).CreateKey(ctx, req.(*Key))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _KeysService_UpdateKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Key)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KeysServiceServer).UpdateKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KeysService_UpdateKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KeysServiceServer).UpdateKey(ctx, req.(*Key))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _KeysService_ListKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KeysServiceServer).ListKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KeysService_ListKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KeysServiceServer).ListKey(ctx, req.(*ListKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _KeysService_DeleteKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KeysServiceServer).DeleteKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KeysService_DeleteKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KeysServiceServer).DeleteKey(ctx, req.(*KeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _KeysService_FindKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KeysServiceServer).FindKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KeysService_FindKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KeysServiceServer).FindKey(ctx, req.(*KeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// KeysService_ServiceDesc is the grpc.ServiceDesc for KeysService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var KeysService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "profile.proto.v2.KeysService",
+	HandlerType: (*KeysServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateKey",
+			Handler:    _KeysService_CreateKey_Handler,
+		},
+		{
+			MethodName: "UpdateKey",
+			Handler:    _KeysService_UpdateKey_Handler,
+		},
+		{
+			MethodName: "ListKey",
+			Handler:    _KeysService_ListKey_Handler,
+		},
+		{
+			MethodName: "DeleteKey",
+			Handler:    _KeysService_DeleteKey_Handler,
+		},
+		{
+			MethodName: "FindKey",
+			Handler:    _KeysService_FindKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

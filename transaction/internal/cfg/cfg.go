@@ -11,6 +11,7 @@ type ProfileConfig struct {
 
 type DynamodbConfig struct {
 	TransactionTable string
+	KeysTable        string
 }
 
 type KafkaConfig struct {
@@ -27,6 +28,7 @@ func Load() (*Config, error) {
 	return &Config{
 		DynamodbConfig{
 			TransactionTable: Getenv("TRANSACTION_TABLE", "transaction"),
+			KeysTable:        Getenv("KEYS_TABLE", "keys"),
 		},
 		KafkaConfig{
 			Brokers: strings.Split(Getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"), ","),

@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 package profile.proto.v2;
 
@@ -37,5 +38,57 @@ service TransactionService {
 
   rpc ListTransactions(ListTransactionRequest) returns (ListTransaction) {
   }
+}
 
+enum Type {
+  cpf = 0;
+  phone = 1;
+  email = 2;
+  random = 3;
+}
+
+message Key {
+  string account = 1;
+  string name = 2;
+  Type type = 3;
+  string agency = 4;
+  string bank = 5;
+}
+
+message KeyResponse {
+  string id = 1;
+  string account = 2;
+  string name = 3;
+  Type type = 4;
+  string agency = 5;
+  string bank = 6;
+}
+
+message ListKeyRequest{
+  repeated string key_id = 1;
+}
+
+message KeyRequest{
+  string key_id = 1;
+}
+
+message ListKeys{
+  repeated KeyResponse keys = 1;
+}
+
+service KeysService {
+  rpc CreateKey(Key) returns (KeyResponse) {
+  }
+
+  rpc UpdateKey(Key) returns (KeyResponse) {
+  }
+
+  rpc ListKey(ListKeyRequest) returns (ListKeys) {
+  }
+
+  rpc DeleteKey(KeyRequest) returns (google.protobuf.Empty){
+  }
+
+  rpc FindKey(KeyRequest) returns (KeyResponse){
+  }
 }

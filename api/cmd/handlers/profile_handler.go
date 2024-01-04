@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"api/httputils"
+	"api/internal/httputils"
 	"api/internal/profile"
 	"encoding/json"
 	"github.com/fasthttp/router"
