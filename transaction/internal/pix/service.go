@@ -6,9 +6,11 @@ import (
 	"errors"
 	"log"
 	"transaction/internal/errutils"
+	keys "transaction/internal/keys"
 	"transaction/internal/profile"
 	"transaction/internal/transactions"
 	"transaction/internal/utils"
+	"transaction/internal/webhook"
 )
 
 type Service interface {
@@ -17,7 +19,8 @@ type Service interface {
 
 type service struct {
 	transaction transactions.Service
-	profile     profile.Service
+	keysRepo    keys.Repository
+	webhook     webhook.Service
 }
 
 func (s *service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
@@ -38,7 +41,7 @@ func (s *service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
 }
 
 func (s *service) TransactionWorkflow(ctx context.Context, pixEvent *PixEvent) error {
-	receiver, err := s.profile.FindReceiver(ctx, pixEvent.PixData.Receiver)
+	receiver, err := s.keysRepo.FindKey(ctx, pixEvent.PixData.Receiver)
 	if err != nil {
 		if errors.Is(errutils.ErrKeyNotFound, err) {
 			log.Println("error key not found")
@@ -115,12 +118,7 @@ func (s *service) Validations(ctx context.Context, receiver *profile.Account, se
 }
 
 func (s *service) Transaction(ctx context.Context, receiver *profile.Account, sender *profile.Account, pix *Pix) error {
-	err := s.profile.SendWebhook(ctx, &profile.Webhook{
-		AccountID:  sender.Id,
-		ReceiverID: receiver.Id,
-		Amount:     pix.Amount,
-		Status:     profile.StatusCompleted,
-	})
+	err := s.webhook.Send(ctx, &webhook.Webhook{})
 	if err != nil {
 		return err
 	}

@@ -18,6 +18,7 @@ type Key struct {
 	Id        string `dynamodbav:"PK"`
 	Agency    string
 	Bank      string
+	Cpf       string
 	Account   string
 	Name      string
 	Type      Type
@@ -35,22 +36,26 @@ type ListKeyRequest struct {
 
 func ProtoToKey(key *proto.Key) *Key {
 	return &Key{
-		Account: key.Account,
+		Agency:  key.Account.Agency,
+		Bank:    key.Account.Bank,
+		Cpf:     key.Account.Cpf,
+		Account: key.Account.Name,
 		Name:    key.Name,
-		Agency:  key.Agency,
-		Bank:    key.Bank,
 		Type:    Type(key.Type.String()),
 	}
 }
 
 func ToProto(key *Key) *proto.KeyResponse {
 	return &proto.KeyResponse{
-		Id:      key.Id,
-		Account: key.Account,
-		Name:    key.Name,
-		Type:    proto.Type(proto.Type_value[string(key.Type)]),
-		Agency:  key.Agency,
-		Bank:    key.Bank,
+		Id: key.Id,
+		Account: &proto.Account{
+			Agency: key.Agency,
+			Bank:   key.Bank,
+			Cpf:    key.Cpf,
+			Name:   key.Account,
+		},
+		Name: key.Name,
+		Type: proto.Type(proto.Type_value[string(key.Type)]),
 	}
 }
 

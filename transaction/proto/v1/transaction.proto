@@ -47,21 +47,24 @@ enum Type {
   random = 3;
 }
 
+message Account {
+  string name = 1;
+  string cpf = 2;
+  string agency = 3;
+  string bank = 4;
+}
+
 message Key {
-  string account = 1;
+  Account account = 1;
   string name = 2;
   Type type = 3;
-  string agency = 4;
-  string bank = 5;
 }
 
 message KeyResponse {
   string id = 1;
-  string account = 2;
+  Account account = 2;
   string name = 3;
   Type type = 4;
-  string agency = 5;
-  string bank = 6;
 }
 
 message ListKeyRequest{
