@@ -7,18 +7,19 @@ import (
 )
 
 type Pix struct {
-	UserID    string          `gorm:"type:varchar(36);column:user_id"`
-	AccountID string          `gorm:"type:varchar(36);column:account_id"`
-	Key       string          `gorm:"type:varchar(255);column:key"`
-	Receiver  string          `gorm:"type:varchar(255);column:receiver"`
-	Amount    decimal.Decimal `gorm:"type:decimal(15,6);column:amount"`
-	Status    string          `gorm:"type:varchar(50);column:status"`
+	UserID     string          `gorm:"type:varchar(36);column:user_id"`
+	AccountID  string          `gorm:"type:varchar(36);column:account_id"`
+	Key        string          `gorm:"type:varchar(255);column:key"`
+	Receiver   string          `gorm:"type:varchar(255);column:receiver"`
+	Amount     decimal.Decimal `gorm:"type:decimal(15,6);column:amount"`
+	Status     string          `gorm:"type:varchar(50);column:status"`
+	WebhookUrl string
 }
 
 func ToProto(pix *Pix) *pb.PixTransaction {
 	amount, _ := pix.Amount.Float64()
 	return &pb.PixTransaction{
-		UserId:      pix.UserID,
+		UserID:      pix.UserID,
 		SenderKey:   pix.Key,
 		ReceiverKey: pix.Receiver,
 		Amount:      amount,
