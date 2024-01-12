@@ -18,6 +18,16 @@ message User{
     google.protobuf.Timestamp birthday = 6;
 }
 
+message UserResponse{
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string address = 4;
+    string cpf = 5;
+    string phone = 6;
+    google.protobuf.Timestamp birthday = 7;
+}
+
 message ListUser{
     repeated User users = 1;
 }
@@ -31,10 +41,10 @@ message ListUserRequest{
 }
 
 service UserService {
-    rpc CreateUser(User) returns (google.protobuf.Empty) {
+    rpc CreateUser(User) returns (UserResponse) {
     }
 
-    rpc FindUser(UserRequest) returns (User) {
+    rpc FindUser(UserRequest) returns (UserResponse) {
     }
 
     rpc UpdateUser(User) returns (google.protobuf.Empty) {
@@ -116,6 +126,15 @@ message Key {
     Type type = 3;
     float value = 4;
 }
+
+message KeyResponse{
+    string id = 1;
+    string account_id = 2;
+    string name = 3;
+    Type type = 4;
+    float value = 5;
+}
+
 message ListKeyRequest{
     repeated string key_id = 1;
 }
@@ -128,7 +147,7 @@ message ListKeys{
     repeated Key keys = 1;
 }
 service KeysService {
-    rpc CreateKey(Key) returns (google.protobuf.Empty) {
+    rpc CreateKey(Key) returns (KeyResponse) {
     }
 
     rpc UpdateKey(Key) returns (google.protobuf.Empty) {
@@ -158,8 +177,8 @@ enum Status {
 }
 
 message Webhook {
-    string account_id = 1;
-    string receiver_id = 2;
+    WebhookAccount sender = 1;
+    WebhookAccount receiver = 2;
     double amount = 3;
     Status status = 4;
 }
@@ -171,3 +190,10 @@ service PixTransactionService {
     rpc PixWebhook(Webhook) returns (google.protobuf.Empty) {
     }
 }
+
+message WebhookAccount {
+    string name = 1;
+    string agency = 2;
+    string bank = 3;
+}
+

@@ -56,12 +56,12 @@ func (s service) SendPix(ctx context.Context, req *Pix) error {
 
 func (s service) PixWebhook(ctx context.Context, req *Webhook) error {
 
-	sender, err := s.accountRepository.FindAccountById(req.AccountID)
+	sender, err := s.accountRepository.FindAccountById(req.Sender.Name)
 	if err != nil {
 		return err
 	}
 
-	receiver, err := s.accountRepository.FindAccountById(req.ReceiverID)
+	receiver, err := s.accountRepository.FindAccountById(req.Sender.Name)
 	if err != nil {
 		return err
 	}

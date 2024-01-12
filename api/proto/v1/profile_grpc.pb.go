@@ -32,8 +32,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*empty.Empty, error)
-	FindUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*User, error)
+	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserResponse, error)
+	FindUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*empty.Empty, error)
 	ListUsers(ctx context.Context, in *ListUserRequest, opts ...grpc.CallOption) (*ListUser, error)
 	DeleteUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -47,8 +47,8 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *userServiceClient) CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, UserService_CreateUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +56,8 @@ func (c *userServiceClient) CreateUser(ctx context.Context, in *User, opts ...gr
 	return out, nil
 }
 
-func (c *userServiceClient) FindUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*User, error) {
-	out := new(User)
+func (c *userServiceClient) FindUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, UserService_FindUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -96,8 +96,8 @@ func (c *userServiceClient) DeleteUser(ctx context.Context, in *UserRequest, opt
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	CreateUser(context.Context, *User) (*empty.Empty, error)
-	FindUser(context.Context, *UserRequest) (*User, error)
+	CreateUser(context.Context, *User) (*UserResponse, error)
+	FindUser(context.Context, *UserRequest) (*UserResponse, error)
 	UpdateUser(context.Context, *User) (*empty.Empty, error)
 	ListUsers(context.Context, *ListUserRequest) (*ListUser, error)
 	DeleteUser(context.Context, *UserRequest) (*empty.Empty, error)
@@ -108,10 +108,10 @@ type UserServiceServer interface {
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) CreateUser(context.Context, *User) (*empty.Empty, error) {
+func (UnimplementedUserServiceServer) CreateUser(context.Context, *User) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUserServiceServer) FindUser(context.Context, *UserRequest) (*User, error) {
+func (UnimplementedUserServiceServer) FindUser(context.Context, *UserRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindUser not implemented")
 }
 func (UnimplementedUserServiceServer) UpdateUser(context.Context, *User) (*empty.Empty, error) {
@@ -581,7 +581,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type KeysServiceClient interface {
-	CreateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*empty.Empty, error)
+	CreateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*KeyResponse, error)
 	UpdateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*empty.Empty, error)
 	ListKey(ctx context.Context, in *ListKeyRequest, opts ...grpc.CallOption) (*ListKeys, error)
 	DeleteKey(ctx context.Context, in *KeyRequest, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -595,8 +595,8 @@ func NewKeysServiceClient(cc grpc.ClientConnInterface) KeysServiceClient {
 	return &keysServiceClient{cc}
 }
 
-func (c *keysServiceClient) CreateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *keysServiceClient) CreateKey(ctx context.Context, in *Key, opts ...grpc.CallOption) (*KeyResponse, error) {
+	out := new(KeyResponse)
 	err := c.cc.Invoke(ctx, KeysService_CreateKey_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -635,7 +635,7 @@ func (c *keysServiceClient) DeleteKey(ctx context.Context, in *KeyRequest, opts 
 // All implementations must embed UnimplementedKeysServiceServer
 // for forward compatibility
 type KeysServiceServer interface {
-	CreateKey(context.Context, *Key) (*empty.Empty, error)
+	CreateKey(context.Context, *Key) (*KeyResponse, error)
 	UpdateKey(context.Context, *Key) (*empty.Empty, error)
 	ListKey(context.Context, *ListKeyRequest) (*ListKeys, error)
 	DeleteKey(context.Context, *KeyRequest) (*empty.Empty, error)
@@ -646,7 +646,7 @@ type KeysServiceServer interface {
 type UnimplementedKeysServiceServer struct {
 }
 
-func (UnimplementedKeysServiceServer) CreateKey(context.Context, *Key) (*empty.Empty, error) {
+func (UnimplementedKeysServiceServer) CreateKey(context.Context, *Key) (*KeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateKey not implemented")
 }
 func (UnimplementedKeysServiceServer) UpdateKey(context.Context, *Key) (*empty.Empty, error) {
