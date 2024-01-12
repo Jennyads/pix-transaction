@@ -13,6 +13,20 @@ type service struct {
 }
 
 func (s service) CreateUser(user *User) (*User, error) {
+	//TODO validacoes
+
+	//exist, err := s.repo.ExistEmail()
+	// if err != nil {
+	// 	return nil, err
+	//}
+	// if exist {
+	// 	return nil, &EmailAlreadyExist{}
+	//
+
+	//s.repo.ExistCPF()
+
+	//s.repo.ExistPhone()
+
 	return s.repo.CreateUser(user)
 }
 

@@ -41,6 +41,23 @@ func (r *profileHandler) Webhook(ctx *fasthttp.RequestCtx) {
 	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
 }
 
+// TODO CRUD CREATE-USER BFF
+//func (r *profileHandler) CreateUser(ctx *fasthttp.RequestCtx) {
+//	var body profile.CreateUser
+//	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
+//		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
+//		return
+//	}
+//
+//	err := r.backend.CreateUser(ctx, body)
+//	if err != nil {
+//		httputils.BackendErrorFactory(&ctx.Response, err)
+//		return
+//	}
+//
+//	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
+//}
+
 func NewProfileHandler(backend profile.Backend) ProfileHandler {
 	return &profileHandler{
 		backend: backend,

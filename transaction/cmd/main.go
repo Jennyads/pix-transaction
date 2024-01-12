@@ -9,7 +9,6 @@ import (
 	"transaction/internal/cfg"
 	"transaction/internal/event"
 	"transaction/internal/pix"
-	"transaction/internal/profile"
 	"transaction/internal/transactions"
 	"transaction/platform/dynamo"
 	"transaction/platform/kafka"
@@ -38,9 +37,7 @@ func main() {
 	//server
 	transactionServer := newTransactionService(transactionService)
 
-	profileService := profile.NewService(config)
-
-	pixService := pix.NewService(transactionService, profileService)
+	pixService := pix.NewService(transactionService)
 
 	kafkaConn := kafka.NewClient(config).Connect()
 

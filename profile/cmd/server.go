@@ -146,6 +146,12 @@ func (p ProfileServer) CreateUser(ctx context.Context, request *proto.User) (*pr
 	response, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err.(type) {
+		//case *EmailAlreadyExist:
+		//	return nil, status.Error(codes.AlreadyExists, "email already exist")
+		//case *CpfAlreadyExist:
+		//	return nil, status.Error(codes.AlreadyExists, "cpf already exist")
+		//case *PhoneAlreadyExist:
+		//	return nil, status.Error(codes.AlreadyExists, "phone already exist")
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}
