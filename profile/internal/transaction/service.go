@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"profile/internal/account"
+	"profile/internal/errutils"
 	"profile/internal/event"
 )
 
@@ -29,7 +30,24 @@ func (s service) SendPix(ctx context.Context, req *Pix) error {
 		return status.Error(codes.Internal, err.Error())
 	}
 
-	if err := s.events.Publish(ctx, payload); err != nil {
+	sender, err := s.accountRepository.FindAccountById(req.AccountID)
+	if err != nil {
+		return err
+	}
+
+	if sender == nil {
+		return errutils.ErrInactiveAccount
+	}
+
+	if sender.Balance.LessThan(req.Amount) {
+		return errutils.ErrInsufficientBalance
+	}
+
+	if sender.BlockedAt == nil {
+		return errutils.ErrReceiverAccountBlocked
+	}
+
+	if err = s.events.Publish(ctx, payload); err != nil {
 		return status.Error(codes.Internal, err.Error())
 	}
 
