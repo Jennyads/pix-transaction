@@ -144,7 +144,8 @@ message KeyRequest{
 }
 
 message ListKeys{
-    repeated Key keys = 1;
+    repeated KeyResponse keys = 1;
+
 }
 service KeysService {
     rpc CreateKey(Key) returns (KeyResponse) {
@@ -177,8 +178,8 @@ enum Status {
 }
 
 message Webhook {
-    string account_id = 1;
-    string receiver_id = 2;
+    WebhookAccount sender = 1;
+    WebhookAccount receiver = 2;
     double amount = 3;
     Status status = 4;
 }
@@ -191,3 +192,10 @@ service PixTransactionService {
     rpc PixWebhook(Webhook) returns (google.protobuf.Empty) {
     }
 }
+
+message WebhookAccount {
+    string name = 1;
+    string agency = 2;
+    string bank = 3;
+}
+

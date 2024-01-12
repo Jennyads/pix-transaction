@@ -41,14 +41,13 @@ func ProtoToKey(key *proto.Key) *Key {
 	}
 }
 
-func ToProto(key *Key) *proto.Key {
-	return &proto.Key{
+func ToProto(key *Key) *proto.KeyResponse {
+	return &proto.KeyResponse{
 		AccountId: key.AccountID,
 		Name:      key.Name,
 		Type:      proto.Type(proto.Type_value[string(key.Type)]),
 	}
 }
-
 func ProtoToKeyListRequest(request *proto.ListKeyRequest) *ListKeyRequest {
 	return &ListKeyRequest{
 		keyIDs: request.KeyId,

@@ -38,6 +38,29 @@ func ProtoToUser(user *proto.User) *User {
 		Birthday: user.Birthday.AsTime(),
 	}
 }
+func ProtoToUserResponse(user *proto.UserResponse) *User {
+	return &User{
+		Id:       user.Id,
+		Name:     user.Name,
+		Email:    user.Email,
+		Address:  user.Address,
+		Cpf:      user.Cpf,
+		Phone:    user.Phone,
+		Birthday: user.Birthday.AsTime(),
+	}
+}
+
+func ToProtoUserResponse(user *User) *proto.UserResponse {
+	return &proto.UserResponse{
+		Id:       user.Id,
+		Name:     user.Name,
+		Email:    user.Email,
+		Address:  user.Address,
+		Cpf:      user.Cpf,
+		Phone:    user.Phone,
+		Birthday: timestamppb.New(user.Birthday),
+	}
+}
 
 func ToProto(user *User) *proto.User {
 	return &proto.User{

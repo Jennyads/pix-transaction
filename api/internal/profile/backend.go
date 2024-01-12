@@ -18,10 +18,12 @@ type grpc struct {
 
 func (g *grpc) Webhook(ctx context.Context, webhook Webhook) error {
 	_, err := g.pix.PixWebhook(ctx, &proto.Webhook{
-		AccountId:  webhook.AccountId,
-		ReceiverId: webhook.ReceiverId,
-		Amount:     webhook.Amount,
-		Status:     proto.Status(proto.Status_value[string(webhook.Status)]),
+		Sender: &proto.WebhookAccount{
+			Agency: webhook.Sender.Agency, Bank: webhook.Sender.Bank, Name: webhook.Sender.Name},
+		Receiver: &proto.WebhookAccount{
+			Agency: webhook.Receiver.Agency, Bank: webhook.Receiver.Bank, Name: webhook.Receiver.Name},
+		Amount: webhook.Amount,
+		Status: proto.Status(proto.Status_value[string(webhook.Status)]),
 	})
 	if err != nil {
 		return err

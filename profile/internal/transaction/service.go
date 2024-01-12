@@ -7,7 +7,6 @@ import (
 	"google.golang.org/grpc/status"
 	"profile/internal/account"
 	"profile/internal/event"
-	"profile/internal/webhook"
 )
 
 type Service interface {
@@ -18,7 +17,6 @@ type Service interface {
 type service struct {
 	accountRepository account.Repository
 	events            event.Client
-	webhook           webhook.Service
 }
 
 func (s service) SendPix(ctx context.Context, req *Pix) error {
@@ -40,12 +38,12 @@ func (s service) SendPix(ctx context.Context, req *Pix) error {
 
 func (s service) PixWebhook(ctx context.Context, req *Webhook) error {
 
-	sender, err := s.accountRepository.FindAccountById(req.AccountID)
+	sender, err := s.accountRepository.FindAccountById(req.Sender.Name)
 	if err != nil {
 		return err
 	}
 
-	receiver, err := s.accountRepository.FindAccountById(req.ReceiverID)
+	receiver, err := s.accountRepository.FindAccountById(req.Sender.Name)
 	if err != nil {
 		return err
 	}

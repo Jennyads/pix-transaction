@@ -19,7 +19,7 @@ type Pix struct {
 func ToProto(pix *Pix) *pb.PixTransaction {
 	amount, _ := pix.Amount.Float64()
 	return &pb.PixTransaction{
-		UserID:      pix.UserID,
+		UserId:      pix.UserID,
 		SenderKey:   pix.Key,
 		ReceiverKey: pix.Receiver,
 		Amount:      amount,
@@ -58,16 +58,30 @@ const (
 func ProtoToWebhook(webhook *pb.Webhook) *Webhook {
 	amount := decimal.NewFromFloat(webhook.Amount)
 	return &Webhook{
-		AccountID:  webhook.AccountId,
-		ReceiverID: webhook.ReceiverId,
-		Amount:     amount,
-		Status:     Status(webhook.Status.String()),
+		Sender: Account{
+			Name:   webhook.Sender.Name,
+			Agency: webhook.Sender.Agency,
+			Bank:   webhook.Sender.Bank,
+		},
+		Receiver: Account{
+			Name:   webhook.Receiver.Name,
+			Agency: webhook.Receiver.Agency,
+			Bank:   webhook.Receiver.Bank,
+		},
+		Amount: amount,
+		Status: Status(webhook.Status.String()),
 	}
 }
 
 type Webhook struct {
-	AccountID  string
-	ReceiverID string
-	Amount     decimal.Decimal
-	Status     Status
+	Sender   Account
+	Receiver Account
+	Amount   decimal.Decimal
+	Status   Status
+}
+
+type Account struct {
+	Name   string
+	Agency string
+	Bank   string
 }

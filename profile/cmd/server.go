@@ -142,26 +142,26 @@ func (p ProfileServer) FindByKey(ctx context.Context, request *proto.FindByKeyRe
 	return account.ToProto(found), nil
 }
 
-func (p ProfileServer) CreateUser(ctx context.Context, request *proto.User) (*empty.Empty, error) {
-	_, err := p.user.CreateUser(user.ProtoToUser(request))
+func (p ProfileServer) CreateUser(ctx context.Context, request *proto.User) (*proto.UserResponse, error) {
+	response, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err.(type) {
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 	}
-	return &empty.Empty{}, nil
+	return user.ToProtoUserResponse(response), nil
 }
 
-func (p ProfileServer) FindUser(ctx context.Context, request *proto.UserRequest) (*proto.User, error) {
-	find, err := p.user.FindUserById(user.ProtoToUserRequest(request))
+func (p ProfileServer) FindUser(ctx context.Context, request *proto.UserRequest) (*proto.UserResponse, error) {
+	found, err := p.user.FindUserById(user.ProtoToUserRequest(request))
 	if err != nil {
 		switch err {
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 	}
-	return user.ToProto(find), nil
+	return user.ToProtoUserResponse(found), nil
 }
 
 func (p ProfileServer) UpdateUser(ctx context.Context, request *proto.User) (*empty.Empty, error) {
@@ -215,15 +215,15 @@ func (p ProfileServer) DeleteUser(ctx context.Context, request *proto.UserReques
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) CreateKey(ctx context.Context, req *proto.Key) (*empty.Empty, error) {
-	_, err := p.keys.CreateKey(key.ProtoToKey(req))
+func (p ProfileServer) CreateKey(ctx context.Context, req *proto.Key) (*proto.KeyResponse, error) {
+	created, err := p.keys.CreateKey(key.ProtoToKey(req))
 	if err != nil {
 		switch err {
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 	}
-	return &empty.Empty{}, nil
+	return key.ToProto(created), nil
 }
 
 func (p ProfileServer) UpdateKey(ctx context.Context, req *proto.Key) (*empty.Empty, error) {
@@ -253,7 +253,7 @@ func (p ProfileServer) ListKey(ctx context.Context, req *proto.ListKeyRequest) (
 		}
 	}
 
-	foundKeys := make([]*proto.Key, len(keys))
+	foundKeys := make([]*proto.KeyResponse, len(keys))
 	for i := range keys {
 		foundKeys[i] = key.ToProto(keys[i])
 	}
