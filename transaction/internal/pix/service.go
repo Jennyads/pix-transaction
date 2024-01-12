@@ -7,7 +7,6 @@ import (
 	"log"
 	"transaction/internal/errutils"
 	keys "transaction/internal/keys"
-	"transaction/internal/profile"
 	"transaction/internal/transactions"
 	"transaction/internal/utils"
 	"transaction/internal/webhook"
@@ -32,7 +31,7 @@ func (s *service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	err = s.TransactionWorkflow(ctx, &pixEvent)
+	err = s.Transaction(ctx, &pixEvent)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +39,7 @@ func (s *service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
 	return nil, nil
 }
 
-func (s *service) TransactionWorkflow(ctx context.Context, pixEvent *PixEvent) error {
+func (s *service) Transaction(ctx context.Context, pixEvent *PixEvent) error {
 	receiver, err := s.keysRepo.FindKey(ctx, pixEvent.PixData.Receiver)
 	if err != nil {
 		if errors.Is(errutils.ErrKeyNotFound, err) {
@@ -50,13 +49,8 @@ func (s *service) TransactionWorkflow(ctx context.Context, pixEvent *PixEvent) e
 		return nil
 	}
 
-	sender, err := s.profile.FindAccount(ctx, pixEvent.PixData.AccountId)
-	if err != nil {
-		return err
-	}
-
 	transaction, err := s.transaction.CreateTransaction(&transactions.Transaction{
-		AccountID: pixEvent.PixData.AccountId,
+		AccountID: pixEvent.PixData.AccountName,
 		Receiver:  receiver.Id,
 		Value:     utils.ToFloat(pixEvent.PixData.Amount),
 		Status:    transactions.StatusPending,
@@ -65,18 +59,22 @@ func (s *service) TransactionWorkflow(ctx context.Context, pixEvent *PixEvent) e
 		return err
 	}
 
-	//err = s.Validations(ctx, receiver, sender, pixEvent.PixData)
-	//if err != nil {
-	//	transaction.Status = transactions.StatusFailed
-	//	transaction.ErrMessage = err.Error()
-	//	err = s.transaction.UpdateTransactionStatus(transaction)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	return err
-	//}
-
-	err = s.Transaction(ctx, receiver, sender, pixEvent.PixData)
+	err = s.webhook.Send(ctx, webhook.Webhook{
+		Sender: webhook.Account{
+			Name:   pixEvent.PixData.AccountName,
+			Agency: pixEvent.PixData.AccountAgency,
+			Bank:   pixEvent.PixData.AccountBank,
+			Cpf:    pixEvent.PixData.AccountCpf,
+		},
+		Receiver: webhook.Account{
+			Name:   receiver.Name,
+			Agency: receiver.Agency,
+			Bank:   receiver.Bank,
+			Cpf:    receiver.Cpf,
+		},
+		Amount: pixEvent.PixData.Amount,
+		Status: webhook.StatusCompleted,
+	}, pixEvent.PixData.WebhookUrl)
 	if err != nil {
 		transaction.Status = transactions.StatusFailed
 		transaction.ErrMessage = err.Error()
@@ -96,38 +94,8 @@ func (s *service) TransactionWorkflow(ctx context.Context, pixEvent *PixEvent) e
 	return nil
 }
 
-func (s *service) Validations(ctx context.Context, receiver *profile.Account, sender *profile.Account, pix *Pix) error {
-	isActive, err := s.profile.IsAccountActive(ctx, pix.AccountId)
-	if err != nil {
-		return err
-	}
-
-	if !isActive {
-		return errutils.ErrInactiveAccount
-	}
-
-	if sender.Balance.LessThan(pix.Amount) {
-		return errutils.ErrInsufficientBalance
-	}
-
-	if receiver.BlockedAt == nil {
-		return errutils.ErrReceiverAccountBlocked
-	}
-
-	return nil
-}
-
-func (s *service) Transaction(ctx context.Context, receiver *profile.Account, sender *profile.Account, pix *Pix) error {
-	err := s.webhook.Send(ctx, &webhook.Webhook{})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func NewService(transaction transactions.Service, profile profile.Service) Service {
+func NewService(transaction transactions.Service) Service {
 	return &service{
 		transaction: transaction,
-		profile:     profile,
 	}
 }
