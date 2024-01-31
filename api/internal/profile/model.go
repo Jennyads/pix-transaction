@@ -19,3 +19,12 @@ type Account struct {
 	Agency string
 	Bank   string
 }
+
+type User struct {
+	Id      string
+	Name    string
+	Email   string `validate:"isValidEmail"`
+	Address string
+	Cpf     string `validate:"isValidCPF"`
+	Phone   string `validate:"isValidPhoneNumber"`
+}

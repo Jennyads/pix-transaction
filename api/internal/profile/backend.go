@@ -7,6 +7,7 @@ import (
 
 type Backend interface {
 	Webhook(ctx context.Context, webhook Webhook) error
+	CreateUser(ctx context.Context, user User) error
 }
 
 type grpc struct {
@@ -30,8 +31,21 @@ func (g *grpc) Webhook(ctx context.Context, webhook Webhook) error {
 	}
 	return nil
 }
+func (g *grpc) CreateUser(ctx context.Context, user User) error {
+	_, err := g.user.CreateUser(ctx, &proto.User{
+		Name:    user.Name,
+		Email:   user.Email,
+		Address: user.Address,
+		Cpf:     user.Cpf,
+		Phone:   user.Phone,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-func NewBackend(user proto.UserServiceClient, account proto.AccountServiceClient, keys proto.KeysServiceClient, pix proto.PixTransactionServiceClient) Backend {
+func NewBackend(user proto.UserServiceClient, account proto.AccountServiceClient, keys proto.KeysServiceClient, pix proto.PixTransactionServiceClient, createUser proto.UserServiceClient) Backend {
 	return &grpc{
 		user:    user,
 		account: account,
