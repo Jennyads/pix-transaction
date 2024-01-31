@@ -24,6 +24,29 @@ type ProfileServer struct {
 	proto.UnimplementedKeysServiceServer
 	proto.UnimplementedPixTransactionServiceServer
 }
+type EmailAlreadyExist struct {
+	Message string
+}
+
+func (e *EmailAlreadyExist) Error() string {
+	return e.Message
+}
+
+type CpfAlreadyExist struct {
+	Message string
+}
+
+func (e *CpfAlreadyExist) Error() string {
+	return e.Message
+}
+
+type PhoneAlreadyExist struct {
+	Message string
+}
+
+func (e *PhoneAlreadyExist) Error() string {
+	return e.Message
+}
 
 func (p ProfileServer) SendPix(ctx context.Context, pixEvent *proto.PixTransaction) (*empty.Empty, error) {
 	err := p.transactionService.SendPix(ctx, transaction.ProtoToPix(pixEvent))
@@ -146,12 +169,12 @@ func (p ProfileServer) CreateUser(ctx context.Context, request *proto.User) (*pr
 	response, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err.(type) {
-		//case *EmailAlreadyExist:
-		//	return nil, status.Error(codes.AlreadyExists, "email already exist")
-		//case *CpfAlreadyExist:
-		//	return nil, status.Error(codes.AlreadyExists, "cpf already exist")
-		//case *PhoneAlreadyExist:
-		//	return nil, status.Error(codes.AlreadyExists, "phone already exist")
+		case *EmailAlreadyExist:
+			return nil, status.Error(codes.AlreadyExists, "email already exist")
+		case *CpfAlreadyExist:
+			return nil, status.Error(codes.AlreadyExists, "cpf already exist")
+		case *PhoneAlreadyExist:
+			return nil, status.Error(codes.AlreadyExists, "phone already exist")
 		default:
 			return nil, status.Error(codes.Internal, err.Error())
 		}

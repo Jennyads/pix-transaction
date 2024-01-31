@@ -1,5 +1,9 @@
 package user
 
+import (
+	"profile/internal/errutils"
+)
+
 type Service interface {
 	CreateUser(user *User) (*User, error)
 	FindUserById(req *UserRequest) (*User, error)
@@ -13,19 +17,28 @@ type service struct {
 }
 
 func (s service) CreateUser(user *User) (*User, error) {
-	//TODO validacoes
+	exist, err := s.repo.ExistEmail(user.Email)
+	if err != nil {
+		return nil, err
+	}
+	if exist {
+		return nil, errutils.EmailAlreadyExists
+	}
 
-	//exist, err := s.repo.ExistEmail()
-	// if err != nil {
-	// 	return nil, err
-	//}
-	// if exist {
-	// 	return nil, &EmailAlreadyExist{}
-	//
-
-	//s.repo.ExistCPF()
-
-	//s.repo.ExistPhone()
+	exist, err = s.repo.ExistCpf(user.Cpf)
+	if err != nil {
+		return nil, err
+	}
+	if exist {
+		return nil, errutils.CpfAlreadyExists
+	}
+	exist, err = s.repo.ExistPhone(user.Phone)
+	if err != nil {
+		return nil, err
+	}
+	if exist {
+		return nil, errutils.PhoneAlreadyExists
+	}
 
 	return s.repo.CreateUser(user)
 }
