@@ -102,6 +102,76 @@ func (r *profileHandler) CreateUser(ctx *fasthttp.RequestCtx) {
 	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
 }
 
+func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
+	var body profile.Account
+	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
+		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
+		return
+	}
+	err := r.backend.CreateAccount(ctx, body)
+	if err != nil {
+		httputils.BackendErrorFactory(&ctx.Response, err)
+		return
+	}
+	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
+}
+
+func (r *profileHandler) FindAccount(ctx *fasthttp.RequestCtx) {
+	var body profile.Account
+	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
+		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
+		return
+	}
+	err := r.backend.FindAccount(ctx, body)
+	if err != nil {
+		httputils.BackendErrorFactory(&ctx.Response, err)
+		return
+	}
+	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
+}
+
+func (r *profileHandler) PixWebhook(ctx *fasthttp.RequestCtx) {
+	var body profile.Webhook
+	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
+		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
+		return
+	}
+	err := r.backend.PixWebhook(ctx, body)
+	if err != nil {
+		httputils.BackendErrorFactory(&ctx.Response, err)
+		return
+	}
+	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
+}
+
+func (r *profileHandler) SendPix(ctx *fasthttp.RequestCtx) {
+	var body profile.PixTransaction
+	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
+		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
+		return
+	}
+	err := r.backend.SendPix(ctx, body)
+	if err != nil {
+		httputils.BackendErrorFactory(&ctx.Response, err)
+		return
+	}
+	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
+}
+
+func (r *profileHandler) ListUsers(ctx *fasthttp.RequestCtx) {
+	var body []string
+
+	if err := json.Unmarshal(ctx.Request., &body); err != nil {
+		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
+		return
+	}
+	list, err := r.backend.ListUsers(ctx,)
+	if err != nil {
+		httputils.BackendErrorFactory(&ctx.Response, err)
+		return
+
+	}
+}
 func NewProfileHandler(backend profile.Backend) ProfileHandler {
 	return &profileHandler{
 		backend: backend,

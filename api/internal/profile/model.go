@@ -1,5 +1,9 @@
 package profile
 
+import (
+	"github.com/golang/protobuf/ptypes/timestamp"
+)
+
 type WebhookStatus string
 
 const (
@@ -8,23 +12,32 @@ const (
 )
 
 type Webhook struct {
-	Sender   Account
-	Receiver Account
-	Amount   float64
-	Status   WebhookStatus
+	Sender   Account       `json:"sender"`
+	Receiver Account       `json:"receiver"`
+	Amount   float64       `json:"amount"`
+	Status   WebhookStatus `json:"status"`
+}
+
+type PixTransaction struct {
+	UserId      string               `json:"userId"`
+	SenderKey   string               `json:"senderKey"`
+	ReceiverKey string               `json:"receiverKey"`
+	Amount      float64              `json:"amount"`
+	Hour        *timestamp.Timestamp `json:"hour"`
+	Status      string               `json:"status"`
 }
 
 type Account struct {
-	Name   string
-	Agency string
-	Bank   string
+	Name   string `json:"name"`
+	Agency string `json:"agency"`
+	Bank   string `json:"bank"`
 }
 
 type User struct {
-	Id      string
-	Name    string
-	Email   string `validate:"isValidEmail"`
-	Address string
-	Cpf     string `validate:"isValidCPF"`
-	Phone   string `validate:"isValidPhoneNumber"`
+	Id      string `json:"id"`
+	Name    string `json:"name"`
+	Email   string `json:"email" validate:"isValidEmail"`
+	Address string `json:"address"`
+	Cpf     string `json:"cpf" validate:"isValidCPF"`
+	Phone   string `json:"phone" validate:"isValidPhoneNumber"`
 }
