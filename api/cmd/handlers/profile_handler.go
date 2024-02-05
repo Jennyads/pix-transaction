@@ -159,18 +159,18 @@ func (r *profileHandler) SendPix(ctx *fasthttp.RequestCtx) {
 }
 
 func (r *profileHandler) ListUsers(ctx *fasthttp.RequestCtx) {
-	var body []string
-
-	if err := json.Unmarshal(ctx.Request., &body); err != nil {
+	var ids []string
+	if err := json.Unmarshal(ctx.QueryArgs().Peek("ids"), &ids); err != nil {
 		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
 		return
 	}
-	list, err := r.backend.ListUsers(ctx,)
+	list, err := r.backend.ListUsers(ctx, ids)
 	if err != nil {
 		httputils.BackendErrorFactory(&ctx.Response, err)
 		return
-
 	}
+
+	httputils.JSON(&ctx.Response, list, http.StatusOK)
 }
 func NewProfileHandler(backend profile.Backend) ProfileHandler {
 	return &profileHandler{
