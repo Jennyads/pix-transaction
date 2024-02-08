@@ -16,12 +16,24 @@ func ProfileRoutes(routes *router.Router, handler ProfileHandler) *router.Router
 	group := routes.Group("/profile/v1")
 
 	group.Handle(http.MethodPost, "/webhook", handler.Webhook)
+	group.Handle(http.MethodPost, "/user", handler.CreateUser)
+	group.Handle(http.MethodPost, "/account", handler.CreateAccount)
+	group.Handle(http.MethodGet, "/users", handler.ListUsers)
+	group.Handle(http.MethodGet, "/account", handler.FindAccount)
+	group.Handle(http.MethodPost, "/pix", handler.SendPix)
+	group.Handle(http.MethodPost, "/pixWebhook", handler.PixWebhook)
 
 	return routes
 }
 
 type ProfileHandler interface {
 	Webhook(ctx *fasthttp.RequestCtx)
+	CreateUser(ctx *fasthttp.RequestCtx)
+	CreateAccount(ctx *fasthttp.RequestCtx)
+	ListUsers(ctx *fasthttp.RequestCtx)
+	FindAccount(ctx *fasthttp.RequestCtx)
+	SendPix(ctx *fasthttp.RequestCtx)
+	PixWebhook(ctx *fasthttp.RequestCtx)
 }
 
 type profileHandler struct {
@@ -72,12 +84,12 @@ func isValidEmail(email string) bool {
 }
 
 func isValidPhoneNumber(phone string) bool {
-	phoneRegex := regexp.MustCompile(`^\+[0-9]+$`)
+	phoneRegex := regexp.MustCompile(`^\+\d{13}$`)
 	return phoneRegex.MatchString(phone)
 }
 
 func isValidCPF(cpf string) bool {
-	cpfRegex := regexp.MustCompile(`^\d{3}\.\d{3}\.\d{3}-\d{2}$`)
+	cpfRegex := regexp.MustCompile(`^\d{11}$`)
 	return cpfRegex.MatchString(cpf)
 }
 
@@ -115,21 +127,6 @@ func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
 	}
 	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
 }
-
-func (r *profileHandler) FindAccount(ctx *fasthttp.RequestCtx) {
-	var body profile.Account
-	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
-		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
-		return
-	}
-	err := r.backend.FindAccount(ctx, body)
-	if err != nil {
-		httputils.BackendErrorFactory(&ctx.Response, err)
-		return
-	}
-	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
-}
-
 func (r *profileHandler) PixWebhook(ctx *fasthttp.RequestCtx) {
 	var body profile.Webhook
 	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
@@ -158,20 +155,45 @@ func (r *profileHandler) SendPix(ctx *fasthttp.RequestCtx) {
 	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
 }
 
-func (r *profileHandler) ListUsers(ctx *fasthttp.RequestCtx) {
-	var ids []string
-	if err := json.Unmarshal(ctx.QueryArgs().Peek("ids"), &ids); err != nil {
-		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
+func (r *profileHandler) FindAccount(ctx *fasthttp.RequestCtx) {
+	userId := string(ctx.QueryArgs().Peek("userId"))
+
+	if userId == "" {
+		httputils.JSONError(&ctx.Response, errors.New("userId cant be empty"), http.StatusBadRequest)
 		return
 	}
-	list, err := r.backend.ListUsers(ctx, ids)
+
+	account := profile.Account{Name: userId}
+
+	err := r.backend.FindAccount(ctx, account)
 	if err != nil {
 		httputils.BackendErrorFactory(&ctx.Response, err)
 		return
 	}
 
+	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
+}
+
+func (r *profileHandler) ListUsers(ctx *fasthttp.RequestCtx) {
+	ids := ctx.QueryArgs().PeekMulti("ids")
+	if len(ids) == 0 {
+		httputils.JSONError(&ctx.Response, errors.New("ids cant be empty"), http.StatusBadRequest)
+		return
+	}
+
+	var idStrings []string
+	for _, id := range ids {
+		idStrings = append(idStrings, string(id))
+	}
+
+	list, err := r.backend.ListUsers(ctx, idStrings)
+	if err != nil {
+		httputils.BackendErrorFactory(&ctx.Response, err)
+		return
+	}
 	httputils.JSON(&ctx.Response, list, http.StatusOK)
 }
+
 func NewProfileHandler(backend profile.Backend) ProfileHandler {
 	return &profileHandler{
 		backend: backend,

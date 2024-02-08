@@ -36,8 +36,8 @@ type Account struct {
 type User struct {
 	Id      string `json:"id"`
 	Name    string `json:"name"`
-	Email   string `json:"email" validate:"isValidEmail"`
+	Email   string `json:"email" validate:"validateData"`
 	Address string `json:"address"`
-	Cpf     string `json:"cpf" validate:"isValidCPF"`
-	Phone   string `json:"phone" validate:"isValidPhoneNumber"`
+	Cpf     string `json:"cpf" validate:"validateData"`
+	Phone   string `json:"phone" validate:"validateData"`
 }
