@@ -116,6 +116,12 @@ func (r *profileHandler) CreateUser(ctx *fasthttp.RequestCtx) {
 
 func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
 	var body profile.Account
+
+	//userId := ctx.UserValue("userId").(string)
+
+	userId := string(ctx.Request.Header.Peek("userId"))
+	ctx.SetUserValue("userId", userId)
+
 	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
 		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
 		return
