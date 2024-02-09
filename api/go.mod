@@ -6,6 +6,7 @@ require (
 	github.com/fasthttp/router v1.4.22
 	github.com/go-playground/validator/v10 v10.17.0
 	github.com/golang/protobuf v1.5.3
+	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.8.4
 	github.com/valyala/fasthttp v1.51.0
 	google.golang.org/grpc v1.60.1

@@ -11,7 +11,7 @@ import (
 	"profile/internal/transaction"
 	"profile/internal/user"
 	"profile/internal/utils"
-	proto "profile/proto/v1"
+	"profile/proto/profile/v1"
 )
 
 type ProfileServer struct {
@@ -19,10 +19,10 @@ type ProfileServer struct {
 	account            account.Service
 	keys               key.Service
 	transactionService transaction.Service
-	proto.UnimplementedUserServiceServer
-	proto.UnimplementedAccountServiceServer
-	proto.UnimplementedKeysServiceServer
-	proto.UnimplementedPixTransactionServiceServer
+	profile.UnimplementedUserServiceServer
+	profile.UnimplementedAccountServiceServer
+	profile.UnimplementedKeysServiceServer
+	profile.UnimplementedPixTransactionServiceServer
 }
 type EmailAlreadyExist struct {
 	Message string
@@ -48,7 +48,7 @@ func (e *PhoneAlreadyExist) Error() string {
 	return e.Message
 }
 
-func (p ProfileServer) SendPix(ctx context.Context, pixEvent *proto.PixTransaction) (*empty.Empty, error) {
+func (p ProfileServer) SendPix(ctx context.Context, pixEvent *profile.PixTransaction) (*empty.Empty, error) {
 	err := p.transactionService.SendPix(ctx, transaction.ProtoToPix(pixEvent))
 	if err != nil {
 		switch err {
@@ -59,7 +59,7 @@ func (p ProfileServer) SendPix(ctx context.Context, pixEvent *proto.PixTransacti
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) PixWebhook(ctx context.Context, webhook *proto.Webhook) (*empty.Empty, error) {
+func (p ProfileServer) PixWebhook(ctx context.Context, webhook *profile.Webhook) (*empty.Empty, error) {
 	err := p.transactionService.PixWebhook(ctx, transaction.ProtoToWebhook(webhook))
 	if err != nil {
 		switch err {
@@ -70,7 +70,7 @@ func (p ProfileServer) PixWebhook(ctx context.Context, webhook *proto.Webhook) (
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) CreateAccount(ctx context.Context, ac *proto.Account) (*proto.AccountResponse, error) {
+func (p ProfileServer) CreateAccount(ctx context.Context, ac *profile.Account) (*profile.AccountResponse, error) {
 	if ac.UserId == "" {
 		return nil, errors.New("user_id is required")
 	}
@@ -86,7 +86,7 @@ func (p ProfileServer) CreateAccount(ctx context.Context, ac *proto.Account) (*p
 	return account.ToProto(created), nil
 }
 
-func (p ProfileServer) FindAccount(ctx context.Context, ac *proto.AccountRequest) (*proto.AccountResponse, error) {
+func (p ProfileServer) FindAccount(ctx context.Context, ac *profile.AccountRequest) (*profile.AccountResponse, error) {
 	if ac.UserId == "" && ac.AccountId == "" {
 		return nil, errors.New("id and userId are required")
 	}
@@ -100,7 +100,7 @@ func (p ProfileServer) FindAccount(ctx context.Context, ac *proto.AccountRequest
 	}
 	return account.ToProto(found), nil
 }
-func (p ProfileServer) UpdateAccount(ctx context.Context, request *proto.Account) (*empty.Empty, error) {
+func (p ProfileServer) UpdateAccount(ctx context.Context, request *profile.Account) (*empty.Empty, error) {
 	if request.UserId == "" {
 		return nil, errors.New("userId is required")
 	}
@@ -122,7 +122,7 @@ func (p ProfileServer) UpdateAccount(ctx context.Context, request *proto.Account
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) ListAccounts(ctx context.Context, request *proto.ListAccountRequest) (*proto.ListAccount, error) {
+func (p ProfileServer) ListAccounts(ctx context.Context, request *profile.ListAccountRequest) (*profile.ListAccount, error) {
 	if len(request.AccountId) == 0 {
 		return nil, errors.New("account_ids is required")
 	}
@@ -134,13 +134,13 @@ func (p ProfileServer) ListAccounts(ctx context.Context, request *proto.ListAcco
 		}
 	}
 
-	findAccounts := make([]*proto.AccountResponse, len(accounts))
+	findAccounts := make([]*profile.AccountResponse, len(accounts))
 	for i := range accounts {
 		findAccounts[i] = account.ToProto(accounts[i])
 	}
-	return &proto.ListAccount{Account: findAccounts}, nil
+	return &profile.ListAccount{Account: findAccounts}, nil
 }
-func (p ProfileServer) DeleteAccount(ctx context.Context, request *proto.AccountRequest) (*empty.Empty, error) {
+func (p ProfileServer) DeleteAccount(ctx context.Context, request *profile.AccountRequest) (*empty.Empty, error) {
 	if request.UserId == "" || request.AccountId == "" {
 		return nil, status.Error(codes.InvalidArgument, "account_id and user_id are required")
 	}
@@ -154,7 +154,7 @@ func (p ProfileServer) DeleteAccount(ctx context.Context, request *proto.Account
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) FindByKey(ctx context.Context, request *proto.FindByKeyRequest) (*proto.AccountResponse, error) {
+func (p ProfileServer) FindByKey(ctx context.Context, request *profile.FindByKeyRequest) (*profile.AccountResponse, error) {
 	found, err := p.account.FindByKey(ctx, request.Key)
 	if err != nil {
 		switch err {
@@ -165,7 +165,7 @@ func (p ProfileServer) FindByKey(ctx context.Context, request *proto.FindByKeyRe
 	return account.ToProto(found), nil
 }
 
-func (p ProfileServer) CreateUser(ctx context.Context, request *proto.User) (*proto.UserResponse, error) {
+func (p ProfileServer) CreateUser(ctx context.Context, request *profile.User) (*profile.UserResponse, error) {
 	response, err := p.user.CreateUser(user.ProtoToUser(request))
 	if err != nil {
 		switch err.(type) {
@@ -182,7 +182,7 @@ func (p ProfileServer) CreateUser(ctx context.Context, request *proto.User) (*pr
 	return user.ToProtoUserResponse(response), nil
 }
 
-func (p ProfileServer) FindUser(ctx context.Context, request *proto.UserRequest) (*proto.UserResponse, error) {
+func (p ProfileServer) FindUser(ctx context.Context, request *profile.UserRequest) (*profile.UserResponse, error) {
 	found, err := p.user.FindUserById(user.ProtoToUserRequest(request))
 	if err != nil {
 		switch err {
@@ -193,7 +193,7 @@ func (p ProfileServer) FindUser(ctx context.Context, request *proto.UserRequest)
 	return user.ToProtoUserResponse(found), nil
 }
 
-func (p ProfileServer) UpdateUser(ctx context.Context, request *proto.User) (*empty.Empty, error) {
+func (p ProfileServer) UpdateUser(ctx context.Context, request *profile.User) (*empty.Empty, error) {
 	id := utils.ReadMetadata(ctx, "id")
 	if id == "" {
 		return nil, errors.New("id is required")
@@ -211,7 +211,7 @@ func (p ProfileServer) UpdateUser(ctx context.Context, request *proto.User) (*em
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) ListUsers(ctx context.Context, request *proto.ListUserRequest) (*proto.ListUser, error) {
+func (p ProfileServer) ListUsers(ctx context.Context, request *profile.ListUserRequest) (*profile.ListUser, error) {
 	if len(request.Id) == 0 {
 		return nil, errors.New("user_ids is required")
 	}
@@ -223,14 +223,14 @@ func (p ProfileServer) ListUsers(ctx context.Context, request *proto.ListUserReq
 		}
 	}
 
-	findUsers := make([]*proto.User, len(users))
+	findUsers := make([]*profile.User, len(users))
 	for i := range users {
 		findUsers[i] = user.ToProto(users[i])
 	}
-	return &proto.ListUser{Users: findUsers}, nil
+	return &profile.ListUser{Users: findUsers}, nil
 }
 
-func (p ProfileServer) DeleteUser(ctx context.Context, request *proto.UserRequest) (*empty.Empty, error) {
+func (p ProfileServer) DeleteUser(ctx context.Context, request *profile.UserRequest) (*empty.Empty, error) {
 	if request.Id == "" {
 		return nil, errors.New("account_id is required")
 	}
@@ -244,7 +244,7 @@ func (p ProfileServer) DeleteUser(ctx context.Context, request *proto.UserReques
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) CreateKey(ctx context.Context, req *proto.Key) (*proto.KeyResponse, error) {
+func (p ProfileServer) CreateKey(ctx context.Context, req *profile.Key) (*profile.KeyResponse, error) {
 	created, err := p.keys.CreateKey(key.ProtoToKey(req))
 	if err != nil {
 		switch err {
@@ -255,7 +255,7 @@ func (p ProfileServer) CreateKey(ctx context.Context, req *proto.Key) (*proto.Ke
 	return key.ToProto(created), nil
 }
 
-func (p ProfileServer) UpdateKey(ctx context.Context, req *proto.Key) (*empty.Empty, error) {
+func (p ProfileServer) UpdateKey(ctx context.Context, req *profile.Key) (*empty.Empty, error) {
 	id := utils.ReadMetadata(ctx, "id")
 	if id == "" {
 		return nil, errors.New("id is required")
@@ -273,7 +273,7 @@ func (p ProfileServer) UpdateKey(ctx context.Context, req *proto.Key) (*empty.Em
 	return &empty.Empty{}, nil
 }
 
-func (p ProfileServer) ListKey(ctx context.Context, req *proto.ListKeyRequest) (*proto.ListKeys, error) {
+func (p ProfileServer) ListKey(ctx context.Context, req *profile.ListKeyRequest) (*profile.ListKeys, error) {
 	keys, err := p.keys.ListKey(key.ProtoToKeyListRequest(req))
 	if err != nil {
 		switch err {
@@ -282,14 +282,14 @@ func (p ProfileServer) ListKey(ctx context.Context, req *proto.ListKeyRequest) (
 		}
 	}
 
-	foundKeys := make([]*proto.KeyResponse, len(keys))
+	foundKeys := make([]*profile.KeyResponse, len(keys))
 	for i := range keys {
 		foundKeys[i] = key.ToProto(keys[i])
 	}
-	return &proto.ListKeys{Keys: foundKeys}, nil
+	return &profile.ListKeys{Keys: foundKeys}, nil
 }
 
-func (p ProfileServer) DeleteKey(ctx context.Context, req *proto.KeyRequest) (*empty.Empty, error) {
+func (p ProfileServer) DeleteKey(ctx context.Context, req *profile.KeyRequest) (*empty.Empty, error) {
 	err := p.keys.DeleteKey(key.ProtoToKeyRequest(req))
 	if err != nil {
 		switch err {

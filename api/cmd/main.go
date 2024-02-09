@@ -3,6 +3,7 @@ package main
 import (
 	"api/cmd/handlers"
 	"api/internal/config"
+	"api/internal/middleware"
 	"api/internal/profile"
 	proto "api/proto/v1"
 	"context"
@@ -35,7 +36,9 @@ func main() {
 
 	routes := router.New()
 
-	routes = handlers.ProfileRoutes(routes, profileHandler)
+	logger := middleware.NewLogger(true)
+
+	routes = handlers.ProfileRoutes(routes, profileHandler, logger)
 
 	log.Printf("Serve is running on port: %s\n", cfg.Api.Port)
 	if err = fasthttp.ListenAndServe(fmt.Sprintf(":%s", cfg.Api.Port), routes.Handler); err != nil {

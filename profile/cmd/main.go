@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
 	"profile/internal/account"
@@ -13,7 +16,8 @@ import (
 	"profile/internal/user"
 	"profile/platform/kafka"
 	"profile/platform/sqlserver"
-	proto "profile/proto/v1"
+	proto "profile/proto/profile/v1"
+	transpb "profile/proto/transactions/v1"
 )
 
 func main() {
@@ -25,6 +29,12 @@ func main() {
 	config, err := cfg.Load()
 	if err != nil {
 		return
+	}
+
+	client, err := grpc.DialContext(context.Background(), fmt.Sprintf("%s:%s", "localhost", "9090"),
+		grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Failed to start connection with grpc on %s:%s: %v", "localhost", "9090", err)
 	}
 
 	list, err := net.Listen("tcp", ":9080")
@@ -42,22 +52,24 @@ func main() {
 		log.Fatalf("Failed to connect to database %v", err)
 	}
 
+	//kafka
+	kafkaConn := kafka.NewClient(config).Connect()
+
+	events := event.NewEvent(kafkaConn, "transaction_events_topic",
+		event.WithAttempts(4), event.WithBroker("localhost:9092"))
+
+	transClient := transpb.NewKeysServiceClient(client)
+
 	// repositories
 	userRepository := user.NewRepository(db, config)
 	keyRepository := key.NewRepository(db, config)
 	accountRepository := account.NewRepository(db, config)
 
 	// services
+	transactionService := transaction.NewService(events, accountRepository, transClient, userRepository)
 	userService := user.NewService(userRepository)
-	keyService := key.NewService(keyRepository)
+	keyService := key.NewService(keyRepository, transactionService)
 	accountService := account.NewService(accountRepository)
-
-	//kafka
-	kafkaConn := kafka.NewClient(config).Connect()
-	events := event.NewEvent(kafkaConn, "transaction_events_topic",
-		event.WithAttempts(4), event.WithBroker("localhost:9092"))
-
-	transactionService := transaction.NewService(events, accountRepository)
 
 	//server
 	profileServer := NewProfileService(userService, accountService, keyService, transactionService)

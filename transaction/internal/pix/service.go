@@ -40,7 +40,7 @@ func (s *service) Handler(ctx context.Context, payload []byte) ([]byte, error) {
 }
 
 func (s *service) Transaction(ctx context.Context, pixEvent *PixEvent) error {
-	receiver, err := s.keysRepo.FindKey(ctx, pixEvent.PixData.Receiver)
+	receiver, err := s.keysRepo.FindKey(ctx, pixEvent.Receiver)
 	if err != nil {
 		if errors.Is(errutils.ErrKeyNotFound, err) {
 			log.Println("error key not found")
@@ -50,9 +50,9 @@ func (s *service) Transaction(ctx context.Context, pixEvent *PixEvent) error {
 	}
 
 	transaction, err := s.transaction.CreateTransaction(&transactions.Transaction{
-		AccountID: pixEvent.PixData.AccountName,
+		AccountID: pixEvent.AccountName,
 		Receiver:  receiver.Id,
-		Value:     utils.ToFloat(pixEvent.PixData.Amount),
+		Value:     utils.ToFloat(pixEvent.Amount),
 		Status:    transactions.StatusPending,
 	})
 	if err != nil {
@@ -61,20 +61,20 @@ func (s *service) Transaction(ctx context.Context, pixEvent *PixEvent) error {
 
 	err = s.webhook.Send(ctx, webhook.Webhook{
 		Sender: webhook.Account{
-			Name:   pixEvent.PixData.AccountName,
-			Agency: pixEvent.PixData.AccountAgency,
-			Bank:   pixEvent.PixData.AccountBank,
-			Cpf:    pixEvent.PixData.AccountCpf,
+			Name:   pixEvent.AccountName,
+			Agency: pixEvent.AccountAgency,
+			Bank:   pixEvent.AccountBank,
+			Cpf:    pixEvent.AccountCpf,
 		},
 		Receiver: webhook.Account{
-			Name:   receiver.Name,
+			Name:   receiver.Account,
 			Agency: receiver.Agency,
 			Bank:   receiver.Bank,
 			Cpf:    receiver.Cpf,
 		},
-		Amount: pixEvent.PixData.Amount,
+		Amount: pixEvent.Amount,
 		Status: webhook.StatusCompleted,
-	}, pixEvent.PixData.WebhookUrl)
+	}, pixEvent.WebhookUrl)
 	if err != nil {
 		transaction.Status = transactions.StatusFailed
 		transaction.ErrMessage = err.Error()
@@ -94,8 +94,10 @@ func (s *service) Transaction(ctx context.Context, pixEvent *PixEvent) error {
 	return nil
 }
 
-func NewService(transaction transactions.Service) Service {
+func NewService(transaction transactions.Service, keysRepo keys.Repository, webhookService webhook.Service) Service {
 	return &service{
 		transaction: transaction,
+		keysRepo:    keysRepo,
+		webhook:     webhookService,
 	}
 }

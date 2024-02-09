@@ -43,6 +43,6 @@ func (s *service) Send(ctx context.Context, data Webhook, url string) error {
 	return nil
 }
 
-func NewWebhook() *Webhook {
-	return &Webhook{}
+func NewService() Service {
+	return &service{}
 }

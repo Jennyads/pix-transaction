@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
-	proto "profile/proto/v1"
+	proto "profile/proto/profile/v1"
 	"time"
 )
 

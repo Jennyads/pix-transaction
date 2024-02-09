@@ -3,6 +3,7 @@ package key
 import (
 	"context"
 	"errors"
+	"profile/internal/transaction"
 )
 
 type Service interface {
@@ -14,13 +15,20 @@ type Service interface {
 }
 
 type service struct {
-	repo Repository
+	repo        Repository
+	transaction transaction.Service
 }
 
 func (s service) CreateKey(key *Key) (*Key, error) {
-	//key.CreatedAt = time.Now()
-	//key.UpdatedAt = time.Now()
-	//key.Id = uuid.New().String()
+	err := s.transaction.CreateKey(context.Background(), &transaction.Key{
+		Account: key.AccountID,
+		Name:    key.Name,
+		Type:    transaction.Type(string(key.Type)),
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return s.repo.CreateKey(key)
 }
 
@@ -53,8 +61,9 @@ func (s *service) FindKey(ctx context.Context, key string, accountId string) (*K
 	return keys, nil
 }
 
-func NewService(repo Repository) Service {
+func NewService(repo Repository, transaction transaction.Service) Service {
 	return &service{
-		repo: repo,
+		repo:        repo,
+		transaction: transaction,
 	}
 }

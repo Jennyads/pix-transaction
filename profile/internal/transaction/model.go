@@ -3,28 +3,17 @@ package transaction
 import (
 	"fmt"
 	"github.com/shopspring/decimal"
-	pb "profile/proto/v1"
+	pb "profile/proto/profile/v1"
 )
 
 type Pix struct {
-	UserID     string          `gorm:"type:varchar(36);column:user_id"`
-	AccountID  string          `gorm:"type:varchar(36);column:account_id"`
-	Key        string          `gorm:"type:varchar(255);column:key"`
-	Receiver   string          `gorm:"type:varchar(255);column:receiver"`
-	Amount     decimal.Decimal `gorm:"type:decimal(15,6);column:amount"`
-	Status     string          `gorm:"type:varchar(50);column:status"`
-	WebhookUrl string
-}
-
-func ToProto(pix *Pix) *pb.PixTransaction {
-	amount, _ := pix.Amount.Float64()
-	return &pb.PixTransaction{
-		UserId:      pix.UserID,
-		SenderKey:   pix.Key,
-		ReceiverKey: pix.Receiver,
-		Amount:      amount,
-		Status:      pix.Status,
-	}
+	UserID     string          `json:"user_id"`
+	AccountID  string          `json:"account_id"`
+	Key        string          `json:"key"`
+	Receiver   string          `json:"receiver"`
+	Amount     decimal.Decimal `json:"amount"`
+	Status     string          `json:"status"`
+	WebhookUrl string          `json:"webhook_url"`
 }
 
 func ProtoToPix(pix *pb.PixTransaction) *Pix {
@@ -45,7 +34,13 @@ func ProtoToPix(pix *pb.PixTransaction) *Pix {
 }
 
 type PixEvent struct {
-	PixData *Pix
+	AccountName   string          `json:"account_name"`
+	AccountCpf    string          `json:"account_cpf"`
+	AccountAgency string          `json:"account_agency"`
+	AccountBank   string          `json:"account_bank"`
+	Receiver      string          `json:"receiver"`
+	Amount        decimal.Decimal `json:"amount"`
+	WebhookUrl    string          `json:"webhook_url"`
 }
 
 type Status string
@@ -84,4 +79,22 @@ type Account struct {
 	Name   string
 	Agency string
 	Bank   string
+}
+
+type Type string
+
+const (
+	Cpf    Type = "cpf"
+	Phone  Type = "phone"
+	Email  Type = "email"
+	Random Type = "random"
+)
+
+type Key struct {
+	Agency  string
+	Bank    string
+	Cpf     string
+	Account string
+	Name    string
+	Type    Type
 }

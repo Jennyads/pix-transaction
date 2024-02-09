@@ -159,7 +159,6 @@ service KeysService {
 
     rpc DeleteKey(KeyRequest) returns (google.protobuf.Empty){
     }
-
 }
 
 message PixTransaction {
@@ -170,6 +169,7 @@ message PixTransaction {
     double amount = 5;
     google.protobuf.Timestamp hour  = 6;
     string status = 7;
+    string account_id = 8;
 }
 
 enum Status {

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"api/internal/httputils"
+	"api/internal/middleware"
 	"api/internal/profile"
 	"encoding/json"
 	"errors"
@@ -12,16 +13,17 @@ import (
 	"regexp"
 )
 
-func ProfileRoutes(routes *router.Router, handler ProfileHandler) *router.Router {
+func ProfileRoutes(routes *router.Router, handler ProfileHandler, middleware middleware.Middleware) *router.Router {
 	group := routes.Group("/profile/v1")
 
-	group.Handle(http.MethodPost, "/webhook", handler.Webhook)
-	group.Handle(http.MethodPost, "/user", handler.CreateUser)
-	group.Handle(http.MethodPost, "/account", handler.CreateAccount)
-	group.Handle(http.MethodGet, "/users", handler.ListUsers)
-	group.Handle(http.MethodGet, "/account", handler.FindAccount)
-	group.Handle(http.MethodPost, "/pix", handler.SendPix)
-	group.Handle(http.MethodPost, "/pixWebhook", handler.PixWebhook)
+	group.Handle(http.MethodPost, "/webhook", middleware.WrapHandler(handler.Webhook))
+	group.Handle(http.MethodPost, "/user", middleware.WrapHandler(handler.CreateUser))
+	group.Handle(http.MethodPost, "/account", middleware.WrapHandler(handler.CreateAccount))
+	group.Handle(http.MethodGet, "/users", middleware.WrapHandler(handler.ListUsers))
+	group.Handle(http.MethodGet, "/account", middleware.WrapHandler(handler.FindAccount))
+	group.Handle(http.MethodPost, "/pix", middleware.WrapHandler(handler.SendPix))
+	group.Handle(http.MethodPost, "/pixWebhook", middleware.WrapHandler(handler.PixWebhook))
+	group.Handle(http.MethodPost, "/key", middleware.WrapHandler(handler.CreateKey))
 
 	return routes
 }
@@ -34,6 +36,7 @@ type ProfileHandler interface {
 	FindAccount(ctx *fasthttp.RequestCtx)
 	SendPix(ctx *fasthttp.RequestCtx)
 	PixWebhook(ctx *fasthttp.RequestCtx)
+	CreateKey(ctx *fasthttp.RequestCtx)
 }
 
 type profileHandler struct {
@@ -126,7 +129,7 @@ func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
 		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
 		return
 	}
-	err := r.backend.CreateAccount(ctx, body)
+	err := r.backend.CreateAccount(ctx, userId, body)
 	if err != nil {
 		httputils.BackendErrorFactory(&ctx.Response, err)
 		return
@@ -169,9 +172,9 @@ func (r *profileHandler) FindAccount(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	account := profile.Account{Name: userId}
+	//account := profile.Account{Name: userId}
 
-	err := r.backend.FindAccount(ctx, account)
+	err := r.backend.FindAccount(ctx, userId)
 	if err != nil {
 		httputils.BackendErrorFactory(&ctx.Response, err)
 		return
@@ -198,6 +201,20 @@ func (r *profileHandler) ListUsers(ctx *fasthttp.RequestCtx) {
 		return
 	}
 	httputils.JSON(&ctx.Response, list, http.StatusOK)
+}
+
+func (r *profileHandler) CreateKey(ctx *fasthttp.RequestCtx) {
+	var body profile.Key
+	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
+		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
+		return
+	}
+	err := r.backend.CreateKey(ctx, body)
+	if err != nil {
+		httputils.BackendErrorFactory(&ctx.Response, err)
+		return
+	}
+	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
 }
 
 func NewProfileHandler(backend profile.Backend) ProfileHandler {

@@ -33,7 +33,7 @@ func (r repository) CreateKey(ctx context.Context, key *Key) (*Key, error) {
 
 	var item *dynamodb.PutItemOutput
 	item, err = r.db.DB().PutItem(ctx, &dynamodb.PutItemInput{
-		TableName:           aws.String(r.cfg.DynamodbConfig.TransactionTable),
+		TableName:           aws.String(r.cfg.DynamodbConfig.KeysTable),
 		Item:                value,
 		ConditionExpression: aws.String("attribute_not_exists(PK)"),
 	})
@@ -116,11 +116,12 @@ func (r repository) DeleteKey(ctx context.Context, id string) error {
 
 func (r repository) FindKey(ctx context.Context, key string) (*Key, error) {
 	value, err := r.db.DB().Query(ctx, &dynamodb.QueryInput{
-		TableName:              aws.String(r.cfg.DynamodbConfig.KeysTable),
-		KeyConditionExpression: aws.String("#name = :name"),
+		TableName: aws.String(r.cfg.DynamodbConfig.KeysTable),
+		IndexName: aws.String("NameIndex"), // Nome do índice global secundário
 		ExpressionAttributeNames: map[string]string{
 			"#name": "Name",
 		},
+		KeyConditionExpression: aws.String("#name = :name"),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":name": &types.AttributeValueMemberS{Value: key},
 		},

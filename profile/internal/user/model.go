@@ -3,7 +3,7 @@ package user
 import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
-	proto "profile/proto/v1"
+	proto "profile/proto/profile/v1"
 	"time"
 )
 

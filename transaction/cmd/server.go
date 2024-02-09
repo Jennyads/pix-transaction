@@ -109,8 +109,9 @@ func (t *TransactionServer) FindKey(ctx context.Context, key *proto.KeyRequest) 
 	return keys.ToProto(foundKey), nil
 }
 
-func newTransactionService(transactionService transactions.Service) *TransactionServer {
+func newTransactionService(transactionService transactions.Service, keysService keys.Service) *TransactionServer {
 	return &TransactionServer{
 		transaction: transactionService,
+		keys:        keysService,
 	}
 }

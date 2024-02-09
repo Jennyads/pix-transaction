@@ -8,8 +8,10 @@ import (
 	"net"
 	"transaction/internal/cfg"
 	"transaction/internal/event"
+	keys "transaction/internal/keys"
 	"transaction/internal/pix"
 	"transaction/internal/transactions"
+	"transaction/internal/webhook"
 	"transaction/platform/dynamo"
 	"transaction/platform/kafka"
 	proto "transaction/proto/v1"
@@ -28,16 +30,20 @@ func main() {
 
 	db := dynamo.NewClient().Connect()
 
+	webhookService := webhook.NewService()
+
 	// repositories
 	transactionRepository := transactions.NewRepository(db, config)
+	keysRepository := keys.NewRepository(db, config)
 
 	// services
 	transactionService := transactions.NewService(transactionRepository)
+	keysService := keys.NewService(keysRepository)
 
 	//server
-	transactionServer := newTransactionService(transactionService)
+	transactionServer := newTransactionService(transactionService, keysService)
 
-	pixService := pix.NewService(transactionService)
+	pixService := pix.NewService(transactionService, keysRepository, webhookService)
 
 	kafkaConn := kafka.NewClient(config).Connect()
 
@@ -51,11 +57,12 @@ func main() {
 
 	list, err := net.Listen("tcp", ":9090")
 	if err != nil {
-		log.Fatalf("Failed to listen port 9080 %v", err)
+		log.Fatalf("Failed to listen port 9090 %v", err)
 	}
 
 	server := grpc.NewServer()
 	proto.RegisterTransactionServiceServer(server, transactionServer)
+	proto.RegisterKeysServiceServer(server, transactionServer)
 
 	log.Printf("Serve is running  on port: %v", "9090")
 	if err := server.Serve(list); err != nil {

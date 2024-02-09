@@ -144,7 +144,8 @@ message KeyRequest{
 }
 
 message ListKeys{
-    repeated Key keys = 1;
+    repeated KeyResponse keys = 1;
+
 }
 service KeysService {
     rpc CreateKey(Key) returns (KeyResponse) {
@@ -169,6 +170,7 @@ message PixTransaction {
     double amount = 5;
     google.protobuf.Timestamp hour  = 6;
     string status = 7;
+    string account_id = 8;
 }
 
 enum Status {
