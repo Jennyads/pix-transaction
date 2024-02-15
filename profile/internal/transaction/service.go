@@ -49,15 +49,16 @@ func (s service) SendPix(ctx context.Context, req *Pix) error {
 		return errutils.ErrReceiverAccountBlocked
 	}
 
-	payload, err := json.Marshal(PixEvent{
-		AccountName:   accountModel.Id,
-		AccountCpf:    userModel.Cpf,
-		AccountAgency: accountModel.Agency,
-		AccountBank:   accountModel.Bank,
-		Receiver:      req.Receiver,
-		Amount:        req.Amount,
-		WebhookUrl:    "http://localhost:9060/profile/v1/webhook",
-	})
+	pixEvent := PixEvent{
+		Receiver:   req.Receiver,
+		Amount:     req.Amount,
+		WebhookUrl: "http://localhost:9060/profile/v1/webhook",
+	}
+	pixEvent.Account.Name = accountModel.Id
+	pixEvent.Account.Cpf = userModel.Cpf
+	pixEvent.Account.Agency = accountModel.Agency
+	pixEvent.Account.Bank = accountModel.Bank
+	payload, err := json.Marshal(pixEvent)
 	if err != nil {
 		return status.Error(codes.Internal, err.Error())
 	}

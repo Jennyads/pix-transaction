@@ -24,6 +24,7 @@ type ProfileServer struct {
 	profile.UnimplementedKeysServiceServer
 	profile.UnimplementedPixTransactionServiceServer
 }
+
 type EmailAlreadyExist struct {
 	Message string
 }
@@ -140,6 +141,7 @@ func (p ProfileServer) ListAccounts(ctx context.Context, request *profile.ListAc
 	}
 	return &profile.ListAccount{Account: findAccounts}, nil
 }
+
 func (p ProfileServer) DeleteAccount(ctx context.Context, request *profile.AccountRequest) (*empty.Empty, error) {
 	if request.UserId == "" || request.AccountId == "" {
 		return nil, status.Error(codes.InvalidArgument, "account_id and user_id are required")
