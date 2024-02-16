@@ -1,0 +1,132 @@
+version: '3.7'
+
+volumes:
+  app_dynamodb:
+    driver: local
+  mssql_data:
+
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ."
+    restart: unless-stopped
+    volumes:
+      - app_dynamodb:/home/dynamodblocal
+    working_dir: /home/dynamodblocal
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: "http://dynamodb-local:8000"
+      AWS_REGION: "us-west-2"
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    depends_on:
+      - dynamodb-local
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+    depends_on:
+      - "kafka"
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "SqlServer2019!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+  mssqltools:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - sqlserver
+
+  redis:
+    image: redis
+    command: redis-server --requirepass redis
+    ports:
+      - "6379:6379"
+
+  app-transaction:
+    build:
+      context: ../../../transaction
+      dockerfile: Dockerfile
+    image: transaction
+    environment:
+      - DB_HOST=dynamodb-local
+      - KAFKA_ADVERTISED_LISTENERS=kafka:29092
+    container_name: transaction
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    depends_on:
+      - dynamodb-local
+      - kafka
+
+  app-profile:
+    build:
+      context: ../../../profile
+      dockerfile: Dockerfile
+    image: profile
+    environment:
+      - DB_HOST=sqlserver
+      - KAFKA_ADVERTISED_LISTENERS=kafka:9092
+      - REDIS_HOST=redis
+    container_name: profile
+    restart: unless-stopped
+    ports:
+      - "9080:9080"
+    depends_on:
+      - sqlserver
+      - kafka
+      - redis
+
+  app-api:
+    build:
+      context: ../../../api
+      dockerfile: Dockerfile
+    image: api
+    environment:
+      - PROFILE_BACKEND_HOST=app-profile
+    container_name: api
+    restart: unless-stopped
+    ports:
+      - "9060:9060"
+    depends_on:
+      - app-profile

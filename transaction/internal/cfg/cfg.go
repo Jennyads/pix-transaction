@@ -5,11 +5,9 @@ import (
 	"strings"
 )
 
-type ProfileConfig struct {
-	Host string
-}
-
 type DynamodbConfig struct {
+	Host             string
+	Port             string
 	TransactionTable string
 	KeysTable        string
 }
@@ -21,20 +19,18 @@ type KafkaConfig struct {
 type Config struct {
 	DynamodbConfig DynamodbConfig
 	KafkaConfig    KafkaConfig
-	ProfileConfig  ProfileConfig
 }
 
 func Load() (*Config, error) {
 	return &Config{
 		DynamodbConfig{
+			Host:             Getenv("DB_HOST", "localhost"),
+			Port:             Getenv("DB_PORT", "8000"),
 			TransactionTable: Getenv("TRANSACTION_TABLE", "transaction"),
 			KeysTable:        Getenv("KEYS_TABLE", "keys"),
 		},
 		KafkaConfig{
 			Brokers: strings.Split(Getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"), ","),
-		},
-		ProfileConfig{
-			Host: Getenv("PROFILE_HOST", "localhost:9080"),
 		},
 	}, nil
 }

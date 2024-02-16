@@ -1,6 +1,14 @@
 version: '3'
 
 tasks:
+  docker-compose:development:
+    cmds:
+      - cmd: docker compose -f docker/local/development/docker-compose.yml up -d
+
+  docker-compose:deployment:
+    cmds:
+      - cmd: docker compose -f docker/local/deployment/docker-compose.yml up -d
+
   go:build:
     cmds:
       - cmd: cd transaction && go build -o transaction.exe ./cmd && ./transaction.exe &
