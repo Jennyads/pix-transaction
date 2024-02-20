@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"os"
 	"profile/internal/account"
 	"profile/internal/errutils"
 	"profile/internal/event"
@@ -52,7 +53,7 @@ func (s service) SendPix(ctx context.Context, req *Pix) error {
 	pixEvent := PixEvent{
 		Receiver:   req.Receiver,
 		Amount:     req.Amount,
-		WebhookUrl: "http://localhost:9060/profile/v1/webhook",
+		WebhookUrl: os.Getenv("WEBHOOK_URL"),
 	}
 	pixEvent.Account.Name = accountModel.Id
 	pixEvent.Account.Cpf = userModel.Cpf

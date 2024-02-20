@@ -17,7 +17,7 @@ const (
 
 type Key struct {
 	Id        string         `gorm:"primaryKey;type:varchar(36);column:id"`
-	AccountID string         `gorm:"foreignKey;type:varchar(36);column:account_id"`
+	AccountID int64          `gorm:"foreignKey;type:varchar(36);column:account_id"`
 	Name      string         `gorm:"type:varchar(200);column:name"`
 	Type      Type           `gorm:"type:varchar(100);column:type"`
 	CreatedAt time.Time      `gorm:"type:datetime;column:created_at"`

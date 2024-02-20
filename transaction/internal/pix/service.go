@@ -50,7 +50,7 @@ func (s *service) Transaction(ctx context.Context, pixEvent *PixEvent) error {
 	}
 
 	transaction, err := s.transaction.CreateTransaction(&transactions.Transaction{
-		AccountID: pixEvent.AccountName,
+		AccountID: pixEvent.Account.Name,
 		Receiver:  receiver.Id,
 		Value:     utils.ToFloat(pixEvent.Amount),
 		Status:    transactions.StatusPending,
@@ -61,10 +61,10 @@ func (s *service) Transaction(ctx context.Context, pixEvent *PixEvent) error {
 
 	err = s.webhook.Send(ctx, webhook.Webhook{
 		Sender: webhook.Account{
-			Name:   pixEvent.AccountName,
-			Agency: pixEvent.AccountAgency,
-			Bank:   pixEvent.AccountBank,
-			Cpf:    pixEvent.AccountCpf,
+			Name:   pixEvent.Account.Name,
+			Agency: pixEvent.Account.Agency,
+			Bank:   pixEvent.Account.Bank,
+			Cpf:    pixEvent.Account.Cpf,
 		},
 		Receiver: webhook.Account{
 			Name:   receiver.Account,

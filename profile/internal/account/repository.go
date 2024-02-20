@@ -13,7 +13,7 @@ type Repository interface {
 	CreateAccount(account *Account) (*Account, error)
 	FindAccountById(id string) (*Account, error)
 	UpdateAccount(account *Account) (*Account, error)
-	ListAccount(accountIDs []string) ([]*Account, error)
+	ListAccount(accountIDs []int64) ([]*Account, error)
 	DeleteAccount(id string) error
 	FindByKey(key string) (*Account, error)
 	IsAccountActive(ctx context.Context, id string) (bool, error)
@@ -69,7 +69,7 @@ func (r repository) UpdateAccounts(accounts []*Account) error {
 	return nil
 }
 
-func (r repository) ListAccount(ids []string) ([]*Account, error) {
+func (r repository) ListAccount(ids []int64) ([]*Account, error) {
 	var listAccount []*Account
 	if err := r.db.Where("id IN (?)", ids).Find(&listAccount).Error; err != nil {
 		return nil, err

@@ -17,18 +17,18 @@ type Webhook struct {
 }
 
 type PixTransaction struct {
-	UserId      string  `json:"user_id"`
-	AccountId   string  `json:"account_id"`
-	SenderKey   string  `json:"sender_key"`
+	AccountId   int64   `json:"account_id"`
 	ReceiverKey string  `json:"receiver_key"`
 	Amount      float64 `json:"amount"`
 }
 
 type Account struct {
-	Name   string `json:"name"`
-	Cpf    string `json:"cpf"`
-	Agency string `json:"agency"`
-	Bank   string `json:"bank"`
+	Id      int64   `json:"id"`
+	Name    string  `json:"name"`
+	Cpf     string  `json:"cpf"`
+	Agency  string  `json:"agency"`
+	Bank    string  `json:"bank"`
+	Balance float64 `json:"balance"`
 }
 
 type User struct {
@@ -50,7 +50,7 @@ const (
 )
 
 type Key struct {
-	AccountId string `json:"account_id"`
+	AccountId int64  `json:"account_id"`
 	Name      string `json:"name"`
 	Type      Type   `json:"type"`
 }

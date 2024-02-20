@@ -108,13 +108,19 @@ func (r *profileHandler) CreateUser(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	err := r.backend.CreateUser(ctx, body)
+	userId, err := r.backend.CreateUser(ctx, body)
 	if err != nil {
 		httputils.BackendErrorFactory(&ctx.Response, err)
 		return
 	}
 
-	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
+	response := struct {
+		UserId string `json:"userId"`
+	}{
+		UserId: userId,
+	}
+
+	httputils.JSON(&ctx.Response, response, http.StatusOK)
 }
 
 func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
@@ -129,12 +135,18 @@ func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
 		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
 		return
 	}
-	err := r.backend.CreateAccount(ctx, userId, body)
+	accountId, err := r.backend.CreateAccount(ctx, userId, body)
 	if err != nil {
 		httputils.BackendErrorFactory(&ctx.Response, err)
 		return
 	}
-	httputils.JSON(&ctx.Response, &httputils.Response{Status: http.StatusOK, Msg: "success"}, http.StatusOK)
+
+	response := struct {
+		AccountId string `json:"accountId"`
+	}{
+		AccountId: accountId,
+	}
+	httputils.JSON(&ctx.Response, response, http.StatusOK)
 }
 func (r *profileHandler) PixWebhook(ctx *fasthttp.RequestCtx) {
 	var body profile.Webhook

@@ -3,6 +3,7 @@ package account
 import (
 	"context"
 	"errors"
+	"strconv"
 )
 
 type Service interface {
@@ -24,7 +25,7 @@ func (s *service) CreateAccount(ctx context.Context, account *Account) (*Account
 }
 
 func (s *service) FindAccountById(ctx context.Context, request *AccountRequest) (*Account, error) {
-	return s.repo.FindAccountById(request.AccountID)
+	return s.repo.FindAccountById(strconv.FormatInt(request.AccountID, 10))
 }
 
 func (s *service) UpdateAccount(ctx context.Context, account *Account) (*Account, error) {
@@ -42,7 +43,7 @@ func (s *service) ListAccounts(ctx context.Context, listAccount *ListAccountRequ
 }
 
 func (s *service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
-	return s.repo.DeleteAccount(request.AccountID)
+	return s.repo.DeleteAccount(strconv.FormatInt(request.AccountID, 10))
 }
 func (s *service) IsAccountActive(ctx context.Context, id string) (bool, error) {
 	active, err := s.repo.IsAccountActive(ctx, id)
