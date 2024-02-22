@@ -10,10 +10,11 @@ const (
 )
 
 type Webhook struct {
-	Sender   Account         `json:"sender"`
-	Receiver Account         `json:"receiver"`
-	Amount   decimal.Decimal `json:"amount"`
-	Status   Status          `json:"status"`
+	TransactionId string          `json:"transaction_id"`
+	Sender        Account         `json:"sender"`
+	Receiver      Account         `json:"receiver"`
+	Amount        decimal.Decimal `json:"amount"`
+	Status        Status          `json:"status"`
 }
 
 type Account struct {

@@ -6,14 +6,22 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"time"
+	"transaction/internal/transactions"
 )
 
 type Service interface {
 	Send(ctx context.Context, data Webhook, url string) error
 }
 
+type TransactionRepository interface {
+	FindTransactionById(id string) (*transactions.Transaction, error)
+	UpdateTransactionStatus(transaction *transactions.Transaction) error
+}
+
 type service struct {
-	client http.Client
+	client      http.Client
+	transaction TransactionRepository
 }
 
 func (s *service) Send(ctx context.Context, data Webhook, url string) error {
@@ -40,9 +48,23 @@ func (s *service) Send(ctx context.Context, data Webhook, url string) error {
 		return errors.New("error when send webhook")
 	}
 
+	if data.Status == StatusCompleted {
+		transaction, err := s.transaction.FindTransactionById(data.TransactionId)
+		if err != nil {
+			return err
+		}
+		transaction.ProcessedAt = time.Now()
+		err = s.transaction.UpdateTransactionStatus(transaction)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
-func NewService() Service {
-	return &service{}
+func NewService(transactionRepo TransactionRepository) Service {
+	return &service{
+		client:      http.Client{},
+		transaction: transactionRepo,
+	}
 }
