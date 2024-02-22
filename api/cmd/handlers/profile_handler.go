@@ -116,8 +116,13 @@ func (r *profileHandler) CreateUser(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	response := profile.CreateUserResponse{
-		UserId: userId,
+	response := profile.User{
+		Id:      userId,
+		Name:    body.Name,
+		Email:   body.Email,
+		Address: body.Address,
+		Cpf:     body.Cpf,
+		Phone:   body.Phone,
 	}
 
 	httputils.JSON(&ctx.Response, response, http.StatusOK)
@@ -149,6 +154,11 @@ func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
 
 	response := profile.CreateAccountResponse{
 		AccountId: accountId,
+		Name:      body.Name,
+		Cpf:       body.Cpf,
+		Agency:    body.Agency,
+		Bank:      body.Bank,
+		Balance:   body.Balance,
 	}
 	httputils.JSON(&ctx.Response, response, http.StatusOK)
 }
