@@ -8,7 +8,7 @@ import (
 
 type Pix struct {
 	UserID     string          `json:"user_id"`
-	AccountID  string          `json:"account_id"`
+	AccountID  int64           `json:"account_id"`
 	Key        string          `json:"key"`
 	Receiver   string          `json:"receiver"`
 	Amount     decimal.Decimal `json:"amount"`
@@ -24,7 +24,7 @@ func ProtoToPix(pix *pb.PixTransaction) *Pix {
 	}
 
 	return &Pix{
-		AccountID: pix.Id,
+		AccountID: pix.AccountId,
 
 		Receiver: pix.ReceiverKey,
 		Amount:   amount,
@@ -77,7 +77,7 @@ type Webhook struct {
 }
 
 type Account struct {
-	Name   string
+	Name   int64
 	Agency string
 	Bank   string
 }
@@ -95,7 +95,7 @@ type Key struct {
 	Agency  string
 	Bank    string
 	Cpf     string
-	Account string
+	Account int64
 	Name    string
 	Type    Type
 }

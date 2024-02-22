@@ -40,6 +40,14 @@ type User struct {
 	Phone   string `json:"phone" validate:"validateData"`
 }
 
+type CreateUserResponse struct {
+	UserId string `json:"userId"`
+}
+
+type CreateAccountResponse struct {
+	AccountId int64 `json:"accountId"`
+}
+
 type Type string
 
 const (

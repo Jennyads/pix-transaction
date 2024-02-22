@@ -11,6 +11,7 @@ import (
 	"github.com/valyala/fasthttp"
 	"net/http"
 	"regexp"
+	"strconv"
 )
 
 func ProfileRoutes(routes *router.Router, handler ProfileHandler, middleware middleware.Middleware) *router.Router {
@@ -98,6 +99,7 @@ func isValidCPF(cpf string) bool {
 
 func (r *profileHandler) CreateUser(ctx *fasthttp.RequestCtx) {
 	var body profile.User
+
 	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
 		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
 		return
@@ -114,9 +116,7 @@ func (r *profileHandler) CreateUser(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	response := struct {
-		UserId string `json:"userId"`
-	}{
+	response := profile.CreateUserResponse{
 		UserId: userId,
 	}
 
@@ -135,19 +135,24 @@ func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
 		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
 		return
 	}
-	accountId, err := r.backend.CreateAccount(ctx, userId, body)
+	accountIdStr, err := r.backend.CreateAccount(ctx, userId, body)
 	if err != nil {
 		httputils.BackendErrorFactory(&ctx.Response, err)
 		return
 	}
 
-	response := struct {
-		AccountId string `json:"accountId"`
-	}{
+	accountId, err := strconv.ParseInt(accountIdStr, 10, 64)
+	if err != nil {
+		httputils.JSONError(&ctx.Response, err, http.StatusInternalServerError)
+		return
+	}
+
+	response := profile.CreateAccountResponse{
 		AccountId: accountId,
 	}
 	httputils.JSON(&ctx.Response, response, http.StatusOK)
 }
+
 func (r *profileHandler) PixWebhook(ctx *fasthttp.RequestCtx) {
 	var body profile.Webhook
 	if err := json.Unmarshal(ctx.Request.Body(), &body); err != nil {
