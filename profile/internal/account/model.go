@@ -21,12 +21,12 @@ type Account struct {
 }
 
 type AccountRequest struct {
-	AccountID string
+	AccountID int64
 	UserID    string
 }
 
 type ListAccountRequest struct {
-	AccountIDs []string
+	AccountIDs []int64
 }
 
 func ProtoToAccount(account *proto.Account) *Account {

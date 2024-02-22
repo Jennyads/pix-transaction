@@ -23,12 +23,16 @@ type RedisConfig struct {
 	User     string
 	Password string
 }
+type WebhookConfig struct {
+	Url string
+}
 
 // Config is the struct that holds all the configuration for the application
 type Config struct {
 	SqlServerConfig SqlServerConfig
 	KafkaConfig     KafkaConfig
 	RedisConfig     RedisConfig
+	WebhookConfig   WebhookConfig
 }
 
 func Load() (*Config, error) {
@@ -48,6 +52,9 @@ func Load() (*Config, error) {
 			Port:     Getenv("REDIS_PORT", "6379"),
 			User:     Getenv("REDIS_USER", "default"),
 			Password: Getenv("REDIS_PASSWORD", "redis"),
+		},
+		WebhookConfig{
+			Url: Getenv("WEBHOOK_URL", "http://localhost:9060/profile/v1/webhook"),
 		},
 	}, nil
 }

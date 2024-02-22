@@ -11,12 +11,12 @@ import (
 
 type Repository interface {
 	CreateAccount(account *Account) (*Account, error)
-	FindAccountById(id string) (*Account, error)
+	FindAccountById(id int64) (*Account, error)
 	UpdateAccount(account *Account) (*Account, error)
-	ListAccount(accountIDs []string) ([]*Account, error)
-	DeleteAccount(id string) error
+	ListAccount(accountIDs []int64) ([]*Account, error)
+	DeleteAccount(id int64) error
 	FindByKey(key string) (*Account, error)
-	IsAccountActive(ctx context.Context, id string) (bool, error)
+	IsAccountActive(ctx context.Context, id int64) (bool, error)
 	UpdateAccounts(accounts []*Account) error
 }
 
@@ -36,7 +36,7 @@ func (r repository) CreateAccount(account *Account) (*Account, error) {
 	return account, nil
 }
 
-func (r repository) FindAccountById(id string) (*Account, error) {
+func (r repository) FindAccountById(id int64) (*Account, error) {
 	var account Account
 	result := r.db.Where("id = ?", id).First(&account)
 	if result.Error != nil {
@@ -69,7 +69,7 @@ func (r repository) UpdateAccounts(accounts []*Account) error {
 	return nil
 }
 
-func (r repository) ListAccount(ids []string) ([]*Account, error) {
+func (r repository) ListAccount(ids []int64) ([]*Account, error) {
 	var listAccount []*Account
 	if err := r.db.Where("id IN (?)", ids).Find(&listAccount).Error; err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func (r repository) ListAccount(ids []string) ([]*Account, error) {
 	return listAccount, nil
 }
 
-func (r repository) DeleteAccount(id string) error {
+func (r repository) DeleteAccount(id int64) error {
 	return r.db.Delete(&Account{}, "id = ?", id).Error
 }
 
@@ -93,7 +93,7 @@ func (r repository) FindByKey(key string) (*Account, error) {
 	return &account, err
 }
 
-func (r repository) IsAccountActive(ctx context.Context, id string) (bool, error) {
+func (r repository) IsAccountActive(ctx context.Context, id int64) (bool, error) {
 	var account Account
 	result := r.db.Select("deleted_at").Where("id = ?", id).First(&account)
 

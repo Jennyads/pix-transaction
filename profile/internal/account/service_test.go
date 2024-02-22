@@ -6,6 +6,7 @@ import (
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"strconv"
 	"testing"
 )
 
@@ -137,7 +138,7 @@ func TestFindAccountById(t *testing.T) {
 		{
 			name: "success",
 			req: &AccountRequest{
-				AccountID: "1",
+				AccountID: 1,
 			},
 			mockFunc: func(repo *mockRepo) {
 				repo.On("FindAccountById", "1").
@@ -161,7 +162,7 @@ func TestFindAccountById(t *testing.T) {
 		{
 			name: "failed because error in find account by id",
 			req: &AccountRequest{
-				AccountID: "1",
+				AccountID: 1,
 			},
 			mockFunc: func(repo *mockRepo) {
 				repo.On("FindAccountById", "1").
@@ -300,7 +301,7 @@ func TestListAccounts(t *testing.T) {
 		{
 			name: "success",
 			req: &ListAccountRequest{
-				AccountIDs: []string{"1", "2"},
+				AccountIDs: []int64{1, 2},
 			},
 			mockFunc: func(repo *mockRepo) {
 				repo.On("ListAccount", []string{"1", "2"}).
@@ -342,7 +343,7 @@ func TestListAccounts(t *testing.T) {
 		{
 			name: "failed because error in list accounts",
 			req: &ListAccountRequest{
-				AccountIDs: []string{"1", "2"},
+				AccountIDs: []int64{1, 2},
 			},
 			mockFunc: func(repo *mockRepo) {
 				repo.On("ListAccount", []string{"1", "2"}).
@@ -378,7 +379,7 @@ func TestDeleteAccount(t *testing.T) {
 		{
 			name: "success",
 			req: &AccountRequest{
-				AccountID: "1",
+				AccountID: 1,
 				UserID:    "1",
 			},
 			mockFunc: func(repo *mockRepo) {
@@ -390,7 +391,7 @@ func TestDeleteAccount(t *testing.T) {
 		{
 			name: "failed because error in delete account",
 			req: &AccountRequest{
-				AccountID: "2",
+				AccountID: 2,
 				UserID:    "1",
 			},
 			mockFunc: func(repo *mockRepo) {
@@ -427,7 +428,7 @@ func TestIsAccountActive(t *testing.T) {
 			name: "active account",
 			id:   "1",
 			mockFunc: func(repo *mockRepo) {
-				repo.On("IsAccountActive", "1").
+				repo.On("IsAccountActive", int64(1)).
 					Return(true, nil).Times(1)
 			},
 			want: true,
@@ -437,7 +438,7 @@ func TestIsAccountActive(t *testing.T) {
 			name: "inactive account",
 			id:   "2",
 			mockFunc: func(repo *mockRepo) {
-				repo.On("IsAccountActive", "2").
+				repo.On("IsAccountActive", int64(2)).
 					Return(false, nil).Times(1)
 			},
 			want: false,
@@ -453,7 +454,8 @@ func TestIsAccountActive(t *testing.T) {
 
 			s := NewService(repo)
 
-			got, err := s.IsAccountActive(context.Background(), c.id)
+			id, _ := strconv.ParseInt(c.id, 10, 64)
+			got, err := s.IsAccountActive(context.Background(), id)
 			assert.Equal(t, c.err, err)
 			assert.Equal(t, c.want, got)
 		})

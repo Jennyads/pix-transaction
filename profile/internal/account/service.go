@@ -12,7 +12,7 @@ type Service interface {
 	ListAccounts(ctx context.Context, req *ListAccountRequest) ([]*Account, error)
 	DeleteAccount(ctx context.Context, req *AccountRequest) error
 	FindByKey(ctx context.Context, key string) (*Account, error)
-	IsAccountActive(ctx context.Context, id string) (bool, error)
+	IsAccountActive(ctx context.Context, id int64) (bool, error)
 }
 
 type service struct {
@@ -44,7 +44,7 @@ func (s *service) ListAccounts(ctx context.Context, listAccount *ListAccountRequ
 func (s *service) DeleteAccount(ctx context.Context, request *AccountRequest) error {
 	return s.repo.DeleteAccount(request.AccountID)
 }
-func (s *service) IsAccountActive(ctx context.Context, id string) (bool, error) {
+func (s *service) IsAccountActive(ctx context.Context, id int64) (bool, error) {
 	active, err := s.repo.IsAccountActive(ctx, id)
 	if err != nil {
 		return false, err

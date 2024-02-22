@@ -62,6 +62,7 @@ message Account{
     double balance = 2;
     string agency = 3;
     string bank = 4;
+    int64 id = 5;
 }
 
 message AccountResponse{
@@ -79,12 +80,12 @@ message ListAccount{
 }
 
 message AccountRequest{
-    string account_id = 1;
+    int64 account_id = 1;
     string user_id = 2;
 }
 
 message ListAccountRequest{
-    repeated string account_id = 1;
+    repeated int64 account_id = 1;
 }
 
 message FindByKeyRequest{
@@ -121,7 +122,7 @@ enum Type {
 
 }
 message Key {
-    string account_id = 1;
+    int64 account_id = 1;
     string name = 2;
     Type type = 3;
     float value = 4;
@@ -129,7 +130,7 @@ message Key {
 
 message KeyResponse{
     string id = 1;
-    string account_id = 2;
+    int64 account_id = 2;
     string name = 3;
     Type type = 4;
     float value = 5;
@@ -140,7 +141,7 @@ message ListKeyRequest{
 }
 message KeyRequest{
     string key_id = 1;
-    string account_id = 2;
+    int64 account_id = 2;
 }
 
 message ListKeys{
@@ -159,18 +160,15 @@ service KeysService {
 
     rpc DeleteKey(KeyRequest) returns (google.protobuf.Empty){
     }
-
 }
 
 message PixTransaction {
     string id = 1;
-    string user_id = 2;
-    string SenderKey = 3;
     string ReceiverKey = 4;
     double amount = 5;
     google.protobuf.Timestamp hour  = 6;
     string status = 7;
-    string account_id = 8;
+    int64 account_id = 8;
 }
 
 enum Status {

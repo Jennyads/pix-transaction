@@ -88,7 +88,7 @@ func (p ProfileServer) CreateAccount(ctx context.Context, ac *profile.Account) (
 }
 
 func (p ProfileServer) FindAccount(ctx context.Context, ac *profile.AccountRequest) (*profile.AccountResponse, error) {
-	if ac.UserId == "" && ac.AccountId == "" {
+	if ac.UserId == "" && ac.AccountId == 0 {
 		return nil, errors.New("id and userId are required")
 	}
 
@@ -143,7 +143,7 @@ func (p ProfileServer) ListAccounts(ctx context.Context, request *profile.ListAc
 }
 
 func (p ProfileServer) DeleteAccount(ctx context.Context, request *profile.AccountRequest) (*empty.Empty, error) {
-	if request.UserId == "" || request.AccountId == "" {
+	if request.UserId == "" || request.AccountId == 0 {
 		return nil, status.Error(codes.InvalidArgument, "account_id and user_id are required")
 	}
 	err := p.account.DeleteAccount(ctx, account.ProtoToAccountRequest(request))

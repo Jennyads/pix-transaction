@@ -7,12 +7,12 @@ import (
 
 type Backend interface {
 	Webhook(ctx context.Context, webhook Webhook) error
-	CreateUser(ctx context.Context, user User) error
+	CreateUser(ctx context.Context, user User) (string, error)
 	ListUsers(ctx context.Context, user []string) ([]*User, error)
 
 	FindAccount(ctx context.Context, userId string) error
 	PixWebhook(ctx context.Context, webhook Webhook) error
-	CreateAccount(ctx context.Context, userId string, account Account) error
+	CreateAccount(ctx context.Context, userId string, account Account) (string, error)
 	SendPix(ctx context.Context, pix PixTransaction) error
 	CreateKey(ctx context.Context, key Key) error
 }
@@ -39,8 +39,8 @@ func (g *grpc) Webhook(ctx context.Context, webhook Webhook) error {
 	}
 	return nil
 }
-func (g *grpc) CreateUser(ctx context.Context, user User) error {
-	_, err := g.user.CreateUser(ctx, &proto.User{
+func (g *grpc) CreateUser(ctx context.Context, user User) (string, error) {
+	response, err := g.user.CreateUser(ctx, &proto.User{
 		Name:    user.Name,
 		Email:   user.Email,
 		Address: user.Address,
@@ -48,9 +48,9 @@ func (g *grpc) CreateUser(ctx context.Context, user User) error {
 		Phone:   user.Phone,
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return response.Id, nil
 }
 
 func (g *grpc) ListUsers(ctx context.Context, user []string) ([]*User, error) {
@@ -63,16 +63,23 @@ func (g *grpc) ListUsers(ctx context.Context, user []string) ([]*User, error) {
 	return nil, nil
 }
 
-func (g *grpc) CreateAccount(ctx context.Context, userId string, account Account) error {
-	_, err := g.account.CreateAccount(ctx, &proto.Account{
-		UserId: userId,
-		Agency: account.Agency,
-		Bank:   account.Bank,
+var lastAccountId int64 = 0
+
+func (g *grpc) CreateAccount(ctx context.Context, userId string, account Account) (string, error) {
+	account.Balance = 100.0
+	lastAccountId++
+	newAccountId := lastAccountId
+	response, err := g.account.CreateAccount(ctx, &proto.Account{
+		Id:      newAccountId,
+		UserId:  userId,
+		Agency:  account.Agency,
+		Bank:    account.Bank,
+		Balance: account.Balance,
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return response.Id, nil
 }
 
 func (g *grpc) FindAccount(ctx context.Context, userId string) error {
@@ -102,11 +109,9 @@ func (g *grpc) PixWebhook(ctx context.Context, webhook Webhook) error {
 
 func (g *grpc) SendPix(ctx context.Context, pix PixTransaction) error {
 	_, err := g.pix.SendPix(ctx, &proto.PixTransaction{
-		UserId:      pix.UserId,
-		SenderKey:   pix.SenderKey,
 		ReceiverKey: pix.ReceiverKey,
 		Amount:      pix.Amount,
-		Id:          pix.AccountId,
+		AccountId:   pix.AccountId,
 	})
 	if err != nil {
 		return err
