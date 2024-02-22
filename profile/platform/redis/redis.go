@@ -8,9 +8,7 @@ import (
 
 func StartRedis(config *cfg.Config) *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:%s", config.RedisConfig.Host, config.RedisConfig.Port)
+		Addr: fmt.Sprintf("%s:%s", config.RedisConfig.Host, config.RedisConfig.Port),
 	})
 	return client
 }
-
-

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"os"
 	"profile/internal/account"
+	"profile/internal/cfg"
 	"profile/internal/errutils"
 	"profile/internal/event"
 	"profile/internal/user"
@@ -27,6 +27,8 @@ type service struct {
 }
 
 func (s service) SendPix(ctx context.Context, req *Pix) error {
+
+	var cfgInstance *cfg.Config
 
 	accountModel, err := s.accountRepository.FindAccountById(req.AccountID)
 	if err != nil {
@@ -53,7 +55,7 @@ func (s service) SendPix(ctx context.Context, req *Pix) error {
 	pixEvent := PixEvent{
 		Receiver:   req.Receiver,
 		Amount:     req.Amount,
-		WebhookUrl: os.Getenv("WEBHOOK_URL"),
+		WebhookUrl: cfgInstance.WebhookConfig.Url,
 	}
 	pixEvent.Account.Name = accountModel.Id
 	pixEvent.Account.Cpf = userModel.Cpf
