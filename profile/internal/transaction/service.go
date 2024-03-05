@@ -11,6 +11,7 @@ import (
 	"profile/internal/event"
 	"profile/internal/user"
 	transpb "profile/proto/transactions/v1"
+	"strconv"
 )
 
 type Service interface {
@@ -57,7 +58,7 @@ func (s service) SendPix(ctx context.Context, req *Pix) error {
 		Amount:     req.Amount,
 		WebhookUrl: cfgInstance.WebhookConfig.Url,
 	}
-	pixEvent.Account.Name = accountModel.Id
+	pixEvent.Account.Name = strconv.FormatInt(accountModel.Id, 10)
 	pixEvent.Account.Cpf = userModel.Cpf
 	pixEvent.Account.Agency = accountModel.Agency
 	pixEvent.Account.Bank = accountModel.Bank
@@ -114,7 +115,7 @@ func (s service) CreateKey(ctx context.Context, req *Key) error {
 	_, err = s.keysBackend.CreateKey(ctx, &transpb.Key{
 		Account: &transpb.Account{
 			Cpf:    userModel.Cpf,
-			Name:   accountModel.Id,
+			Name:   strconv.FormatInt(accountModel.Id, 10),
 			Agency: accountModel.Agency,
 			Bank:   accountModel.Bank,
 		},

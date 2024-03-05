@@ -24,7 +24,6 @@ type PixTransaction struct {
 
 type Account struct {
 	Name    string  `json:"name"`
-	Cpf     string  `json:"cpf"`
 	Agency  string  `json:"agency"`
 	Bank    string  `json:"bank"`
 	Balance float64 `json:"balance"`
@@ -41,8 +40,6 @@ type User struct {
 
 type CreateAccountResponse struct {
 	AccountId int64   `json:"accountId"`
-	Name      string  `json:"name"`
-	Cpf       string  `json:"cpf"`
 	Agency    string  `json:"agency"`
 	Bank      string  `json:"bank"`
 	Balance   float64 `json:"balance"`

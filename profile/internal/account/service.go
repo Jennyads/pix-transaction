@@ -28,7 +28,7 @@ func (s *service) FindAccountById(ctx context.Context, request *AccountRequest) 
 }
 
 func (s *service) UpdateAccount(ctx context.Context, account *Account) (*Account, error) {
-	if account.Id == "" {
+	if account.Id == 0 {
 		return nil, errors.New("account_id is required")
 	}
 	return s.repo.UpdateAccount(account)

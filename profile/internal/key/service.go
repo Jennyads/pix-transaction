@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"profile/internal/transaction"
-	"strconv"
 )
 
 type Service interface {
@@ -22,7 +21,7 @@ type service struct {
 
 func (s service) CreateKey(key *Key) (*Key, error) {
 	err := s.transaction.CreateKey(context.Background(), &transaction.Key{
-		Account: strconv.FormatInt(key.AccountID, 10),
+		Account: key.AccountID,
 		Name:    key.Name,
 		Type:    transaction.Type(string(key.Type)),
 	})
