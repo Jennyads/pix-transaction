@@ -21,22 +21,30 @@ type Repository interface {
 }
 
 type repository struct {
-	db        *gorm.DB
-	cfg       *cfg.Config
+	db  *gorm.DB
+	cfg *cfg.Config
+}
+
+var (
 	idCounter int64
-	mu        sync.Mutex
+	idMutex   sync.Mutex
+)
+
+func getNextID() int64 {
+	idMutex.Lock()
+	defer idMutex.Unlock()
+	idCounter++
+	return idCounter
 }
 
 func (r repository) CreateAccount(account *Account) (*Account, error) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
 	account.CreatedAt = time.Now()
 	account.UpdatedAt = time.Now()
-
-	r.idCounter++
-	account.Id = r.idCounter
-
+	account.Id = getNextID()
+	err := r.db.Create(&account).Error
+	if err != nil {
+		return nil, err
+	}
 	return account, nil
 }
 
