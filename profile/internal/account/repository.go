@@ -30,17 +30,9 @@ var (
 	idMutex   sync.Mutex
 )
 
-func getNextID() int64 {
-	idMutex.Lock()
-	defer idMutex.Unlock()
-	idCounter++
-	return idCounter
-}
-
 func (r repository) CreateAccount(account *Account) (*Account, error) {
 	account.CreatedAt = time.Now()
 	account.UpdatedAt = time.Now()
-	account.Id = getNextID()
 	err := r.db.Create(&account).Error
 	if err != nil {
 		return nil, err
