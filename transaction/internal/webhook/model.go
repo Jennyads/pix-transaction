@@ -18,7 +18,7 @@ type Webhook struct {
 }
 
 type Account struct {
-	Name   string
+	Name   int64
 	Agency string
 	Bank   string
 	Cpf    string

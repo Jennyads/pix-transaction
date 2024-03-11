@@ -48,7 +48,7 @@ enum Type {
 }
 
 message Account {
-  string name = 1;
+  int64 name = 1;
   string cpf = 2;
   string agency = 3;
   string bank = 4;

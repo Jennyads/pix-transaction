@@ -3,9 +3,9 @@ package account
 import (
 	"context"
 	"database/sql"
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"profile/internal/cfg"
+	"sync"
 	"time"
 )
 
@@ -25,10 +25,14 @@ type repository struct {
 	cfg *cfg.Config
 }
 
+var (
+	idCounter int64
+	idMutex   sync.Mutex
+)
+
 func (r repository) CreateAccount(account *Account) (*Account, error) {
 	account.CreatedAt = time.Now()
 	account.UpdatedAt = time.Now()
-	account.Id = uuid.New().String()
 	err := r.db.Create(&account).Error
 	if err != nil {
 		return nil, err

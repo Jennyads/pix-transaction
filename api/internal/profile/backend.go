@@ -12,7 +12,7 @@ type Backend interface {
 
 	FindAccount(ctx context.Context, userId string) error
 	PixWebhook(ctx context.Context, webhook Webhook) error
-	CreateAccount(ctx context.Context, userId string, account Account) (string, error)
+	CreateAccount(ctx context.Context, userId string, account Account) (int64, error)
 	SendPix(ctx context.Context, pix PixTransaction) error
 	CreateKey(ctx context.Context, key Key) error
 }
@@ -65,7 +65,7 @@ func (g *grpc) ListUsers(ctx context.Context, user []string) ([]*User, error) {
 
 var lastAccountId int64 = 0
 
-func (g *grpc) CreateAccount(ctx context.Context, userId string, account Account) (string, error) {
+func (g *grpc) CreateAccount(ctx context.Context, userId string, account Account) (int64, error) {
 	account.Balance = 100.0
 	lastAccountId++
 	newAccountId := lastAccountId
@@ -77,7 +77,7 @@ func (g *grpc) CreateAccount(ctx context.Context, userId string, account Account
 		Balance: account.Balance,
 	})
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	return response.Id, nil
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type Account struct {
-	Id        string          `gorm:"primaryKey;type:varchar(36);column:id"`
+	Id        int64           `gorm:"primaryKey;type:varchar(36);column:id"`
 	UserID    string          `gorm:"foreignKey;type:varchar(36);column:user_id"`
 	Balance   decimal.Decimal `gorm:"type:decimal(10,2);column:balance"`
 	Agency    string          `gorm:"type:varchar(100);column:agency"`

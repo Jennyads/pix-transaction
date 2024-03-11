@@ -11,7 +11,6 @@ import (
 	"github.com/valyala/fasthttp"
 	"net/http"
 	"regexp"
-	"strconv"
 )
 
 func ProfileRoutes(routes *router.Router, handler ProfileHandler, middleware middleware.Middleware) *router.Router {
@@ -140,22 +139,14 @@ func (r *profileHandler) CreateAccount(ctx *fasthttp.RequestCtx) {
 		httputils.JSONError(&ctx.Response, err, http.StatusBadRequest)
 		return
 	}
-	accountIdStr, err := r.backend.CreateAccount(ctx, userId, body)
+	accountId, err := r.backend.CreateAccount(ctx, userId, body)
 	if err != nil {
 		httputils.BackendErrorFactory(&ctx.Response, err)
 		return
 	}
 
-	accountId, err := strconv.ParseInt(accountIdStr, 10, 64)
-	if err != nil {
-		httputils.JSONError(&ctx.Response, err, http.StatusInternalServerError)
-		return
-	}
-
 	response := profile.CreateAccountResponse{
 		AccountId: accountId,
-		Name:      body.Name,
-		Cpf:       body.Cpf,
 		Agency:    body.Agency,
 		Bank:      body.Bank,
 		Balance:   body.Balance,

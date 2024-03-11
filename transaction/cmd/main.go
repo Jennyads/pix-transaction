@@ -30,11 +30,11 @@ func main() {
 
 	db := dynamo.NewClient().Connect(config.DynamodbConfig)
 
-	webhookService := webhook.NewService()
-
 	// repositories
 	transactionRepository := transactions.NewRepository(db, config)
 	keysRepository := keys.NewRepository(db, config)
+
+	webhookService := webhook.NewService(transactionRepository)
 
 	// services
 	transactionService := transactions.NewService(transactionRepository)

@@ -62,10 +62,11 @@ message Account{
     double balance = 2;
     string agency = 3;
     string bank = 4;
+    int64 id = 5;
 }
 
 message AccountResponse{
-    string id = 1;
+    int64 id = 1;
     string user_id = 2;
     double balance = 3;
     string agency = 4;
@@ -163,11 +164,11 @@ service KeysService {
 
 message PixTransaction {
     string id = 1;
-    string ReceiverKey = 4;
-    double amount = 5;
-    google.protobuf.Timestamp hour  = 6;
-    string status = 7;
-    int64 account_id = 8;
+    string ReceiverKey = 2;
+    double amount = 3;
+    google.protobuf.Timestamp hour  = 4;
+    string status = 5;
+    int64 account_id = 6;
 }
 
 enum Status {

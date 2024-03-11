@@ -12,6 +12,7 @@ import (
 	"profile/internal/user"
 	"profile/internal/utils"
 	"profile/proto/profile/v1"
+	"strconv"
 )
 
 type ProfileServer struct {
@@ -101,19 +102,25 @@ func (p ProfileServer) FindAccount(ctx context.Context, ac *profile.AccountReque
 	}
 	return account.ToProto(found), nil
 }
+
 func (p ProfileServer) UpdateAccount(ctx context.Context, request *profile.Account) (*empty.Empty, error) {
 	if request.UserId == "" {
 		return nil, errors.New("userId is required")
 	}
 
-	id := utils.ReadMetadata(ctx, "id")
-	if id == "" {
+	idStr := utils.ReadMetadata(ctx, "id")
+	if idStr == "" {
 		return nil, errors.New("id is required")
+	}
+
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return nil, err
 	}
 
 	toUpdate := account.ProtoToAccount(request)
 	toUpdate.Id = id
-	_, err := p.account.UpdateAccount(ctx, toUpdate)
+	_, err = p.account.UpdateAccount(ctx, toUpdate)
 	if err != nil {
 		switch err {
 		default:
