@@ -34,7 +34,7 @@ func (r *repository) CreateTransaction(transaction *Transaction) (*Transaction, 
 	item, err = r.db.DB().PutItem(context.Background(), &dynamodb.PutItemInput{
 		TableName:           aws.String(r.cfg.DynamodbConfig.TransactionTable),
 		Item:                value,
-		ConditionExpression: aws.String("attribute_not_exists(PK) and attribute_not_exists(SK)"),
+		ConditionExpression: aws.String("attribute_not_exists(PK)"),
 	})
 	if err != nil {
 		return nil, err

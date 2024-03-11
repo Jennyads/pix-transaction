@@ -23,7 +23,7 @@ type PixTransaction struct {
 }
 
 type Account struct {
-	Name    string  `json:"name"`
+	Name    int64   `json:"name"`
 	Agency  string  `json:"agency"`
 	Bank    string  `json:"bank"`
 	Balance float64 `json:"balance"`

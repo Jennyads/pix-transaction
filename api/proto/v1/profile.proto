@@ -192,7 +192,7 @@ service PixTransactionService {
 }
 
 message WebhookAccount {
-    string name = 1;
+    int64 name = 1;
     string agency = 2;
     string bank = 3;
 }

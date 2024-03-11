@@ -11,7 +11,6 @@ import (
 	"profile/internal/event"
 	"profile/internal/user"
 	transpb "profile/proto/transactions/v1"
-	"strconv"
 )
 
 type Service interface {
@@ -25,11 +24,10 @@ type service struct {
 	userRepository    user.Repository
 	events            event.Client
 	keysBackend       transpb.KeysServiceClient
+	config            *cfg.Config
 }
 
 func (s service) SendPix(ctx context.Context, req *Pix) error {
-
-	var cfgInstance *cfg.Config
 
 	accountModel, err := s.accountRepository.FindAccountById(req.AccountID)
 	if err != nil {
@@ -56,9 +54,9 @@ func (s service) SendPix(ctx context.Context, req *Pix) error {
 	pixEvent := PixEvent{
 		Receiver:   req.Receiver,
 		Amount:     req.Amount,
-		WebhookUrl: cfgInstance.WebhookConfig.Url,
+		WebhookUrl: s.config.WebhookConfig.Url,
 	}
-	pixEvent.Account.Name = strconv.FormatInt(accountModel.Id, 10)
+	pixEvent.Account.Name = accountModel.Id
 	pixEvent.Account.Cpf = userModel.Cpf
 	pixEvent.Account.Agency = accountModel.Agency
 	pixEvent.Account.Bank = accountModel.Bank
@@ -115,7 +113,7 @@ func (s service) CreateKey(ctx context.Context, req *Key) error {
 	_, err = s.keysBackend.CreateKey(ctx, &transpb.Key{
 		Account: &transpb.Account{
 			Cpf:    userModel.Cpf,
-			Name:   strconv.FormatInt(accountModel.Id, 10),
+			Name:   accountModel.Id,
 			Agency: accountModel.Agency,
 			Bank:   accountModel.Bank,
 		},
@@ -128,8 +126,9 @@ func (s service) CreateKey(ctx context.Context, req *Key) error {
 	return nil
 }
 
-func NewService(event event.Client, accountRepository account.Repository, keysBackend transpb.KeysServiceClient, userRepository user.Repository) Service {
+func NewService(config *cfg.Config, event event.Client, accountRepository account.Repository, keysBackend transpb.KeysServiceClient, userRepository user.Repository) Service {
 	return &service{
+		config:            config,
 		events:            event,
 		accountRepository: accountRepository,
 		keysBackend:       keysBackend,

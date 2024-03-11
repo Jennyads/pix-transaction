@@ -66,9 +66,9 @@ func main() {
 	accountRepository := account.NewRepository(db, config)
 
 	// services
-	transactionService := transaction.NewService(events, accountRepository, transClient, userRepository)
+	transactionService := transaction.NewService(config, events, accountRepository, transClient, userRepository)
 	userService := user.NewService(userRepository)
-	keyService := key.NewService(keyRepository, transactionService)
+	keyService := key.NewService(keyRepository, transactionService, userRepository, accountRepository)
 	accountService := account.NewService(accountRepository)
 
 	//server

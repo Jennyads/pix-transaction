@@ -19,7 +19,7 @@ type Key struct {
 	Agency    string
 	Bank      string
 	Cpf       string
-	Account   string
+	Account   int64
 	Name      string
 	Type      Type
 	CreatedAt time.Time

@@ -15,7 +15,7 @@ const (
 
 type Transaction struct {
 	ID          string `dynamodbav:"PK"`
-	AccountID   string
+	AccountID   int64
 	Receiver    string
 	Value       float64
 	Status      Status
@@ -27,7 +27,7 @@ type Transaction struct {
 
 type TransactionRequest struct {
 	TransactionID string
-	AccountID     string
+	AccountID     int64
 }
 
 type ListTransactionRequest struct {

@@ -62,6 +62,7 @@ message Account{
     double balance = 2;
     string agency = 3;
     string bank = 4;
+    int64 id = 5;
 }
 
 message AccountResponse{

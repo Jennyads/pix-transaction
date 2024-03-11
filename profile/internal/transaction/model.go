@@ -34,7 +34,7 @@ func ProtoToPix(pix *pb.PixTransaction) *Pix {
 
 type PixEvent struct {
 	Account struct {
-		Name   string `json:"name"`
+		Name   int64  `json:"name"`
 		Cpf    string `json:"cpf"`
 		Agency string `json:"agency"`
 		Bank   string `json:"bank"`
