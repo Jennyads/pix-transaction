@@ -1,11 +1,21 @@
 version: '3.7'
+
+volumes:
+  app_dynamodb:
+    driver: local
+  mssql_data:
+
 services:
   dynamodb-local:
     image: amazon/dynamodb-local:latest
     container_name: dynamodb-local
     ports:
       - "8000:8000"
-    command: -jar DynamoDBLocal.jar -sharedDb
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ."
+    restart: unless-stopped
+    volumes:
+      - app_dynamodb:/home/dynamodblocal
+    working_dir: /home/dynamodblocal
 
   dynamodb-admin:
     image: aaronshaf/dynamodb-admin
@@ -59,6 +69,8 @@ services:
       MSSQL_PID: "Developer"
     ports:
       - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
 
   mssqltools:
     image: mcr.microsoft.com/mssql-tools

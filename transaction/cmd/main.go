@@ -28,7 +28,7 @@ func main() {
 		return
 	}
 
-	db := dynamo.NewClient().Connect()
+	db := dynamo.NewClient().Connect(config.DynamodbConfig)
 
 	// repositories
 	transactionRepository := transactions.NewRepository(db, config)

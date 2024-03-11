@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+  docker-compose:development:
+    cmds:
+      - cmd: docker compose -f docker/local/development/docker-compose.yml up -d
+
+  docker-compose:deployment:
+    cmds:
+      - cmd: docker compose -f docker/local/deployment/docker-compose.yml up -d
+
+  go:build:
+    cmds:
+      - cmd: cd transaction && go build -o transaction.exe ./cmd && ./transaction.exe &
+      - cmd: cd profile && go build -o profile.exe ./cmd && ./profile.exe &
+      - cmd: cd api && go build -o api.exe ./cmd && ./api.exe
+
+  docker:build:
+    cmds:
+      - cmd: cd transaction && docker build . -t transaction
+      - cmd: cd profile && docker build . -t profile
+      - cmd: cd api && docker build . -t api
+
+  docker:run:
+    cmds:
+      - cmd: docker run -p 9090:9090 transaction
+      - cmd: docker run -p 9080:9080 profile
+      - cmd: docker run -p 9060:9060 api

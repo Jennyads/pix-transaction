@@ -40,9 +40,9 @@ func Load() (*Config, error) {
 		SqlServerConfig{
 			Host:     Getenv("DB_HOST", "localhost"),
 			Port:     Getenv("DB_PORT", "1433"),
-			User:     Getenv("DB_USER", ""),
-			Password: Getenv("DB_PASS", ""),
-			Database: Getenv("DB_NAME", ""),
+			User:     Getenv("DB_USER", "sa"),
+			Password: Getenv("DB_PASS", "SqlServer2019!"),
+			Database: Getenv("DB_NAME", "profile"),
 		},
 		KafkaConfig{
 			Brokers: strings.Split(Getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"), ","),
