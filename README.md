@@ -37,3 +37,7 @@ microsservico:
         database: Contém os drivers de acesso ao banco de dados utilizado pelo microsserviço.
     proto: Define as interfaces de comunicação entre o microsserviço e outros sistemas, utilizando Protobuf.
 ```
+
+⭐ Agradecimentos ⭐:
+
+
