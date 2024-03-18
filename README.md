@@ -38,6 +38,16 @@ microsservico:
     proto: Define as interfaces de comunicação entre o microsserviço e outros sistemas, utilizando Protobuf.
 ```
 
-⭐ Agradecimentos ⭐:
+<h2> ⭐ Agradecimentos ⭐</h2>
+Victor Hugo Vieira Cruz
+Gostaria de expressar minha gratidão ao meu tutor, Victor Hugo Vieira Cruz, pelos ensinamentos, paciência e pelo entusiasmo em me guiar na construção de um projeto do zero, mesmo com meu conhecimento limitado. A jornada ao lado dele me proporcionou um entendimento muito mais profundo sobre arquitetura de software, padrões de projeto, a linguagem Go e todas as ferramentas envolvidas.
+
+Apesar de sua jovem idade, Victor demonstra uma impressionante amplitude de conhecimento que certamente impacta qualquer pessoa que tenha a oportunidade de trabalhar com ele. Sua orientação foi fundamental para que eu aprendesse tanto com alguém mais jovem, mas que está tão à frente em termos de habilidades técnicas e experiência de vida. Este projeto não apenas enriqueceu meu conhecimento técnico, mas também me proporcionou valiosas lições de vida para minha carreira e desenvolvimento pessoal.
+
+Sou imensamente grata pela inspiração e sabedoria que Victor compartilhou comigo. Sua personalidade e experiências são verdadeiramente inspiradoras, e sou privilegiada por tê-lo como tutor e mentor. Este projeto foi muito mais do que uma simples jornada técnica; foi uma jornada de crescimento pessoal e profissional. Finalizo extremamente feliz de ter ganhado uma inspiração de carreira e de ser humano, quero crescer muito mais depois dessa abertura de janela e ver o Victor brilhar muito como espero que vai!
+
+Felipe Thomaz
+
+
 
 
