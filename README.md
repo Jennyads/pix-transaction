@@ -39,14 +39,16 @@ microsservico:
 ```
 
 <h2> ⭐ Agradecimentos ⭐</h2>
-Victor Hugo Vieira Cruz
+<h4>Victor Hugo Vieira Cruz</h4>
+
 Gostaria de expressar minha gratidão ao meu tutor, Victor Hugo Vieira Cruz, pelos ensinamentos, paciência e pelo entusiasmo em me guiar na construção de um projeto do zero, mesmo com meu conhecimento limitado. A jornada ao lado dele me proporcionou um entendimento muito mais profundo sobre arquitetura de software, padrões de projeto, a linguagem Go e todas as ferramentas envolvidas.
 
 Apesar de sua jovem idade, Victor demonstra uma impressionante amplitude de conhecimento que certamente impacta qualquer pessoa que tenha a oportunidade de trabalhar com ele. Sua orientação foi fundamental para que eu aprendesse tanto com alguém mais jovem, mas que está tão à frente em termos de habilidades técnicas e experiência de vida. Este projeto não apenas enriqueceu meu conhecimento técnico, mas também me proporcionou valiosas lições de vida para minha carreira e desenvolvimento pessoal.
 
 Sou imensamente grata pela inspiração e sabedoria que Victor compartilhou comigo. Sua personalidade e experiências são verdadeiramente inspiradoras, e sou privilegiada por tê-lo como tutor e mentor. Este projeto foi muito mais do que uma simples jornada técnica; foi uma jornada de crescimento pessoal e profissional. Finalizo extremamente feliz de ter ganhado uma inspiração de carreira e de ser humano, quero crescer muito mais depois dessa abertura de janela e ver o Victor brilhar muito como espero que vai!
 
-Felipe Augusto Amaral Thomaz
+<h4>Felipe Augusto Amaral Thomaz</h4>
+
 Gostaria de expressar minha sincera gratidão pelo olhar dedicado que você tem para cada um de seus liderados no DmPag. Desde sua chegada, sua abordagem tem sido nada menos que inspiradora. 
 
 Sua proposta, monitoramento cuidadoso, ideias acolhedoras e conselhos  têm sido fundamentais para trazer uma nova luz, organização e apoio à equipe.
@@ -55,7 +57,8 @@ Sua proposta, monitoramento cuidadoso, ideias acolhedoras e conselhos  têm sido
 Sinto-me  realizada por ter a oportunidade de trabalhar ao seu lado e testemunhar o seu trabalho excepcionalmente bem feito, principalmente no Projeto Diamante.
 Obrigado por sua dedicação contínua e pelo compromisso com o time. Você é um verdadeiro ativo para o nosso DMPag.
 
-Cristiano da Silva Andrade
+<h4>Cristiano da Silva Andrade</h4>
+
 Gostaria de expressar minha gratidão pela oportunidade de aprendizado que você proporcionou e pela generosa liberação de recursos, tempo e pessoal para promover um melhor entendimento da nossa área de atuação. Este compromisso foi crucial para a evolução gradual do nosso trabalho.
 
 É notável como sua dedicação possibilita que o DMPag se mantenha sempre vivo e inovador. Cada recurso, cada hora investida, e cada pessoa envolvida foram elementos essenciais para o progresso que alcançamos até agora.
