@@ -46,8 +46,22 @@ Apesar de sua jovem idade, Victor demonstra uma impressionante amplitude de conh
 
 Sou imensamente grata pela inspiração e sabedoria que Victor compartilhou comigo. Sua personalidade e experiências são verdadeiramente inspiradoras, e sou privilegiada por tê-lo como tutor e mentor. Este projeto foi muito mais do que uma simples jornada técnica; foi uma jornada de crescimento pessoal e profissional. Finalizo extremamente feliz de ter ganhado uma inspiração de carreira e de ser humano, quero crescer muito mais depois dessa abertura de janela e ver o Victor brilhar muito como espero que vai!
 
-Felipe Thomaz
+Felipe Augusto Amaral Thomaz
+Gostaria de expressar minha sincera gratidão pelo olhar dedicado que você tem para cada um de seus liderados no DmPag. Desde sua chegada, sua abordagem tem sido nada menos que inspiradora. 
 
+Sua proposta, monitoramento cuidadoso, ideias acolhedoras e conselhos  têm sido fundamentais para trazer uma nova luz, organização e apoio à equipe.
+É notável o impacto que você trouxe para o nosso ambiente de trabalho. Sua presença trouxe um novo nível de eficiência e colaboração, e estou extremamente grato por isso. 
+
+Sinto-me  realizada por ter a oportunidade de trabalhar ao seu lado e testemunhar o seu trabalho excepcionalmente bem feito, principalmente no Projeto Diamante.
+Obrigado por sua dedicação contínua e pelo compromisso com o time. Você é um verdadeiro ativo para o nosso DMPag.
+
+Cristiano da Silva Andrade
+Gostaria de expressar minha gratidão pela oportunidade de aprendizado que você proporcionou e pela generosa liberação de recursos, tempo e pessoal para promover um melhor entendimento da nossa área de atuação. Este compromisso foi crucial para a evolução gradual do nosso trabalho.
+
+É notável como sua dedicação possibilita que o DMPag se mantenha sempre vivo e inovador. Cada recurso, cada hora investida, e cada pessoa envolvida foram elementos essenciais para o progresso que alcançamos até agora.
+
+Sou grata por sua liderança visionária e por reconhecer a importância de apoiar iniciativas de aprendizado e desenvolvimento. Este ambiente de suporte é fundamental para cultivar uma cultura de crescimento e excelência.
+Mais uma vez, obrigada por tornar possível este caminho de evolução e inovação. 
 
 
 
