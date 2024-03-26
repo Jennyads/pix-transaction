@@ -4,7 +4,6 @@ Esse projetoO projeto propôs o desenvolvimento de um Sistema de Pagamentos via 
 
 * Gerenciamento de Usuários: Foram implementadas operações CRUD (Create, Read, Update, Delete) para criar, obter, listar e atualizar usuários, bem como criar conta e chaves PIX, atualizar e remover chaves associadas a esses usuários.
 * Transações PIX: Permitiu-se a realização de transferências PIX entre usuários.
-* Extrato de Movimentações PIX: Possibilitou-se a listagem das movimentações PIX de um usuário, oferecendo um extrato detalhado das transações realizadas.
 
 Sendo assim, adotou-se medidas para promover uma melhor organização do projeto em níveis teóricos e práticos. Na questão de gerenciamento de tarefas, foi criado um board no Miro para organizar ideias de arquitetura, diagramas e modelos de proto, planejamento de tarefas (TO DO e DONE), indicações de materiais de apoio, além de registros de estudos e fluxos do andamento do projeto. 
 
